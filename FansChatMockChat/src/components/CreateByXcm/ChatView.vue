@@ -15,14 +15,18 @@
       <div
         :class="[
           'w100p',
-          item.from == 'h_' + sessionInfo.id
+          item.from == 'h_test_' + sessionInfo.id
             ? 'flex-col-start-center'
             : 'flex-col-end-center',
         ]"
         v-for="(item, i) in chatViewList"
         :key="i"
       >
-        <text-msg :info="item"></text-msg>
+        <text-msg
+          :info="item"
+          :sessionInfo="sessionInfo"
+          :isleft="item.from == 'h_test_' + sessionInfo.id"
+        ></text-msg>
       </div>
     </div>
     <div class="bottom">
@@ -94,11 +98,9 @@ export default {
       // 滚动条自适应
       this.$nextTick(() => {
         var root = that.$refs["chatViewRef"];
-        var time = this.isSendImg ? 1000 : 200;
-        console.log("时间" + time); // 这里发图片就延时1秒 发文本延时200毫秒
         setTimeout(() => {
           root.scrollTop = root.scrollHeight;
-        }, time);
+        }, 200);
       });
     },
 
@@ -165,7 +167,6 @@ export default {
   .line1 {
     position: absolute;
     top: 50px;
-    height: 1px;
     width: 100%;
     opacity: 0.5;
     border: 1px solid #9a9a9a;
@@ -189,7 +190,7 @@ export default {
     .line2 {
       position: absolute;
       top: -1px;
-      height: 1px;
+
       width: 100%;
       opacity: 0.5;
       border: 1px solid #9a9a9a;

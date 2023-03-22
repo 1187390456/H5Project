@@ -1,18 +1,9 @@
 <template>
-  <div class="flex-center-start">
+  <div class="flex-center-start" v-if="sessionInfo && sessionInfo.id != null">
     <!-- 左侧 -->
     <div class="slide">
-      <div class="flex-center-start">
-        <img
-          style="
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            margin-left: 5px;
-          "
-          :src="sessionInfo.avatar"
-          alt=""
-        />
+      <div class="userInfo flex-center-start">
+        <img :src="sessionInfo.avatar" alt="" />
         <span style="margin-left: 8px" class="font-18-500-3c3647">{{
           sessionInfo.nickname
         }}</span>
@@ -23,18 +14,18 @@
       <div class="card flex-col-sbt-center">
         <div class="font-14-400-ffffff-20">总收益（$）</div>
         <div class="c2 flex-center-sbt">
-          <span class="font-28-500-ffffff-40">199.5</span>
+          <span class="font-28-500-ffffff-40">{{ dataInfo.totalMoney }}</span>
           <el-button class="btnStyle flex-center-center font-14-500-ff4471-20"
             >提现</el-button
           >
         </div>
         <div class="c3 flex-center-sbt">
           <div class="font-14-400-ffffff-20">已回复消息（条）</div>
-          <div class="font-14-500-ffffff-20">133</div>
+          <div class="font-14-500-ffffff-20">{{ dataInfo.replyCount }}</div>
         </div>
         <div class="c4 flex-center-sbt">
           <div class="font-14-400-ffffff-20">每条消息收益</div>
-          <div class="font-14-500-ffffff-20">$1.50</div>
+          <div class="font-14-500-ffffff-20">${{ dataInfo.moneyUnit }}</div>
         </div>
       </div>
     </div>
@@ -62,7 +53,6 @@ export default {
       sessionInfo: {}, // 别人
       selfInfo: {}, // 自己
       chatViewList: [], // 视图列表
-      msg: "",
     };
   },
 
@@ -80,7 +70,7 @@ export default {
   methods: {
     // 初始数据
     async Init() {
-      var res = await userInfo({ userID: 1, targetUserID: 10 });
+      var res = await userInfo({ userID: 1, nickname: "123123" });
       if (!res.result) return this.$message.error("后台错误!");
       this.dataInfo = res.data;
 
@@ -106,12 +96,13 @@ export default {
       );
       that.nim.sendText({
         scene: "p2p",
-        to: "h_" + that.sessionInfo.id,
+        to: "h_test_" + that.sessionInfo.id,
         text: msg,
         done: sendMsgDone,
       });
       function sendMsgDone(error, msg) {
-        console.log("发送消息" + error ? "失败" : "成功");
+        console.log(error);
+        console.log("发送消息" + error ? "成功" : "失败");
       }
     },
     // 获取历史消息记录
@@ -130,6 +121,8 @@ export default {
         console.log("获取到了与" + sessionId + "的历史信息");
         console.log("更新右侧");
         console.log(that.chatViewList);
+
+        that.$refs.chatView.ResetScroll(); // 重置滚动条
       }
     },
   },
@@ -150,7 +143,14 @@ export default {
   height: 100vh;
   background: #ffffff;
   padding: 21px 16px;
-
+  .userInfo {
+    img {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      margin-left: 5px;
+    }
+  }
   .content {
     background: #ccc;
     border-radius: 10px;

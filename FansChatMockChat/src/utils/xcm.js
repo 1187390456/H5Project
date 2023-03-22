@@ -1,7 +1,7 @@
 import Vue from "../main";
 import { getUrlKey } from "../utils/tools";
 
-const isTestServer = false;
+const isTestServer = true;
 const tag = isTestServer ? "h_test_" : "h_";
 
 // nim 云信实例
@@ -11,6 +11,8 @@ export const ReSetIM = async function (vue) {
   var operateInfo = JSON.parse(sessionStorage.getItem("operateInfo")); // 1
   var bloggerInfo = JSON.parse(sessionStorage.getItem("bloggerInfo")); // 10
 
+  if (operateInfo == null || bloggerInfo == null) return;
+
   var type = getUrlKey("type");
   var selfInfo = type == 1 ? operateInfo : bloggerInfo;
   var otherInfo = selfInfo == operateInfo ? bloggerInfo : operateInfo;
@@ -19,6 +21,11 @@ export const ReSetIM = async function (vue) {
   that.sessionInfo = otherInfo;
 
   console.log("我自己的是 " + selfInfo.nickname + " id是" + selfInfo.id);
+  sessionStorage.setItem(
+    "bloggerId",
+    selfInfo.isBlogger ? selfInfo.id : otherInfo.id
+  );
+
   console.log("聊天的对象是 " + otherInfo.nickname + " id是" + otherInfo.id);
 
   if (selfInfo == null) return;
