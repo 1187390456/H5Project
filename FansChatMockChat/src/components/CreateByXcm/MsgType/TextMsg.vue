@@ -14,7 +14,7 @@
         <span class="font-10-400-979797">{{ info.time | timeFilter }}</span>
       </div>
     </div>
-
+    <!-- <span>{{ info.isUnreadable }}</span> -->
     <div class="crash" v-if="isleft && curId == bloggerId">
       <img src="../../../assets/images/jinbi.png" alt="" />
       <span class="center">+$3.50</span>

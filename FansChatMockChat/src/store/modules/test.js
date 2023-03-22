@@ -1,6 +1,7 @@
 const state = {
-  text: "",
-  datajson: {},
+  dataInfo: {},
+  operateInfo: {},
+  bloggerInfo: {},
 };
 
 const mutations = {

@@ -40,7 +40,6 @@
       >
       </el-input>
       <el-button
-        :disabled="isSendImg"
         class="b font-14-500-ffffff flex-center-center"
         @click="OnClick"
         >发送</el-button
@@ -63,22 +62,11 @@ export default {
       default: {},
       type: Object,
     },
-    fileImageWidth: {
-      default: 400,
-      type: Number,
-    },
-    isSendImg: {
-      default: false,
-      type: Boolean,
-    },
   },
   components: { TextMsg, TimeLine },
   data() {
     return {
       textarea: "",
-
-      dialogVisible: false,
-      dialogImageUrl: "",
     };
   },
   mounted() {
@@ -86,7 +74,6 @@ export default {
   },
   methods: {
     OnClick() {
-      if (this.isSendImg) return;
       this.$emit("SendText", this.textarea);
       this.ResetScroll();
     },
@@ -102,11 +89,6 @@ export default {
           root.scrollTop = root.scrollHeight;
         }, 200);
       });
-    },
-
-    //图片上传限制钩子
-    handleImageExceed() {
-      this.$message.warning("最多可上传1张图片");
     },
   },
 };

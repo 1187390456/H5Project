@@ -58,6 +58,7 @@ export default {
 
   created() {
     this.Init();
+    this.dataInfo = this.$store.state.test.dataInfo;
   },
   mounted() {
     ReSetIM(this);
@@ -76,6 +77,8 @@ export default {
 
       sessionStorage.setItem("operateInfo", JSON.stringify(res.data.operator));
       sessionStorage.setItem("bloggerInfo", JSON.stringify(res.data.blogger));
+
+      ReSetIM(this);
     },
     // 断开云信连接
     DisconnectIM() {
@@ -101,8 +104,19 @@ export default {
         done: sendMsgDone,
       });
       function sendMsgDone(error, msg) {
-        console.log(error);
-        console.log("发送消息" + error ? "成功" : "失败");
+        console.log("发送消息");
+        console.log(!error ? "成功" : "失败");
+
+        if (!error) {
+          that.nim.sendMsgReceipt({
+            msg,
+            done: sendMsgReceiptDone,
+          });
+          function sendMsgReceiptDone(error, obj) {
+            console.log("发送消息已读回执");
+            console.log(!error ? "成功" : "失败");
+          }
+        }
       }
     },
     // 获取历史消息记录
