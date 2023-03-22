@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"
+      name="viewport"
+    />
+    <link
+      rel="shortcut icon"
+      href="https://fans-chat.kr-cell.com/favicon.ico"
+      type="image/x-icon"
+    />
+    <script
+      type="text/javascript"
+      charset="UTF-8"
+      src="//web.cdn.openinstall.io/openinstall.js"
+    ></script>
+    <title>Fans Chat</title>
+  </head>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      height: 100vh;
+      background: #f8f9fc;
+      overflow: hidden;
+    }
+  </style>
+  <body>
+    <noscript>
+      <strong
+        >We're sorry but Night-Chat doesn't work properly without JavaScript
+        enabled. Please enable it to continue.</strong
+      >
+    </noscript>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+  </body>
+</html>
+
+<script>
+  // 获取地址参数
+  function getUrlKey(name) {
+    return (
+      decodeURIComponent(
+        (new RegExp("[?|&]" + name + "=" + "([^&;]+?)(&|#|;|$)").exec(
+          location.href
+        ) || [, ""])[1].replace(/\+/g, "%20")
+      ) || null
+    );
+  }
+</script>

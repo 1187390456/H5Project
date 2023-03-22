@@ -1,0 +1,16 @@
+::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .nowrap {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  ul {
+    padding: 0;
+    margin: 0;
+  }
+  li {
+    list-style: none;
+  }
