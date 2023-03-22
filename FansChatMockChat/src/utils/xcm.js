@@ -5,11 +5,14 @@ const isTestServer = true;
 const tag = isTestServer ? "h_test_" : "h_";
 
 // nim 云信实例
-export const ReSetIM = async function (vue) {
-  var that = vue;
+export const ReSetIM = async function (data) {
+  var that = data.vue;
 
-  var operateInfo = JSON.parse(sessionStorage.getItem("operateInfo")); // 1
-  var bloggerInfo = JSON.parse(sessionStorage.getItem("bloggerInfo")); // 10
+  var operateInfo = data.data.operator; // 1
+  var bloggerInfo = data.data.blogger; // 10
+
+  console.log("1111111111111111111111111");
+  console.log(data.data);
 
   if (operateInfo == null || bloggerInfo == null) return;
 

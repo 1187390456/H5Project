@@ -40,6 +40,7 @@
 </template>
 
 <script>
+import { getUrlKey } from "../utils/tools";
 import { userInfo } from "../../api/xcm";
 import { ReSetIM } from "../utils/xcm";
 import ChatView from "../components/CreateByXcm/ChatView.vue";
@@ -61,7 +62,7 @@ export default {
     this.dataInfo = this.$store.state.test.dataInfo;
   },
   mounted() {
-    ReSetIM(this);
+    ReSetIM({ vue: this, data: this.dataInfo });
   },
   destroyed() {
     if (this.nim == null) return;
@@ -71,15 +72,19 @@ export default {
   methods: {
     // 初始数据
     async Init() {
-      var res = await userInfo({ userID: 1, nickname: "123123" });
+      var u = getUrlKey("u");
+      var n = getUrlKey("n");
+      var res = await userInfo({ userID: u, nickname: n });
       if (!res.result) return this.$message.error("后台错误!");
       this.dataInfo = res.data;
 
+      sessionStorage.setItem("dataInfo", JSON.stringify(res.data));
       sessionStorage.setItem("operateInfo", JSON.stringify(res.data.operator));
       sessionStorage.setItem("bloggerInfo", JSON.stringify(res.data.blogger));
 
-      ReSetIM(this);
+      ReSetIM({ vue: this, data: res.data });
     },
+
     // 断开云信连接
     DisconnectIM() {
       this.nim.disconnect();
@@ -138,6 +143,7 @@ export default {
 
         that.$refs.chatView.ResetScroll(); // 重置滚动条
       }
+      this.Init();
     },
   },
 };

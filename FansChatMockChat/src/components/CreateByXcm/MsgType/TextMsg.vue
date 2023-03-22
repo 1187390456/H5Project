@@ -2,7 +2,7 @@
   <div class="textRoot">
     <div class="crash" v-if="!isleft && curId == bloggerId">
       <img src="../../../assets/images/jinbi.png" alt="" />
-      <span class="center">+$3.50</span>
+      <span class="center">+${{ moneyUnit }}</span>
       <img src="../../../assets/images/jiantou.png" alt="" />
     </div>
 
@@ -17,7 +17,7 @@
     <!-- <span>{{ info.isUnreadable }}</span> -->
     <div class="crash" v-if="isleft && curId == bloggerId">
       <img src="../../../assets/images/jinbi.png" alt="" />
-      <span class="center">+$3.50</span>
+      <span class="center">+${{ moneyUnit }}</span>
       <img src="../../../assets/images/jiantou.png" alt="" />
     </div>
   </div>
@@ -48,10 +48,12 @@ export default {
   },
   created() {
     this.bloggerId = sessionStorage.getItem("bloggerId");
+    this.moneyUnit = JSON.parse(sessionStorage.getItem("dataInfo")).moneyUnit;
   },
   data() {
     return {
       bloggerId: "",
+      moneyUnit: "",
     };
   },
   filters: {
