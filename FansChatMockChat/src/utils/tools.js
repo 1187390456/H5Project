@@ -1,5 +1,3 @@
-import { bloggerUrlRecord } from "../../api/PersonPage";
-
 // 全局监听对象
 export var listenObj = {
   type: false,
