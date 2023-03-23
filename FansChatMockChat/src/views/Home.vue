@@ -9,26 +9,34 @@
         }}</span>
       </div>
       <div v-if="isBlogger" class="content font-16-400-000000">
-        你可以通过回复对方消息来获取现金收益
+        You can earn cash by replying to messages !
       </div>
       <div v-if="isBlogger" class="card flex-col-sbt-evenly">
-        <div class="font-14-400-ffffff-20">总收益（$）</div>
+        <div class="font-14-400-ffffff-20">Total Revenue（$）</div>
         <div class="c2 flex-center-sbt">
-          <span class="font-28-500-ffffff-40">{{ dataInfo.totalMoney }}</span>
+          <span class="font-28-500-ffffff-40">{{
+            (parseInt(dataInfo.totalMoney * 100) / 100).toFixed(2)
+          }}</span>
           <el-button class="btnStyle flex-center-center font-14-500-ff4471-20"
-            >提现</el-button
+            >Withdrawals</el-button
           >
         </div>
         <div class="c3 flex-center-sbt">
-          <div class="font-14-400-ffffff-20">已回复消息（条）</div>
+          <div class="font-14-400-ffffff-20">
+            Replied to messages (messages)
+          </div>
           <div class="font-14-500-ffffff-20">{{ dataInfo.replyCount }}</div>
         </div>
         <div class="c4 flex-center-sbt">
-          <div class="font-14-400-ffffff-20">每条消息收益</div>
-          <div class="font-14-500-ffffff-20">${{ dataInfo.moneyUnit }}</div>
+          <div class="font-14-400-ffffff-20">Revenue per message</div>
+          <div class="font-14-500-ffffff-20">
+            ${{ (parseInt(dataInfo.moneyUnit * 100) / 100).toFixed(2) }}
+          </div>
         </div>
       </div>
     </div>
+    <!-- 边界 -->
+    <div class="sildeRight"></div>
     <!-- 右侧 -->
     <chat-view
       :chatViewList="chatViewList"
@@ -63,7 +71,6 @@ export default {
 
   created() {
     this.Init();
-    this.dataInfo = this.$store.state.test.dataInfo;
   },
   destroyed() {
     if (this.nim == null) return;
@@ -76,7 +83,7 @@ export default {
       var u = getUrlKey("u");
       var n = getUrlKey("n");
       var res = await userInfo({ userID: u, nickname: n });
-      if (!res.result) return this.$message.error("后台错误!");
+      if (!res.result) return; // this.$message.error("后台错误!")
       this.dataInfo = res.data;
 
       var operateInfo = res.data.operator;
@@ -116,6 +123,7 @@ export default {
       var res = await userInfo({ userID: u, nickname: n });
       if (!res.result) return this.$message.error("后台错误!");
       this.dataInfo = res.data;
+      this.RefreshRead(); // 数据刷新后再刷已读
     },
     // 断开云信连接
     DisconnectIM() {
@@ -130,6 +138,12 @@ export default {
     },
     // 发送消息
     SendText(msg) {
+      console.log("发送的消息为");
+      console.log(msg);
+
+      if (msg == "")
+        return this.$message.error("The message cannot be empty !");
+
       var that = this;
       console.log(
         "发送给id为" + that.sessionInfo.id + "的用户" + "消息为" + msg
@@ -144,22 +158,25 @@ export default {
         console.log("发送消息");
         console.log(!error ? "成功" : "失败");
 
-        // 刷新已读和金币 重置滚动条
-        that.RefreshRead();
-        that.RefreshData();
-        that.$refs.chatView.ResetScroll();
+        // 延时请求
+        setTimeout(() => {
+          // 刷新已读和金币 重置滚动条
 
-        if (!error) {
-          that.nim.sendMsgReceipt({
-            msg: that.curSession.lastMsg,
-            done: sendMsgReceiptDone,
-          });
-          function sendMsgReceiptDone(error, obj) {
-            console.log("发送消息已读回执");
-            console.log(!error ? "成功" : "失败");
-            console.log(obj);
-          }
-        }
+          that.RefreshData();
+          that.$refs.chatView.ResetScroll();
+        }, 600);
+
+        // if (!error) {
+        //   that.nim.sendMsgReceipt({
+        //     msg: that.curSession.lastMsg,
+        //     done: sendMsgReceiptDone,
+        //   });
+        //   function sendMsgReceiptDone(error, obj) {
+        //     console.log("发送消息已读回执");
+        //     console.log(!error ? "成功" : "失败");
+        //     console.log(obj);
+        //   }
+        // }
       }
     },
     // 获取历史消息记录
@@ -208,7 +225,6 @@ export default {
 
 <style lang="less" scoped>
 .btnStyle {
-  width: 60px;
   height: 32px;
   background: #ffffff;
   border-radius: 5px;
@@ -220,6 +236,7 @@ export default {
   height: 100vh;
   background: #ffffff;
   padding: 21px 16px;
+
   .userInfo {
     img {
       width: 35px;
@@ -257,5 +274,14 @@ export default {
       padding: 12px 0;
     }
   }
+}
+.sildeRight {
+  position: fixed;
+  top: 0;
+  left: 325px;
+
+  width: 5px;
+  height: 100vh;
+  background: #d8d8d8;
 }
 </style>

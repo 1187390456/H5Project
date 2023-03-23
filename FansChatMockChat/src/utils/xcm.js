@@ -63,7 +63,26 @@ export const ReSetIM = async function (data) {
   }
   // 收到会话更新
   function onUpdateSession(session) {
-    if (session.lastMsg.status == "success") {
+    console.log("====== 会话更新了 ======", session);
+    // that.sessionInfo.id that.selfInfo.id
+
+    var fromId = session.lastMsg.from.slice(
+      session.lastMsg.from.lastIndexOf("_") + 1
+    );
+    var toId = session.lastMsg.to.slice(
+      session.lastMsg.to.lastIndexOf("_") + 1
+    );
+    console.log("收到从" + fromId + "到" + toId + "的消息");
+
+    // 第一种情况 fromId是自己 toid 是聊天的人 推送
+    var canPush1 = fromId == that.selfInfo.id && toId == that.sessionInfo.id;
+
+    // 第二种情况 fromId是别人 toId 是自己
+    var canPush2 = fromId == that.sessionInfo.id && toId == that.selfInfo.id;
+
+    console.log("能否推送" + (canPush1 || canPush2));
+
+    if (session.lastMsg.status == "success" && (canPush1 || canPush2)) {
       console.log("====== 会话更新了 ======", session);
       // that.GetHistory(session.id); // 更新当前会话
       session.lastMsg.isUnreadable = true;

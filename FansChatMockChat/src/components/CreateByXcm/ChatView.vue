@@ -32,17 +32,18 @@
     <div class="bottom">
       <div class="line2"></div>
       <el-input
-        style="margin-top: 30px"
+        style="margin-top: 8px"
         type="textarea"
-        :rows="4"
-        placeholder="请输入消息"
+        :rows="6"
+        placeholder="Please enter a message !"
         v-model="textarea"
+        @keydown.native="listen($event)"
       >
       </el-input>
       <el-button
         class="b font-14-500-ffffff flex-center-center"
-        @click="OnClick"
-        >发送</el-button
+        @click="SendText"
+        >Send</el-button
       >
     </div>
   </div>
@@ -73,9 +74,19 @@ export default {
     this.ResetScroll();
   },
   methods: {
-    OnClick() {
+    listen(event) {
+      if (event.keyCode == 13 && event.ctrlKey) {
+        this.textarea += "\n"; //换行
+      } else if (event.keyCode === 13) {
+        this.SendText(); // 发送文本
+        event.preventDefault(); // 阻止浏览器默认换行操作
+        return;
+      }
+    },
+    SendText() {
       this.$emit("SendText", this.textarea);
       this.ResetScroll();
+      this.textarea = "";
     },
     Reset() {
       this.ResetScroll();
@@ -98,6 +109,11 @@ export default {
 /deep/ .el-textarea__inner {
   border: none;
   background: #f6f7fb;
+
+  font-size: 14px;
+  font-family: PingFangSC-Regular, PingFang SC;
+  font-weight: 400;
+  line-height: 20px;
 }
 
 ::-webkit-scrollbar {
@@ -118,8 +134,8 @@ export default {
 .chatView {
   position: fixed;
   top: 0;
-  left: 325px;
-  width: calc(100% - 325px);
+  left: 330px;
+  width: calc(100% - 330px);
   height: 100%;
 
   background: #f6f7fb;
@@ -148,15 +164,15 @@ export default {
   }
   .line1 {
     position: absolute;
-    top: 50px;
     width: 100%;
+    height: 1px;
     opacity: 0.5;
-    border: 1px solid #9a9a9a;
+    background-color: #9a9a9a;
   }
   .center {
     position: fixed;
     top: 60px;
-    width: calc(100% - 325px);
+    width: calc(100% - 330px);
     max-height: calc(
       100% - 182px - 110px - 8px + 45px
     ); // 当前屏幕高度 - 上面的 - 下面的 - 边距
@@ -171,16 +187,15 @@ export default {
     height: 182px;
     .line2 {
       position: absolute;
-      top: -1px;
-
       width: 100%;
+      height: 1px;
       opacity: 0.5;
-      border: 1px solid #9a9a9a;
+      background-color: #9a9a9a;
     }
     .b {
       position: absolute;
-      bottom: 28px;
-      right: 24px;
+      bottom: 8px;
+      right: 8px;
 
       width: 60px;
       height: 32px;

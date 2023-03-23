@@ -1,9 +1,7 @@
 <template>
   <div class="textRoot">
     <div :class="['textMsg', isleft ? 'leftColor' : 'rightColor']">
-      <div class="font-15-400-060606 wordBrake">
-        {{ info.text }}
-      </div>
+      <div class="font-15-400-060606 wordBrake">{{ info.text }}</div>
       <div class="time">
         <span class="font-10-400-979797">{{ info.time | timeFilter }}</span>
       </div>
@@ -109,7 +107,7 @@ export default {
     .time {
       display: flex;
       justify-content: flex-end;
-      margin-top: 3px;
+      margin: 3px 0;
     }
   }
   .crash {
