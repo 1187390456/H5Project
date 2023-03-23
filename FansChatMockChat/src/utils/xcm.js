@@ -13,6 +13,10 @@ export const ReSetIM = async function (data) {
 
   if (data.selfInfo.wyToken == null) return;
 
+  // 存下服务器配置
+  that.serverTag = tag;
+  sessionStorage.setItem("serverTag", tag);
+
   // 获取云信参数
   var token = data.selfInfo.wyToken;
   var account = tag + data.selfInfo.id;

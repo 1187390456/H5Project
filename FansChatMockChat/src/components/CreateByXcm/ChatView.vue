@@ -15,7 +15,7 @@
       <div
         :class="[
           'w100p',
-          item.from == 'h_test_' + sessionInfo.id
+          item.from == serverTag + sessionInfo.id
             ? 'flex-col-start-center'
             : 'flex-col-end-center',
         ]"
@@ -25,7 +25,7 @@
         <text-msg
           :info="item"
           :sessionInfo="sessionInfo"
-          :isleft="item.from == 'h_test_' + sessionInfo.id"
+          :isleft="item.from == serverTag + sessionInfo.id"
         ></text-msg>
       </div>
     </div>
@@ -64,10 +64,14 @@ export default {
       type: Object,
     },
   },
+  created() {
+    this.serverTag = sessionStorage.getItem("serverTag");
+  },
   components: { TextMsg, TimeLine },
   data() {
     return {
       textarea: "",
+      serverTag: "h_test_",
     };
   },
   mounted() {

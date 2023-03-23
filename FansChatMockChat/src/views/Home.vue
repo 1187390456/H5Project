@@ -66,12 +66,15 @@ export default {
       curSession: {}, // 当前会话
 
       isBlogger: false, // 我自己的身份是博主吗
+
+      serverTag: "h_test_",
     };
   },
 
   created() {
     this.Init();
   },
+
   destroyed() {
     if (this.nim == null) return;
     this.DisconnectIM();
@@ -150,7 +153,7 @@ export default {
       );
       that.nim.sendText({
         scene: "p2p",
-        to: "h_test_" + that.sessionInfo.id,
+        to: that.serverTag + that.sessionInfo.id,
         text: msg,
         done: sendMsgDone,
       });
