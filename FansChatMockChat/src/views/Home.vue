@@ -229,6 +229,7 @@ export default {
   background: #ffffff;
   border-radius: 5px;
   border: none;
+  color: #ff4471 !important;
 }
 
 .slide {
