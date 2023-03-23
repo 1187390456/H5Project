@@ -71,6 +71,13 @@ li {
   align-content: space-between;
   justify-content: center;
 }
+.flex-col-sbt-evenly {
+  display: flex;
+  flex-direction: column;
+  align-content: space-between;
+  justify-content: space-evenly;
+}
+
 .flex-col-end-center {
   display: flex;
   flex-direction: column;
@@ -195,11 +202,12 @@ li {
   color: #161616;
 }
 
-.font-18-500-3c3647 {
+.font-18-500-3c3647-25 {
   font-size: 18px;
   font-family: PingFangSC-Medium, PingFang SC;
   font-weight: 500;
   color: #3c3647;
+  line-height: 25px;
 }
 
 

@@ -3,39 +3,19 @@ import { getUrlKey } from "../utils/tools";
 
 const isTestServer = true;
 const tag = isTestServer ? "h_test_" : "h_";
+var lastMsg = {};
+
+var lanjie = true;
 
 // nim 云信实例
 export const ReSetIM = async function (data) {
   var that = data.vue;
 
-  var operateInfo = data.data.operator; // 1
-  var bloggerInfo = data.data.blogger; // 10
-
-  console.log("1111111111111111111111111");
-  console.log(data.data);
-
-  if (operateInfo == null || bloggerInfo == null) return;
-
-  var type = getUrlKey("type");
-  var selfInfo = type == 1 ? operateInfo : bloggerInfo;
-  var otherInfo = selfInfo == operateInfo ? bloggerInfo : operateInfo;
-
-  that.selfInfo = selfInfo;
-  that.sessionInfo = otherInfo;
-
-  console.log("我自己的是 " + selfInfo.nickname + " id是" + selfInfo.id);
-  sessionStorage.setItem(
-    "bloggerId",
-    selfInfo.isBlogger ? selfInfo.id : otherInfo.id
-  );
-
-  console.log("聊天的对象是 " + otherInfo.nickname + " id是" + otherInfo.id);
-
-  if (selfInfo == null) return;
+  if (data.selfInfo.wyToken == null) return;
 
   // 获取云信参数
-  var token = selfInfo.wyToken;
-  var account = tag + selfInfo.id;
+  var token = data.selfInfo.wyToken;
+  var account = tag + data.selfInfo.id;
   var appKey = "b3a260acb5754d61d2d46ddc22351b4e";
   var nimInfo = {
     token,
@@ -71,17 +51,32 @@ export const ReSetIM = async function (data) {
   // 收到会话列表
   function onSessions(sessions) {
     console.log("====== 收到会话列表 ======", sessions);
+
+    var curSession = sessions.find(
+      (x) => x.id == "p2p-" + tag + that.sessionInfo.id
+    );
+
+    console.log("当前会话");
+    console.log(curSession);
+
+    that.curSession = curSession;
   }
   // 收到会话更新
   function onUpdateSession(session) {
-    console.log("====== 会话更新了 ======", session);
-    that.GetHistory(session.id); // 更新当前会话
+    if (session.lastMsg.status == "success") {
+      console.log("====== 会话更新了 ======", session);
+      // that.GetHistory(session.id); // 更新当前会话
+      session.lastMsg.isUnreadable = true;
+      that.chatViewList.push(session.lastMsg); // 只接收一次并推送临时本地
+    }
   }
   // im收到消息
   function onMsg(msg) {
     console.log("====== im收到消息 ======", msg);
+    that.$refs.chatView.ResetScroll();
+    // that.GetHistory("p2p-" + tag + that.sessionInfo.id);
 
-    that.GetHistory("p2p-" + tag + otherInfo.id); // 更新当前会话
+    //  that.GetHistory("p2p-" + tag + that.sessionInfo.id); // 更新当前会话
 
     // if (msg.from == "r_" + that.questionUserId) {
     //   that.userList.map((item) => {
@@ -95,7 +90,7 @@ export const ReSetIM = async function (data) {
   // 连接进入云信
   function onConnect() {
     console.log("====== 云信sdk 进入IM ======");
-    that.GetHistory("p2p-" + tag + otherInfo.id); // 获取历史消息
+    that.GetHistory("p2p-" + tag + that.sessionInfo.id); // 获取历史消息
   }
   //#endregion
 

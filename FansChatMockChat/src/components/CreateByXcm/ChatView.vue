@@ -34,7 +34,7 @@
       <el-input
         style="margin-top: 30px"
         type="textarea"
-        :rows="2"
+        :rows="4"
         placeholder="请输入消息"
         v-model="textarea"
       >
@@ -129,8 +129,8 @@ export default {
     padding: 12px 0 12px 11px;
 
     .l {
-      width: 25px;
-      height: 25px;
+      width: 30px;
+      height: 30px;
       margin-right: 8px;
       position: relative;
 
