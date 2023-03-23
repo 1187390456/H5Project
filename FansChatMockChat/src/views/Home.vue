@@ -74,7 +74,6 @@ export default {
   created() {
     this.Init();
   },
-
   destroyed() {
     if (this.nim == null) return;
     this.DisconnectIM();
@@ -194,7 +193,9 @@ export default {
 
       function getLocalMsgsDone(error, obj) {
         console.log("获取本地消息" + (!error ? "成功" : "失败"), error, obj);
-        that.chatViewList = obj.msgs.reverse();
+        var localData = JSON.parse(localStorage.getItem("localData"));
+        console.log("localData", localData);
+        that.chatViewList = localData == null ? obj.msgs.reverse() : localData;
         console.log("获取到了与" + sessionId + "的历史信息");
         console.log("更新右侧1");
         console.log(that.chatViewList);
@@ -218,7 +219,7 @@ export default {
     // 刷新已读
     RefreshRead() {
       this.chatViewList.map((item) => {
-        item.isUnreadable = false;
+        item.isUnreadable = true;
         return item;
       });
     },

@@ -7,7 +7,7 @@
       </div>
     </div>
     <div
-      :class="['crash', info.isUnreadable ? 'unReadColor' : 'readColor']"
+      :class="['crash', info.isUnreadable ? 'readColor' : 'unReadColor']"
       v-if="!dontShow && isleft && isBlogger"
     >
       <img src="../../../assets/images/jinbi.png" alt="" />

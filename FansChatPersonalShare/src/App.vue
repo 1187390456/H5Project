@@ -75,6 +75,8 @@ export default {
     },
     // 保存
     SaveAndPush(datajson, name) {
+      sessionStorage.setItem("datajson", JSON.stringify(datajson));
+      console.log(datajson);
       // 监听
       listenDownInfo(datajson, this.$listenObj);
       // 跳转

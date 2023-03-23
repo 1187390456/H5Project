@@ -89,8 +89,10 @@ export const ReSetIM = async function (data) {
     if (session.lastMsg.status == "success" && (canPush1 || canPush2)) {
       console.log("====== 会话更新了 ======", session);
       // that.GetHistory(session.id); // 更新当前会话
-      session.lastMsg.isUnreadable = true;
+      session.lastMsg.isUnreadable = false;
       that.chatViewList.push(session.lastMsg); // 只接收一次并推送临时本地
+
+      localStorage.setItem("localData", JSON.stringify(that.chatViewList));
     }
   }
   // im收到消息
