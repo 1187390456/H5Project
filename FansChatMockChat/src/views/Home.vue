@@ -325,7 +325,7 @@ export default {
   width: 295px;
   height: 100vh;
   background: #ffffff;
-  margin-top: 16px;
+  padding-top: 16px;
   .userInfo {
     img {
       width: 35px;
