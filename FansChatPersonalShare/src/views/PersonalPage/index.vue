@@ -88,7 +88,7 @@
 </template>
   
 <script>
-import { getUrlKey, recordHand } from "../../utils/tools";
+import { recordHand } from "../../utils/tools";
 import { homepage, photolist, recommendDynamic } from "../../../api/PersonPage";
 
 export default {
@@ -148,7 +148,7 @@ export default {
         this.loading = true;
       }
 
-      var userID = getUrlKey("u");
+      var userID = this.$route.query.u;
       var res = await homepage({ userID, targetUserID: userID });
       if (!res.result) {
         this.loading = false;
@@ -159,7 +159,7 @@ export default {
     },
     // 个人相册
     async Getphotolist() {
-      var userID = getUrlKey("u");
+      var userID = this.$route.query.u;
       var res = await photolist({
         userID,
         targetUserID: userID,
@@ -174,7 +174,7 @@ export default {
     },
     // 个人动态
     async GetDynamicInfo() {
-      var userID = getUrlKey("u");
+      var userID = this.$route.query.u;
       var res = await recommendDynamic({
         userID,
         targetUserID: userID,
@@ -294,7 +294,7 @@ export default {
     top: 0;
     width: 375px;
     max-height: 412px;
-    object-fit: contain;
+    object-fit: cover;
   }
 
   .download {

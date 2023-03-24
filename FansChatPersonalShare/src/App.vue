@@ -33,6 +33,7 @@ export default {
     ParamCatch() {
       var u = getUrlKey("u");
       var t = getUrlKey("t");
+
       var datajson = {};
       var name = "personalPage";
       // 博主注册
@@ -75,12 +76,16 @@ export default {
     },
     // 保存
     SaveAndPush(datajson, name) {
+      console.log("跳转");
       sessionStorage.setItem("datajson", JSON.stringify(datajson));
       console.log(datajson);
       // 监听
       listenDownInfo(datajson, this.$listenObj);
+
+      var u = getUrlKey("u");
+      var t = getUrlKey("t");
       // 跳转
-      this.$router.push({ name, query: null });
+      this.$router.push({ name, query: { u, t } });
     },
   },
 };
