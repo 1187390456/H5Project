@@ -11,7 +11,9 @@
       v-if="!dontShow && isleft && isBlogger"
     >
       <img src="../../../assets/images/jinbi.png" alt="" />
-      <span class="center">+${{ moneyUnit }}</span>
+      <span class="center"
+        >+${{ (parseInt(moneyUnit * 100) / 100).toFixed(2) }}</span
+      >
       <img src="../../../assets/images/jiantou.png" alt="" />
     </div>
   </div>
@@ -123,7 +125,7 @@ export default {
       height: 100%;
     }
     .center {
-      margin: 0 5px;
+      margin: 0 2px;
 
       font-size: 10px;
       font-family: PingFangSC-Regular, PingFang SC;

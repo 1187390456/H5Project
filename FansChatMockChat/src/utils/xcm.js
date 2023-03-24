@@ -143,6 +143,7 @@ export const ReSetIM = async function (data) {
     // 此时说明 SDK 处于断开状态, 开发者此时应该根据错误码提示相应的错误信息, 并且跳转到登录页面
     console.log("====== 丢失连接 ======");
     console.log(error);
+
     if (error) {
       switch (error.code) {
         // 账号或者密码错误, 请跳转到登录页面并提示错误

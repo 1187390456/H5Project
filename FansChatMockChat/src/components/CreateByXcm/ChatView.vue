@@ -35,7 +35,7 @@
         style="margin-top: 8px"
         type="textarea"
         :rows="6"
-        placeholder="Please enter a message !"
+        placeholder="Start a new message"
         v-model="textarea"
         @keydown.native="listen($event)"
       >
@@ -138,8 +138,8 @@ export default {
 .chatView {
   position: fixed;
   top: 0;
-  left: 330px;
-  width: calc(100% - 330px);
+  left: 300px;
+  width: calc(100% - 300px);
   height: 100%;
 
   background: #f6f7fb;
@@ -176,7 +176,7 @@ export default {
   .center {
     position: fixed;
     top: 60px;
-    width: calc(100% - 330px);
+    width: calc(100% - 300px);
     max-height: calc(
       100% - 182px - 110px - 8px + 45px
     ); // 当前屏幕高度 - 上面的 - 下面的 - 边距
@@ -187,7 +187,7 @@ export default {
   .bottom {
     position: fixed;
     bottom: 0;
-    width: calc(100% - 325px);
+    width: calc(100% - 300px);
     height: 182px;
     .line2 {
       position: absolute;
@@ -198,8 +198,8 @@ export default {
     }
     .b {
       position: absolute;
-      bottom: 8px;
-      right: 8px;
+      bottom: 10px;
+      right: 24px;
 
       width: 60px;
       height: 32px;

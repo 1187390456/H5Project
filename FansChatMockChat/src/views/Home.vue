@@ -8,29 +8,35 @@
           selfInfo.nickname
         }}</span>
       </div>
-      <div v-if="isBlogger" class="content font-16-400-000000">
-        You can earn cash by replying to messages !
-      </div>
-      <div v-if="isBlogger" class="card flex-col-sbt-evenly">
-        <div class="font-14-400-ffffff-20">Total Revenue（$）</div>
-        <div class="c2 flex-center-sbt">
-          <span class="font-28-500-ffffff-40">{{
-            (parseInt(dataInfo.totalMoney * 100) / 100).toFixed(2)
-          }}</span>
-          <el-button class="btnStyle flex-center-center font-14-500-ff4471-20"
-            >Withdrawals</el-button
-          >
-        </div>
-        <div class="c3 flex-center-sbt">
-          <div class="font-14-400-ffffff-20">
-            Replied to messages (messages)
+      <div class="flex-col-center-start">
+        <div v-if="isBlogger" class="content font-16-400-000000-22">
+          <div style="padding: 12px">
+            You can earn cash by replying to messages !
           </div>
-          <div class="font-14-500-ffffff-20">{{ dataInfo.replyCount }}</div>
         </div>
-        <div class="c4 flex-center-sbt">
-          <div class="font-14-400-ffffff-20">Revenue per message</div>
-          <div class="font-14-500-ffffff-20">
-            ${{ (parseInt(dataInfo.moneyUnit * 100) / 100).toFixed(2) }}
+        <div v-if="isBlogger" class="card flex-col-sbt-center">
+          <div class="c1 font-14-400-ffffff-20">Total Revenue（$）</div>
+          <div class="c2 flex-center-sbt">
+            <span class="font-28-500-ffffff-40">{{
+              (parseInt(dataInfo.totalMoney * 100) / 100).toFixed(2)
+            }}</span>
+            <el-button
+              class="btnStyle flex-center-center font-14-500-ff4471-20"
+              @click="Withdrawal"
+              >Withdrawals</el-button
+            >
+          </div>
+          <div class="cardline"></div>
+          <div class="c3 flex-center-sbt">
+            <div class="font-14-400-ffffff-20">Number of replied messages</div>
+            <div class="font-14-500-ffffff-20">{{ dataInfo.replyCount }}</div>
+          </div>
+          <div class="cardline"></div>
+          <div class="c4 flex-center-sbt">
+            <div class="font-14-400-ffffff-20">Revenue per message</div>
+            <div class="font-14-500-ffffff-20">
+              ${{ (parseInt(dataInfo.moneyUnit * 100) / 100).toFixed(2) }}
+            </div>
           </div>
         </div>
       </div>
@@ -44,6 +50,28 @@
       @SendText="SendText"
       ref="chatView"
     ></chat-view>
+    <!-- 对话框 -->
+    <div class="dialong" v-if="WithdrawalsDialong">
+      <!-- 遮罩 -->
+      <div class="mask"></div>
+      <!-- 对话框 -->
+      <div class="dialongContent flex-col-center-center">
+        <div
+          class="font-16-500-000000-22"
+          style="padding: 0px 26px 17px 27px; text-align: center"
+        >
+          Please contact the operating personnel to help you complete the
+          withdrawal
+        </div>
+        <button
+          class="drawBtn font-16-400-ffffff-22"
+          style="padding: 0px 26px 0px 25px; cursor: pointer"
+          @click="() => (WithdrawalsDialong = false)"
+        >
+          OK
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -68,10 +96,15 @@ export default {
       isBlogger: false, // 我自己的身份是博主吗
 
       serverTag: "h_test_",
+
+      WithdrawalsDialong: false,
+
+      isSwitch: false,
     };
   },
 
   created() {
+    this.ListenSwitch();
     this.Init();
   },
   destroyed() {
@@ -80,6 +113,47 @@ export default {
   },
 
   methods: {
+    // 切换监听
+    ListenSwitch() {
+      var type = getUrlKey("type");
+      var u = getUrlKey("u");
+      var n = getUrlKey("n");
+
+      var switchInfo = {
+        type,
+        u,
+        n,
+      };
+
+      var localSwitchInfo = JSON.parse(localStorage.getItem("switchInfo"));
+
+      // 首次进入
+      if (localSwitchInfo == null) {
+        localStorage.setItem("switchInfo", JSON.stringify(switchInfo));
+        this.isSwitch = false;
+      } else {
+        console.log("链接", switchInfo);
+        console.log("本地", localSwitchInfo);
+
+        // 未切换
+        if (
+          localSwitchInfo.type == switchInfo.type &&
+          localSwitchInfo.u == switchInfo.u &&
+          localSwitchInfo.n == switchInfo.n
+        ) {
+          this.isSwitch = false;
+        } else {
+          // 切换了
+          localStorage.setItem("switchInfo", JSON.stringify(switchInfo));
+          this.isSwitch = true;
+        }
+      }
+      console.log("切换链接了吗?", this.isSwitch);
+
+      if (this.isSwitch) {
+        localStorage.setItem("localData", null);
+      }
+    },
     // 初始数据
     async Init() {
       var u = getUrlKey("u");
@@ -127,6 +201,11 @@ export default {
       this.dataInfo = res.data;
       this.RefreshRead(); // 数据刷新后再刷已读
     },
+    destroyed() {
+      if (this.nim != null) {
+        this.DisconnectIM();
+      }
+    },
     // 断开云信连接
     DisconnectIM() {
       this.nim.disconnect();
@@ -137,6 +216,8 @@ export default {
       this.chatListGetDone = false;
       this.chatViewList = [];
       this.sessionInfo = null;
+
+      localStorage.setItem("localData", null);
     },
     // 发送消息
     SendText(msg) {
@@ -223,6 +304,10 @@ export default {
         return item;
       });
     },
+    // 体现
+    Withdrawal() {
+      this.WithdrawalsDialong = true;
+    },
   },
 };
 </script>
@@ -240,8 +325,7 @@ export default {
   width: 295px;
   height: 100vh;
   background: #ffffff;
-  padding: 21px 16px;
-
+  margin-top: 16px;
   .userInfo {
     img {
       width: 35px;
@@ -249,44 +333,86 @@ export default {
       border-radius: 50%;
       margin-left: 5px;
     }
+    margin: 0 0 16px 16px;
   }
   .content {
+    width: 258px;
     height: 68px;
-    background: #ccc;
+    background-color: rgba(92, 92, 92, 0.1);
     border-radius: 10px;
-    display: flex;
-    align-items: center;
-    padding: 12px;
-    margin: 15px 0;
-    line-height: 22px;
   }
   .card {
-    height: 258px;
-    border-radius: 10%;
-    padding: 0 20px;
+    width: 258px;
+    height: 188px;
+    border-radius: 24px;
+
+    margin-top: 16px;
+
     background: url("../assets/images/m2.png");
 
+    .cardline {
+      width: 100%;
+      height: 1px;
+      background: #ffffff;
+      opacity: 0.1;
+    }
+    .c1 {
+      padding: 16px 0 0 16px;
+    }
     .c2 {
-      padding: 8px 0 14px 0;
-      border-bottom: 1px solid #ffffff;
+      padding: 8px 16px 14px 16px;
     }
 
     .c3 {
-      padding: 12px 0;
-      border-bottom: 1px solid #ffffff;
+      padding: 12px 16px;
     }
+
     .c4 {
-      padding: 12px 0;
+      padding: 12px 16px;
     }
   }
 }
 .sildeRight {
   position: fixed;
   top: 0;
-  left: 325px;
+  left: 295px;
 
   width: 5px;
   height: 100vh;
   background: #d8d8d8;
+}
+.dialong {
+  .mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #000000;
+    opacity: 0.34;
+  }
+
+  .dialongContent {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    // width: 350px;
+    // height: 210px;
+
+    width: 280px;
+    height: 168px;
+
+    background: #fefefe;
+    border-radius: 16px;
+    .drawBtn {
+      width: 229px;
+      height: 43px;
+      background: #ff536c;
+      border-radius: 29px;
+      border: none;
+    }
+  }
 }
 </style>
