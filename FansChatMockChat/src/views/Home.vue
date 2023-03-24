@@ -4,9 +4,11 @@
     <div class="slide">
       <div class="userInfo flex-center-start">
         <img :src="selfInfo.avatar" alt="" />
-        <span style="margin-left: 8px" class="font-18-500-3c3647-25">{{
-          selfInfo.nickname
-        }}</span>
+        <span
+          style="margin-left: 8px"
+          class="font-18-500-3c3647-25 onelineElp"
+          >{{ selfInfo.nickname }}</span
+        >
       </div>
       <div class="flex-col-center-start">
         <div v-if="isBlogger" class="content font-16-400-000000-22">
