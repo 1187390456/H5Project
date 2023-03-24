@@ -17,32 +17,45 @@
         <a-button @click="DownLoad" class="c2">{{ $t('pp8') }}</a-button>
       </div>
       <!-- 个人信息 -->
-      <div class="personDes">
+      <div class="personDes" v-if="this.userInfo.nickname!=null">
         <div class="c4" v-if="this.userInfo.isOnline">
           <img src="../../assets/img/dot.png" alt="">
           <span>{{ $t('pp2') }}</span>
         </div>
         <div class="c1 nowarp">{{ this.userInfo.nickname }}</div>
+   
+        <!-- 身份认证 -->
         <div class="c2">
-          <div class="c2-1">
-            <img src="../../assets/img/huiYuan.png" alt="" />
-            <span style="margin-left:0.1875rem;">{{ $t('pp3') }}</span>
-          </div>
-          <span class="c2-2">{{ this.userInfo.friendCount }} {{ $t('pp9') }}</span>
+          <img :src="this.userInfo.identityV.icon" alt="">
+          <span>{{   this.userInfo.identityV.desc}}</span>
         </div>
-        <div class="c3 nowarp">{{ this.userInfo.declaration }}</div>
+        <!--  其他认证信息 -->
+        <ul class="c3">
+          <li v-for="(item,i) in this.userInfo.identityApp" :key="i">
+            <img :src="item.icon" alt="">
+            <span>{{ item.desc }}</span>
+            <div class="arrow"></div>
+          </li>
+        </ul>
+        
       </div>
       <!-- 卡片区域 -->
       <a-card class="cardArea" :tab-list="tabListNoTitle" :active-tab-key="noTitleKey"
         @tabChange="(key) => onTabChange(key, 'noTitleKey')">
         <p v-if="noTitleKey === 'photoAlbum'">
-        <ul class="c1">
-          <li @click="DownLoad" v-for="(item, i) in this.photolist" :key="i"><img :src="item.url" alt=""></li>
+        <ul class="c1" >
+          <div class="noYet" v-if="photolist.length==0">
+            No photo yet
+          </div>
+          <li v-else @click="DownLoad" v-for="(item, i) in this.photolist" :key="i"><img :src="item.url" alt=""></li>
         </ul>
         </p>
         <p v-else-if="noTitleKey === 'dynamic'">
         <ul class="c2">
-          <li v-for="(item, i) in this.dynamicList" :key="i">
+          <div class="noYet" v-if="dynamicList.length==0">
+            No status yet
+          </div>
+          <li v-else v-for="(item, i) in this.dynamicList" :key="i">
             <div class="c2-1">
               <div><img :src="item.authorInfo.avatar" alt=""></div>
               <span class="nowrap" style="margin-left: 8px;">{{ item.authorInfo.nickname }}</span>
@@ -348,7 +361,7 @@ export default {
 
   .floatShade {
     position: fixed;
-    top: 12rem;
+    top: 14rem;
     width: 375px;
     height: 8rem;
     background: linear-gradient(
@@ -363,7 +376,7 @@ export default {
     position: relative;
     top: 0;
     width: 100%;
-    margin-top: 12.3rem;
+    margin-top: 10rem;
     padding: 0 0.8rem;
     display: flex;
     flex-direction: column;
@@ -402,51 +415,72 @@ export default {
       color: #ffffff;
       line-height: 2.25rem;
     }
-
     .c2 {
       display: flex;
       align-items: center;
-      width: 100%;
-      padding: 0.5rem 0;
 
-      .c2-1 {
-        padding: 0.1rem 0.3rem;
+      margin: 8px 0;
+
+      img {
+        width: 1.25rem;
+        height: 1.25rem;
+        margin-right: 0.375rem;
+      }
+      span {
+        font-size: 0.875rem;
+        font-family: PingFangSC-Regular, PingFang SC;
+        font-weight: 400;
+        color: #ffffff;
+        line-height: 1.25rem;
+      }
+    }
+    .c3 {
+      li {
+        min-width: 138px;
+        min-height: 28px;
+
+        padding: 5px 12px;
+
+        margin-bottom: 6px;
+        margin-right: 6px;
+
+        // height: 28px;
+        background: #000000;
+        background-color: rgba(0, 0, 0, 0.4);
+        border-radius: 20px;
+
+        float: left;
         display: flex;
         align-items: center;
         justify-content: center;
-        background: #ff006a;
-        border-radius: 0.25rem;
-        font-size: 0.6rem;
-        font-family: PingFangSC-Medium, PingFang SC;
-        font-weight: 500;
-        color: #ffffff;
-      }
 
-      .c2-2 {
-        font-size: 0.7rem;
-        font-family: PingFangSC-Medium, PingFang SC;
-        font-weight: 500;
-        color: #ffffff;
-        line-height: 1rem;
-        margin-left: 0.6rem;
-      }
-    }
+        img {
+          width: 1.125rem;
+          height: 1.125rem;
+        }
 
-    .c3 {
-      width: 100%;
-      height: 1rem;
-      font-size: 0.7rem;
-      font-family: PingFangSC-Regular, PingFang SC;
-      font-weight: 400;
-      color: #ffffff;
-      line-height: 1rem;
-      margin-bottom: 0.75rem;
+        span {
+          margin: 0 0.1875rem;
+          font-size: 0.875rem;
+          font-family: PingFangSC-Regular, PingFang SC;
+          font-weight: 400;
+          color: #ffffff;
+          line-height: 1.25rem;
+        }
+        .arrow {
+          width: 7px;
+          height: 7px;
+          border-top: 1px solid #ffffff;
+          border-right: 1px solid #ffffff;
+          transform: rotate(45deg);
+        }
+      }
     }
   }
 
   .cardArea {
     width: 100%;
-    min-height: 100%;
+    min-height: 30.6rem;
     background: #ffffff;
     border-radius: 0.8rem 0.8rem 0px 0px;
     overflow: hidden; // 解决溢出
@@ -604,6 +638,17 @@ export default {
       color: #ffffff;
     }
   }
+}
+.noYet {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  font-size: 22px;
+  font-family: PingFangSC-Regular, PingFang SC;
+  font-weight: 400;
+  color: #383838;
 }
 </style>
   
