@@ -5,8 +5,9 @@
       <div v-if="loading" class="loading">
         <a-spin tip="Loading..." />
       </div>
-      <!-- 背景图片 -->
-      <img class="backGroundBg" :src="this.userInfo.avatar" alt="">
+      <div v-else>
+    <!-- 背景图片 -->
+    <img class="backGroundBg" :src="this.userInfo.avatar" alt="">
       <div class="floatShade"></div>
       <!-- 下载浮窗 -->
       <div class="download">
@@ -94,6 +95,8 @@
           <img src="../../assets/img/addFridend.png" alt="">
           <span style="margin-left: 8px;">{{ $t('pp7') }}</span>
         </a-button>
+      </div>
+
       </div>
     </div>
   </div>
@@ -376,7 +379,7 @@ export default {
     top: 0;
     width: 100%;
     margin-top: 10rem;
-    padding: 0 0.8rem;
+    padding: 0 0.5rem;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -437,7 +440,7 @@ export default {
     .c3 {
       li {
         min-height: 1.4rem;
-        padding: 0.25rem 0.6rem;
+        padding: 0.25rem 0.45rem;
         margin-bottom: 0.3rem;
         margin-right: 0.3rem;
 
