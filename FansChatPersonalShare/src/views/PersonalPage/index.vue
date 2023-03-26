@@ -34,7 +34,6 @@
           <li v-for="(item,i) in this.userInfo.identityApp" :key="i">
             <img :src="item.icon" alt="">
             <span>{{ item.desc }}</span>
-            <div class="arrow"></div>
           </li>
         </ul>
         
@@ -399,10 +398,11 @@ export default {
       }
 
       span {
-        font-size: 0.625rem;
+        font-size: 0.5rem;
         font-family: PingFangSC-Regular, PingFang SC;
         font-weight: 400;
         color: #ffffff;
+        line-height: 0.7rem;
       }
     }
 
@@ -422,32 +422,29 @@ export default {
       margin: 8px 0;
 
       img {
-        width: 1.25rem;
-        height: 1.25rem;
-        margin-right: 0.375rem;
+        width: 1rem;
+        height: 1rem;
+        margin-right: 0.3rem;
       }
       span {
-        font-size: 0.875rem;
+        font-size: 0.7rem;
         font-family: PingFangSC-Regular, PingFang SC;
         font-weight: 400;
         color: #ffffff;
-        line-height: 1.25rem;
+        line-height: 1rem;
       }
     }
     .c3 {
       li {
-        min-width: 138px;
-        min-height: 28px;
-
-        padding: 5px 12px;
-
-        margin-bottom: 6px;
-        margin-right: 6px;
+        min-height: 1.4rem;
+        padding: 0.25rem 0.6rem;
+        margin-bottom: 0.3rem;
+        margin-right: 0.3rem;
 
         // height: 28px;
         background: #000000;
         background-color: rgba(0, 0, 0, 0.4);
-        border-radius: 20px;
+        border-radius: 14px;
 
         float: left;
         display: flex;
@@ -455,24 +452,17 @@ export default {
         justify-content: center;
 
         img {
-          width: 1.125rem;
-          height: 1.125rem;
+          width: 0.9rem;
+          height: 0.9rem;
         }
 
         span {
-          margin: 0 0.1875rem;
-          font-size: 0.875rem;
+          margin-left: 0.2rem;
+          font-size: 0.7rem;
           font-family: PingFangSC-Regular, PingFang SC;
           font-weight: 400;
           color: #ffffff;
-          line-height: 1.25rem;
-        }
-        .arrow {
-          width: 7px;
-          height: 7px;
-          border-top: 1px solid #ffffff;
-          border-right: 1px solid #ffffff;
-          transform: rotate(45deg);
+          line-height: 1rem;
         }
       }
     }
