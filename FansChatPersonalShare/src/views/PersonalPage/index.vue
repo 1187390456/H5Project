@@ -14,26 +14,31 @@
         <a-button @click="DownLoad" class="c2">{{ $t('pp8') }}</a-button>
       </div>
       <!-- 个人信息 -->
-      <a-skeleton active :title="false" :paragraph="SkeletonParagraphProps" :avatar="false" :loading="loading"
-        class="personDes" v-if="this.userInfo.nickname != null">
-        <div class="c4" v-if="this.userInfo.isOnline">
-          <img src="../../assets/img/dot.png" alt="">
-          <span>{{ $t('pp2') }}</span>
+      <div v-if="loading">
+        <a-skeleton class="l_personDes" active :title="false" :paragraph="SkeletonParagraphProps"
+          :avatar="false"></a-skeleton>
+      </div>
+      <div v-else>
+        <div class="personDes" v-if="this.userInfo.nickname != null">
+          <div class="c4" v-if="this.userInfo.isOnline">
+            <img src="../../assets/img/dot.png" alt="">
+            <span>{{ $t('pp2') }}</span>
+          </div>
+          <div class="c1 nowarp">{{ this.userInfo.nickname }}</div>
+          <!-- 身份认证 -->
+          <div class="c2" v-if="this.userInfo.identityV != null">
+            <img :src="this.userInfo.identityV.icon" alt="">
+            <span>{{ this.userInfo.identityV.desc }}</span>
+          </div>
+          <!--  其他认证信息 -->
+          <ul class="c3" v-if="this.userInfo.identityApp && this.userInfo.identityApp.length > 0">
+            <li v-for="(item, i) in this.userInfo.identityApp" :key="i">
+              <img :src="item.icon" alt="">
+              <span>{{ item.desc }}</span>
+            </li>
+          </ul>
         </div>
-        <div class="c1 nowarp">{{ this.userInfo.nickname }}</div>
-        <!-- 身份认证 -->
-        <div class="c2" v-if="this.userInfo.identityV != null">
-          <img :src="this.userInfo.identityV.icon" alt="">
-          <span>{{ this.userInfo.identityV.desc }}</span>
-        </div>
-        <!--  其他认证信息 -->
-        <ul class="c3" v-if="this.userInfo.identityApp && this.userInfo.identityApp.length > 0">
-          <li v-for="(item, i) in this.userInfo.identityApp" :key="i">
-            <img :src="item.icon" alt="">
-            <span>{{ item.desc }}</span>
-          </li>
-        </ul>
-      </a-skeleton>
+      </div>
       <!-- 卡片区域 -->
       <a-card class="cardArea" :tab-list="tabListNoTitle" :active-tab-key="noTitleKey"
         @tabChange="(key) => onTabChange(key, 'noTitleKey')">
@@ -130,7 +135,7 @@ import { homepage, photolist, recommendDynamic } from "../../../api/PersonPage";
 export default {
   data() {
     return {
-      noTitleKey: "photoAlbum",
+      noTitleKey: "dynamic",
       userInfo: {}, // 个人信息
       photolist: [], // 相册信息
       dynamicList: [], // 动态信息列表
@@ -249,6 +254,7 @@ export default {
         this.noTitleKey = "photoAlbum";
         this.isFirstListen = false;
       }
+
     },
   },
 };
@@ -422,6 +428,7 @@ export default {
     top: 0;
     width: 100%;
     margin-top: 13.2rem;
+    margin-bottom: 10px; // 解决遮罩
     padding: 0 0.5rem;
     display: flex;
     flex-direction: column;
@@ -524,6 +531,7 @@ export default {
     background: #ffffff;
     border-radius: 0.8rem 0.8rem 0px 0px;
     overflow: hidden; // 解决溢出
+    margin-top: -10px; // 解决遮罩
 
     .c1 {
       margin-left: 0.3rem;
@@ -695,9 +703,11 @@ export default {
 }
 
 //--------------------------loading-------------------------
-/deep/ .ant-skeleton-content .ant-skeleton-paragraph {
-  margin-bottom: 10px;
+/deep/ .ant-skeleton {
+  width: 375px;
 }
+
+/deep/ .ant-skeleton-content .ant-skeleton-paragraph {}
 
 /deep/ .ant-skeleton-content .ant-skeleton-paragraph>li {
   background: #f4f4f4;
@@ -709,7 +719,6 @@ export default {
   height: 430px;
   background: #E7E7E7;
   filter: blur(0px);
-
 }
 
 .l_loadingLiImg {
@@ -717,6 +726,14 @@ export default {
   background: #F3F3F3;
   border-radius: 5px;
   opacity: 0.8;
+}
+
+.l_personDes {
+  position: absolute;
+  top: 0;
+
+  margin-top: 14.2rem;
+  padding: 0 0.5rem;
 }
 </style>
   
