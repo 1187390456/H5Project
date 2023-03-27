@@ -421,7 +421,7 @@ export default {
     position: relative;
     top: 0;
     width: 100%;
-    margin-top: 13.65rem;
+    margin-top: 13.2rem;
     padding: 0 0.5rem;
     display: flex;
     flex-direction: column;

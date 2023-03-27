@@ -6,6 +6,8 @@
 
 <script>
 import { recordHand, listenDownInfo, getUrlUserId } from "./utils/tools";
+import { homepage } from "../api/PersonPage";
+
 export default {
   created() {
     this.ListenWindowRoot();
@@ -29,7 +31,7 @@ export default {
       }
     },
     // 根据参数判断跳转
-    ParamCatch() {
+    async ParamCatch() {
       var u = getUrlUserId();
       console.log("获取到的id为", u);
 
@@ -44,14 +46,24 @@ export default {
         this.SaveAndPush(datajson, name);
         return;
       } else {
-        console.log("个人主页");
-        name = "personalPage";
-        recordHand(1);
-        datajson = {
-          jumpType: { type: "becomeFans", jsonData: { userID: u } },
-        };
-        this.SaveAndPush(datajson, name);
-        return;
+        var res = await homepage({ userID: u, targetUserID: u });
+        if (!res.result) {
+          console.log("下载页");
+          name = "downLoad";
+          datajson = { jumpType: { type: "becomeBlogger", jsonData: {} } };
+          this.SaveAndPush(datajson, name);
+          return;
+        }
+        else {
+          console.log("个人主页");
+          name = "personalPage";
+          recordHand(1);
+          datajson = {
+            jumpType: { type: "becomeFans", jsonData: { userID: u } },
+          };
+          this.SaveAndPush(datajson, name);
+          return;
+        }
       }
     },
     // 保存
