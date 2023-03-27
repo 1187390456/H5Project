@@ -1,13 +1,9 @@
 <template>
   <div class="fixPos">
     <div class="container">
-      <!-- 加载 -->
-      <div v-if="loading" class="loading">
-        <a-spin tip="Loading..." />
-      </div>
-      <div v-else>
-    <!-- 背景图片 -->
-    <img class="backGroundBg" :src="this.userInfo.avatar" alt="">
+      <!-- 背景图片 -->
+      <div v-if="loading" class="l_backGroundBg"></div>
+      <img v-else class="backGroundBg" :src="this.userInfo.avatar" alt="">
       <div class="floatShade"></div>
       <!-- 下载浮窗 -->
       <div class="download">
@@ -18,70 +14,97 @@
         <a-button @click="DownLoad" class="c2">{{ $t('pp8') }}</a-button>
       </div>
       <!-- 个人信息 -->
-      <div class="personDes" v-if="this.userInfo.nickname!=null">
+      <a-skeleton active :title="false" :paragraph="SkeletonParagraphProps" :avatar="false" :loading="loading"
+        class="personDes" v-if="this.userInfo.nickname != null">
         <div class="c4" v-if="this.userInfo.isOnline">
           <img src="../../assets/img/dot.png" alt="">
           <span>{{ $t('pp2') }}</span>
         </div>
         <div class="c1 nowarp">{{ this.userInfo.nickname }}</div>
-   
         <!-- 身份认证 -->
-        <div class="c2">
+        <div class="c2" v-if="this.userInfo.identityV != null">
           <img :src="this.userInfo.identityV.icon" alt="">
-          <span>{{   this.userInfo.identityV.desc}}</span>
+          <span>{{ this.userInfo.identityV.desc }}</span>
         </div>
         <!--  其他认证信息 -->
-        <ul class="c3">
-          <li v-for="(item,i) in this.userInfo.identityApp" :key="i">
+        <ul class="c3" v-if="this.userInfo.identityApp && this.userInfo.identityApp.length > 0">
+          <li v-for="(item, i) in this.userInfo.identityApp" :key="i">
             <img :src="item.icon" alt="">
             <span>{{ item.desc }}</span>
           </li>
         </ul>
-        
-      </div>
+      </a-skeleton>
       <!-- 卡片区域 -->
       <a-card class="cardArea" :tab-list="tabListNoTitle" :active-tab-key="noTitleKey"
         @tabChange="(key) => onTabChange(key, 'noTitleKey')">
         <p v-if="noTitleKey === 'photoAlbum'">
-        <ul class="c1" >
-          <div class="noYet" v-if="photolist.length==0">
-            No photo yet
+        <ul class="c1">
+          <div v-if="loading">
+            <li class="l_loadingLiImg"></li>
+            <li class="l_loadingLiImg"></li>
+            <li class="l_loadingLiImg"></li>
+            <li class="l_loadingLiImg"></li>
+            <li class="l_loadingLiImg"></li>
+            <li class="l_loadingLiImg"></li>
+            <li class="l_loadingLiImg"></li>
+            <li class="l_loadingLiImg"></li>
           </div>
-          <li v-else @click="DownLoad" v-for="(item, i) in this.photolist" :key="i"><img :src="item.url" alt=""></li>
+          <div v-else>
+            <div class="noYet" v-if="photolist.length == 0">
+              No photo yet
+            </div>
+            <li v-else @click="DownLoad" v-for="(item, i) in this.photolist" :key="i"><img :src="item.url" alt=""></li>
+          </div>
         </ul>
         </p>
         <p v-else-if="noTitleKey === 'dynamic'">
         <ul class="c2">
-          <div class="noYet" v-if="dynamicList.length==0">
-            No status yet
+          <div v-if="loading">
+            <li>
+              <a-skeleton active :title="false" :paragraph="SkeletonParagraphPropsli" :avatar="true"
+                :loading="true"></a-skeleton>
+            </li>
+            <li>
+              <a-skeleton active :title="false" :paragraph="SkeletonParagraphPropsli" :avatar="true"
+                :loading="true"></a-skeleton>
+            </li>
+            <li>
+              <a-skeleton active :title="false" :paragraph="SkeletonParagraphPropsli" :avatar="true"
+                :loading="true"></a-skeleton>
+            </li>
           </div>
-          <li v-else v-for="(item, i) in this.dynamicList" :key="i">
-            <div class="c2-1">
-              <div><img :src="item.authorInfo.avatar" alt=""></div>
-              <span class="nowrap" style="margin-left: 8px;">{{ item.authorInfo.nickname }}</span>
+          <div v-else>
+            <div class="noYet" v-if="dynamicList.length == 0">
+              No status yet
             </div>
-            <div class="c2-2">
-              {{ item.content }}
-            </div>
-            <ul class="c2-3">
-              <li v-for="(item1, i1) in item.imageList" :key="i1"><img :src="item1" alt=""></li>
-            </ul>
-            <div class="c2-4">
-              <span>{{$format(item.postTime) }}</span>
-              <span>｜</span>
-              <span>{{ item.postAddress }}</span>
-            </div>
-            <div @click="DownLoad" class="c2-5">
-              <div class="c2-5-1">
-                <img src="../../assets/img/dinazan.png" alt="">
-                <span>{{ item.likeCount }}</span>
+            <li v-else v-for="(item, i) in this.dynamicList" :key="i" v-show="i < 3">
+              <div class="c2-1">
+                <div><img :src="item.authorInfo.avatar" alt=""></div>
+                <span class="nowrap" style="margin-left: 8px;">{{ item.authorInfo.nickname }}</span>
               </div>
-              <div class="c2-5-2">
-                <img src="../../assets/img/pinlun.png" alt="">
-                <span>{{ item.commentCount }}</span>
+              <div class="c2-2">
+                {{ item.content }}
               </div>
-            </div>
-          </li>
+              <ul class="c2-3">
+                <li v-for="(item1, i1) in item.imageList" :key="i1"><img :src="item1" alt=""></li>
+              </ul>
+              <div class="c2-4">
+                <span>{{ $format(item.postTime) }}</span>
+                <span>｜</span>
+                <span>{{ item.postAddress }}</span>
+              </div>
+              <div @click="DownLoad" class="c2-5">
+                <div class="c2-5-1">
+                  <img src="../../assets/img/dinazan.png" alt="">
+                  <span>{{ item.likeCount }}</span>
+                </div>
+                <div class="c2-5-2">
+                  <img src="../../assets/img/pinlun.png" alt="">
+                  <span>{{ item.commentCount }}</span>
+                </div>
+              </div>
+            </li>
+          </div>
         </ul>
         </p>
       </a-card>
@@ -96,14 +119,12 @@
           <span style="margin-left: 8px;">{{ $t('pp7') }}</span>
         </a-button>
       </div>
-
-      </div>
     </div>
   </div>
 </template>
   
 <script>
-import { recordHand } from "../../utils/tools";
+import { recordHand, cantOpen, pop, _isMobile } from "../../utils/tools";
 import { homepage, photolist, recommendDynamic } from "../../../api/PersonPage";
 
 export default {
@@ -114,6 +135,18 @@ export default {
       photolist: [], // 相册信息
       dynamicList: [], // 动态信息列表
       loading: true,
+
+      isFirstListen: true,
+
+      // loading
+      SkeletonParagraphProps: {
+        rows: 5,
+        width: ["2.2rem", "9.1rem", "9.1rem", "18.75rem", "18.75rem"]
+      },
+      SkeletonParagraphPropsli: {
+        rows: 5,
+        width: ["2.2rem", "4.1rem", "9.1rem", "16rem", "16rem"]
+      },
     };
   },
   computed: {
@@ -131,7 +164,7 @@ export default {
     },
   },
   created() {
-    window.addEventListener("load", () => (this.noTitleKey = "dynamic"));
+    // window.addEventListener("load", () => ());
     this.InitData();
   },
   methods: {
@@ -146,6 +179,10 @@ export default {
     },
     // 下载
     DownLoad() {
+      if (!_isMobile()) {
+        pop("请使用手机端打开!");
+        return;
+      }
       // 这里要博主分享的记录 跳转市场 2
       recordHand(2);
       this.$listenObj.type = true;
@@ -163,7 +200,7 @@ export default {
         this.loading = true;
       }
 
-      var userID = this.$route.query.u;
+      var userID = this.$route.params.u;
       var res = await homepage({ userID, targetUserID: userID });
       if (!res.result) {
         this.loading = false;
@@ -174,7 +211,7 @@ export default {
     },
     // 个人相册
     async Getphotolist() {
-      var userID = this.$route.query.u;
+      var userID = this.$route.params.u;
       var res = await photolist({
         userID,
         targetUserID: userID,
@@ -189,7 +226,7 @@ export default {
     },
     // 个人动态
     async GetDynamicInfo() {
-      var userID = this.$route.query.u;
+      var userID = this.$route.params.u;
       var res = await recommendDynamic({
         userID,
         targetUserID: userID,
@@ -206,6 +243,12 @@ export default {
         this.loading = false;
         this.$listenObj.isChache = true;
       }
+
+      // 首次监听
+      if (this.isFirstListen && this.dynamicList.length == 0) {
+        this.noTitleKey = "photoAlbum";
+        this.isFirstListen = false;
+      }
     },
   },
 };
@@ -221,7 +264,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #000000;
+
 }
 
 .nowarp {
@@ -229,9 +272,11 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 /deep/ .ant-spin {
   color: #8032ff;
 }
+
 /deep/ .ant-spin-dot-item {
   background-color: #8032ff;
 }
@@ -282,9 +327,11 @@ export default {
 /deep/ .ant-tabs-nav-scroll :hover div .ant-tabs-tab {
   color: #9896a0;
 }
+
 /deep/ .ant-tabs-nav .ant-tabs-tab-active {
   color: #8032ff !important;
 }
+
 // --------------------------------  Common ------------------------
 .container {
   width: 375px;
@@ -293,22 +340,20 @@ export default {
   scrollbar-width: none;
   -ms-overflow-style: none;
 
+  // 骨架
   .loading {
     position: fixed;
+    top: 0;
     width: 375px;
     height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-    background: rgba(0, 0, 0, 0.6);
+
   }
 
   .backGroundBg {
     position: fixed;
     top: 0;
     width: 375px;
-    max-height: 412px;
+    min-height: 412px;
     object-fit: cover;
   }
 
@@ -363,14 +408,12 @@ export default {
 
   .floatShade {
     position: fixed;
-    top: 14rem;
+    top: 15rem;
     width: 375px;
     height: 8rem;
-    background: linear-gradient(
-      180deg,
-      rgba(0, 0, 0, 0) 0%,
-      rgba(0, 0, 0, 0.3) 100%
-    );
+    background: linear-gradient(180deg,
+        rgba(0, 0, 0, 0) 0%,
+        rgba(0, 0, 0, 0.3) 100%);
     filter: blur(0px);
   }
 
@@ -378,12 +421,13 @@ export default {
     position: relative;
     top: 0;
     width: 100%;
-    margin-top: 10rem;
+    margin-top: 13.65rem;
     padding: 0 0.5rem;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    justify-content: space-between;
+    justify-content: flex-end;
+    min-height: 155px;
 
     .c4 {
       display: flex;
@@ -418,6 +462,7 @@ export default {
       color: #ffffff;
       line-height: 2.25rem;
     }
+
     .c2 {
       display: flex;
       align-items: center;
@@ -429,6 +474,7 @@ export default {
         height: 1rem;
         margin-right: 0.3rem;
       }
+
       span {
         font-size: 0.7rem;
         font-family: PingFangSC-Regular, PingFang SC;
@@ -437,6 +483,7 @@ export default {
         line-height: 1rem;
       }
     }
+
     .c3 {
       li {
         min-height: 1.4rem;
@@ -595,7 +642,7 @@ export default {
   .bottomBtn {
     width: 375px;
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
     align-items: center;
     position: fixed;
     bottom: 0;
@@ -614,6 +661,8 @@ export default {
       font-family: PingFangSC-Regular, PingFang SC;
       font-weight: 400;
       color: #f6892c;
+
+      margin-right: 0.8rem;
     }
 
     .c2 {
@@ -632,6 +681,7 @@ export default {
     }
   }
 }
+
 .noYet {
   position: absolute;
   top: 50%;
@@ -642,6 +692,31 @@ export default {
   font-family: PingFangSC-Regular, PingFang SC;
   font-weight: 400;
   color: #383838;
+}
+
+//--------------------------loading-------------------------
+/deep/ .ant-skeleton-content .ant-skeleton-paragraph {
+  margin-bottom: 10px;
+}
+
+/deep/ .ant-skeleton-content .ant-skeleton-paragraph>li {
+  background: #f4f4f4;
+  opacity: 0.6;
+}
+
+.l_backGroundBg {
+  width: 375px;
+  height: 430px;
+  background: #E7E7E7;
+  filter: blur(0px);
+
+}
+
+.l_loadingLiImg {
+
+  background: #F3F3F3;
+  border-radius: 5px;
+  opacity: 0.8;
 }
 </style>
   

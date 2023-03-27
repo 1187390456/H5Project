@@ -6,17 +6,26 @@
         <div class="c1-1">FansChat</div>
         <span class="c1-2">{{ $t("pp10") }}</span>
       </div>
-      <a-button
-        @click="$listenObj.type = true"
-        id="downloadButton"
-        class="c2"
-        >{{ $t("pp8") }}</a-button
-      >
+      <a-button @click="OnClick" id="downloadButton" class="c2">{{
+        $t("pp8")
+      }}</a-button>
     </div>
   </div>
 </template>
 
 <script>
+import { pop, _isMobile } from "../../utils/tools";
+export default {
+  methods: {
+    OnClick() {
+      if (!_isMobile()) {
+        pop("请使用手机端打开!");
+        return;
+      }
+      this.$listenObj.type = true;
+    },
+  },
+};
 </script>
 
 <style lang="less" scoped>

@@ -1,6 +1,6 @@
 export default [
   {
-    path: "/personalPage",
+    path: "/personalPage/:u",
     name: "personalPage",
     component: () => import("../views/PersonalPage/index.vue"),
   },

@@ -5,8 +5,7 @@
 </template>
 
 <script>
-import { getUrlKey, recordHand, listenDownInfo } from "./utils/tools";
-import { homepage } from "../api/PersonPage";
+import { recordHand, listenDownInfo, getUrlUserId } from "./utils/tools";
 export default {
   created() {
     this.ListenWindowRoot();
@@ -31,47 +30,28 @@ export default {
     },
     // 根据参数判断跳转
     ParamCatch() {
-      var u = getUrlKey("u");
-      var t = getUrlKey("t");
+      var u = getUrlUserId();
+      console.log("获取到的id为", u);
 
       var datajson = {};
-      var name = "personalPage";
-      // 博主注册
-      if (u == 0 && t == 1) {
+      var name;
+
+      // 博主注册  u=0
+      if (u == 0 || u == null) {
+        console.log("博主注册");
         name = "downLoad";
         datajson = { jumpType: { type: "becomeBlogger", jsonData: {} } };
         this.SaveAndPush(datajson, name);
-      } else if (u != 0 && t == 0) {
-        // 获取用户信息
-        var userID = getUrlKey("u");
-        homepage({ userID, targetUserID: userID }).then((res) => {
-          if (!res.result) {
-            console.log("后台出错");
-            name = "downLoad";
-            datajson = {};
-            this.SaveAndPush(datajson, name);
-          } else {
-            var isBlogger = res.data.userInfo.isBlogger;
-            // 博主分享
-            if (isBlogger) {
-              // 记录 打开链接 1
-              recordHand(1);
-              datajson = {
-                jumpType: { type: "becomeFans", jsonData: { userID } },
-              };
-              this.SaveAndPush(datajson, name);
-            } else {
-              // 其他人分享
-              name = "downLoad";
-              datajson = {};
-              this.SaveAndPush(datajson, name);
-            }
-          }
-        });
+        return;
       } else {
-        name = "downLoad";
-        datajson = {};
+        console.log("个人主页");
+        name = "personalPage";
+        recordHand(1);
+        datajson = {
+          jumpType: { type: "becomeFans", jsonData: { userID: u } },
+        };
         this.SaveAndPush(datajson, name);
+        return;
       }
     },
     // 保存
@@ -82,10 +62,9 @@ export default {
       // 监听
       listenDownInfo(datajson, this.$listenObj);
 
-      var u = getUrlKey("u");
-      var t = getUrlKey("t");
+      var u = getUrlUserId();
       // 跳转
-      this.$router.push({ name, query: { u, t } });
+      this.$router.push({ name, params: { u } });
     },
   },
 };
