@@ -5,9 +5,8 @@
 </template>
 
 <script>
-import { recordHand, listenDownInfo, getUrlUserId } from "./utils/tools";
+import { recordHand, getParams } from "./utils/tools";
 import { homepage } from "../api/PersonPage";
-
 export default {
   created() {
     this.ListenWindowRoot();
@@ -21,6 +20,8 @@ export default {
     Adaptive() {
       let html = document.documentElement;
       let rootFont = document.body.clientWidth;
+
+      console.log('获取到的', rootFont);
       if (rootFont < 768) {
         console.log(rootFont);
         html.style.fontSize = `${rootFont / 20}px`;
@@ -31,53 +32,55 @@ export default {
       }
     },
     // 根据参数判断跳转
-    async ParamCatch() {
-      var u = getUrlUserId();
+    ParamCatch() {
+      var u = getParams().u;
+      var t = getParams().t;
       console.log("获取到的id为", u);
+      console.log("获取到的type为", t);
 
-      var datajson = {};
-      var name;
-
-      // 博主注册  u=0
-      if (u == 0 || u == null) {
-        console.log("博主注册");
-        name = "downLoad";
-        datajson = { jumpType: { type: "becomeBlogger", jsonData: {} } };
-        this.SaveAndPush(datajson, name);
+      //  此处传了type  跳下载页
+      if (t == 0 || t == 1 || t == 2) {
+        sessionStorage.setItem('type', t);
+        this.$router.push({ name: 'downLoad', params: { u } });
+      }
+      else {
+        this.NoTypeCatch(u);
+      }
+    },
+    // 没传type的正常流程
+    async NoTypeCatch(u) {
+      //  正常流程
+      if (u == 'invite') {
+        console.log('博主');
+        sessionStorage.setItem('type', 0);
+        this.$router.push({ name: 'downLoad', params: { u } });
         return;
-      } else {
+      }
+      else {
         var res = await homepage({ userID: u, targetUserID: u });
-        if (!res.result) {
-          console.log("下载页");
-          name = "downLoad";
-          datajson = { jumpType: { type: "becomeBlogger", jsonData: {} } };
-          this.SaveAndPush(datajson, name);
+        if (res.errorCode == 0) {
+          if (res.data.userInfo.isBlogger) { // 此人是博主
+            console.log('粉丝');
+            sessionStorage.setItem('type', 1);
+            sessionStorage.setItem('gender', res.data.userInfo.gender); // 1 男 2 女 
+            recordHand(1);
+            this.$router.push({ name: 'personalPage', params: { u } });
+          }
+          else {
+            console.log('路人');
+            sessionStorage.setItem('type', 2);
+            this.$router.push({ name: 'downLoad', params: { u } });
+          }
           return;
         }
-        else {
-          console.log("个人主页");
-          name = "personalPage";
-          recordHand(1);
-          datajson = {
-            jumpType: { type: "becomeFans", jsonData: { userID: u } },
-          };
-          this.SaveAndPush(datajson, name);
+        else { // 100 不存在 102 已注销 或者其他
+          console.log("路人", res.errorCode);
+          sessionStorage.setItem('type', 2);
+          this.$router.push({ name: 'downLoad', params: { u } });
           return;
         }
       }
-    },
-    // 保存
-    SaveAndPush(datajson, name) {
-      console.log("跳转");
-      sessionStorage.setItem("datajson", JSON.stringify(datajson));
-      console.log(datajson);
-      // 监听
-      listenDownInfo(datajson, this.$listenObj);
-
-      var u = getUrlUserId();
-      // 跳转
-      this.$router.push({ name, params: { u } });
-    },
+    }
   },
 };
 </script>

@@ -9,9 +9,9 @@
       <div class="download">
         <div class="c1">
           <img src="../../assets/img/logo1.png" alt="" />
-          <span>{{ $t('pp1') }}</span>
+          <span>{{ gender == 1 ? $t('pp1') : $t('pp1_1') }}</span>
         </div>
-        <a-button @click="DownLoad" class="c2">{{ $t('pp8') }}</a-button>
+        <a-button @click="DownLoad($event)" class="c2">{{ $t('pp8') }}</a-button>
       </div>
       <!-- 个人信息 -->
       <div v-if="loading">
@@ -58,7 +58,8 @@
             <div class="noYet" v-if="photolist.length == 0">
               No photo yet
             </div>
-            <li v-else @click="DownLoad" v-for="(item, i) in this.photolist" :key="i"><img :src="item.url" alt=""></li>
+            <li v-else @click="DownLoad($event)" v-for="(item, i) in this.photolist" :key="i"><img :src="item.url" alt="">
+            </li>
           </div>
         </ul>
         </p>
@@ -98,7 +99,7 @@
                 <span>｜</span>
                 <span>{{ item.postAddress }}</span>
               </div>
-              <div @click="DownLoad" class="c2-5">
+              <div @click="DownLoad($event)" class="c2-5">
                 <div class="c2-5-1">
                   <img src="../../assets/img/dinazan.png" alt="">
                   <span>{{ item.likeCount }}</span>
@@ -115,24 +116,35 @@
       </a-card>
       <!-- 浮动按钮 -->
       <div class="bottomBtn">
-        <a-button @click="DownLoad" class="c1">
+        <a-button @click="DownLoad($event)" class="c1">
           <img src="../../assets/img/chat.png" alt="">
           <span style="margin-left: 8px;">{{ $t('pp6') }}</span>
         </a-button>
-        <a-button @click="DownLoad" class="c2">
+        <a-button @click="DownLoad($event)" class="c2">
           <img src="../../assets/img/addFridend.png" alt="">
           <span style="margin-left: 8px;">{{ $t('pp7') }}</span>
         </a-button>
       </div>
+      <!-- 博主注册pc弹窗 -->
+      <blogger-dialong v-if="bloggerDialong" @CloseEvent="bloggerDialong = false" :url="targetUrl"></blogger-dialong>
+      <!-- 粉丝pc弹窗 -->
+      <fan-dialong v-if="fanDialong" @CloseEvent="fanDialong = false" :url="targetUrl" :gender="gender"></fan-dialong>
+      <!-- 粉丝mob弹窗 -->
+      <fan-mob-dialong v-if="fanMobDialong" @CloseEvent="fanMobDialong = false" @OnClickEvent="TriggerEvent"
+        :gender="gender"></fan-mob-dialong>
     </div>
   </div>
 </template>
   
 <script>
-import { recordHand, cantOpen, pop, _isMobile } from "../../utils/tools";
+import { recordHand, _isMobile, listenDownInfo, getParams } from "../../utils/tools";
 import { homepage, photolist, recommendDynamic } from "../../../api/PersonPage";
+import BloggerDialong from '../../component/BloggerDialong.vue';
+import FanDialong from "../../component/FanDialong.vue";
+import FanMobDialong from '../../component/FanMobDialong.vue';
 
 export default {
+  components: { BloggerDialong, FanDialong, FanMobDialong },
   data() {
     return {
       noTitleKey: "dynamic",
@@ -152,6 +164,14 @@ export default {
         rows: 5,
         width: ["2.2rem", "4.1rem", "9.1rem", "16rem", "16rem"]
       },
+
+      // 弹窗 
+      bloggerDialong: false,
+      fanDialong: false,
+      fanMobDialong: false,
+      type: 0,// 身份判断
+      targetUrl: '',
+      gender: 0
     };
   },
   computed: {
@@ -171,6 +191,13 @@ export default {
   created() {
     // window.addEventListener("load", () => ());
     this.InitData();
+
+    // 身份判断监听
+    this.type = sessionStorage.getItem('type');
+    listenDownInfo(this.type, this.$listenObj);
+
+    // 性别
+    this.gender = sessionStorage.getItem('gender'); // 1 男 2 女 
   },
   methods: {
     // 切换tab
@@ -182,13 +209,38 @@ export default {
         this.GetDynamicInfo();
       }
     },
-    // 下载
-    DownLoad() {
-      if (!_isMobile()) {
-        pop("请使用手机端打开!");
-        return;
+    // 下载 点击监听
+    DownLoad(e) {
+
+      if (_isMobile()) {
+        this.MobHandler(e);
       }
+      else {
+        this.PCHandler();
+      }
+
+    },
+    // pc
+    PCHandler() {   // 这里type一定是1  粉丝身份
+      //TODO 二维码是 粉丝身份进入下载页面 type=1 且在第二个/t/u 当前u为当前的博主
+      var u = getParams().u;
+      console.log('pc端的粉丝啊', u);
+      this.targetUrl = `https://fanschat.kr-cell.com/${u}-1`;
+      this.fanDialong = true;
+    },
+    // 移动
+    MobHandler(e) {
+      // 点击了下载按钮
+      if (e.target.outerText == 'DOWNLOAD') {
+        this.TriggerEvent();
+      }
+      else {  // 点击了其他按钮
+        this.fanMobDialong = true
+      }
+    },
+    TriggerEvent() {
       // 这里要博主分享的记录 跳转市场 2
+      console.log('移动端跳转type是', this.type);
       recordHand(2);
       this.$listenObj.type = true;
     },
@@ -270,7 +322,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-
+  background: #000000;
 }
 
 .nowarp {

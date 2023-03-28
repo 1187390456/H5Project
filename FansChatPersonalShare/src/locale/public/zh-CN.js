@@ -1,5 +1,6 @@
 export default {
   pp1: "立即下载FansChat来找她吧！",
+  pp1_1: "立即下载FansChat来找她吧！",
   pp2: "在线",
   pp3: "入住博主",
   pp4: "相册",

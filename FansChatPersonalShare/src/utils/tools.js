@@ -15,16 +15,39 @@ export function getUrlKey(name) {
     ) || null
   );
 }
-// 截取/后面的参数
-export function getUrlUserId() {
+// 获取地址参数
+export function getParams() {
+  var u;
+  var t;
+
   var url = window.location.href;
   var index = url.lastIndexOf("/");
-  var str = url.substring(index + 1, url.length);
-  return str;
+  var targetStr = url.substring(index + 1, url.length);
+
+  var fenge = targetStr.lastIndexOf("-");
+
+  if (fenge == -1) {
+    // 没分割符
+    u = targetStr;
+    t = -1;
+  } else {
+    // 有分割符
+    var index1 = targetStr.lastIndexOf("-");
+    t = targetStr.substring(index1 + 1, targetStr.length); // 分隔符的后面t
+    u = targetStr.substring(0, index1); // 分隔符的前面u
+  }
+
+  // u = parseFloat(u);
+  // t = parseFloat(t);
+  return {
+    u,
+    t,
+  };
 }
+
 // 记录 1 链接 2 跳转
 export function recordHand(type) {
-  var u = getUrlUserId();
+  var u = getParams().u;
   if (u == null) return;
   var data = { userID: u, bloggerUserID: u, type };
   bloggerUrlRecord(data).then((res) => {
@@ -76,7 +99,7 @@ export const pop = function (text, time = 2) {
   }, time * 1000);
 };
 
-// 环境判断
+// 环境判断 是否是移动端
 export const _isMobile = function () {
   let flag = navigator.userAgent.match(
     /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i
@@ -85,7 +108,21 @@ export const _isMobile = function () {
 };
 
 // OPenInstall 监听下载 监听listenObj.type
-export function listenDownInfo(datajson, listenObj) {
+export function listenDownInfo(type, listenObj) {
+  var userID = getParams().u;
+  var datajson = {};
+
+  if (type == 0) {
+    // 博主
+    datajson = { jumpType: { type: "becomeBlogger", jsonData: {} } };
+  } else if (type == 1) {
+    // 粉丝
+    datajson = { jumpType: { type: "becomeFans", jsonData: { userID } } };
+  } else {
+    // 路人
+  }
+  localStorage.setItem("datajson", JSON.stringify(datajson));
+
   const s = document.createElement("script");
   s.type = "text/javascript";
   s.src = "https://web.cdn.openinstall.io/openinstall.js";
