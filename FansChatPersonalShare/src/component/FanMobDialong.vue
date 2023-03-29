@@ -5,8 +5,8 @@
             <img class="closeImg" src="../assets/img/close.png" alt="" @click="$emit('CloseEvent')">
             <div class="flex_content">
                 <img class="c1" src="../assets/img/fans.png" alt="">
-                <div class="c2">{{ gender == 1 ? $t('pp11') : $t('pp11_1') }}</div>
-                <div class="c3">{{ gender == 1 ? $t('pp12') : $t('pp12_1') }}</div>
+                <div class="c2">{{ gender == '1' ? $t('pp11') : $t('pp11_1') }}</div>
+                <div class="c3">{{ gender == '1' ? $t('pp12') : $t('pp12_1') }}</div>
                 <div class="c4" @click="$emit('OnClickEvent')">Go to the App Store</div>
             </div>
         </div>
@@ -18,8 +18,8 @@
 export default {
     props: {
         gender: {
-            default: 0,
-            type: Number
+            default: '',
+            type: String
         }
     },
 }

@@ -6,7 +6,7 @@
             <div class="flex_content">
                 <img class="c1" src="../assets/img/editor.png" alt="">
                 <div class="c2">Download App</div>
-                <div class="c3">Scan the QR code below to download the FansChat App</div>
+                <div class="c3">Scan the QR code below to download the FansBridge App</div>
                 <vue-qr class="c4" :logoSrc="imageUrl" :text="url" :size="200"></vue-qr>
             </div>
         </div>
@@ -26,7 +26,7 @@ export default {
     components: { vueQr },
     data() {
         return {
-            imageUrl: require('../assets/img/logo1Big.png')
+            imageUrl: require('../assets/img/logo1.jpg')
         }
     }
 }

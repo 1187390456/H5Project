@@ -1,5 +1,7 @@
 import { bloggerUrlRecord } from "../../api/PersonPage";
 
+// 跳转地址
+export var jumpUrl = "https://fanschat.kr-cell.com/"; // https://fanschat.kr-cell.com/
 // 全局监听对象
 export var listenObj = {
   type: false,

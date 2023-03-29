@@ -8,10 +8,10 @@
       <!-- 下载浮窗 -->
       <div class="download">
         <div class="c1">
-          <img src="../../assets/img/logo1.png" alt="" />
+          <img src="../../assets/img/logo1.jpg" alt="" />
           <span>{{ gender == 1 ? $t('pp1') : $t('pp1_1') }}</span>
         </div>
-        <a-button @click="DownLoad($event)" class="c2">{{ $t('pp8') }}</a-button>
+        <a-button data-name="downHandler" @click="DownLoad($event)" class="c2">{{ $t('pp8') }}</a-button>
       </div>
       <!-- 个人信息 -->
       <div v-if="loading">
@@ -137,7 +137,7 @@
 </template>
   
 <script>
-import { recordHand, _isMobile, listenDownInfo, getParams } from "../../utils/tools";
+import { recordHand, _isMobile, listenDownInfo, getParams, jumpUrl } from "../../utils/tools";
 import { homepage, photolist, recommendDynamic } from "../../../api/PersonPage";
 import BloggerDialong from '../../component/BloggerDialong.vue';
 import FanDialong from "../../component/FanDialong.vue";
@@ -225,13 +225,13 @@ export default {
       //TODO 二维码是 粉丝身份进入下载页面 type=1 且在第二个/t/u 当前u为当前的博主
       var u = getParams().u;
       console.log('pc端的粉丝啊', u);
-      this.targetUrl = `https://fanschat.kr-cell.com/${u}-1`;
+      this.targetUrl = `${jumpUrl}` + `${u}-1`;
       this.fanDialong = true;
     },
     // 移动
     MobHandler(e) {
       // 点击了下载按钮
-      if (e.target.outerText == 'DOWNLOAD') {
+      if (e.target.dataset.name == 'downHandler') {
         this.TriggerEvent();
       }
       else {  // 点击了其他按钮
@@ -436,6 +436,7 @@ export default {
       img {
         width: 1.4rem;
         height: 1.4rem;
+        border-radius: 0.3rem;
       }
 
       span {
@@ -520,13 +521,13 @@ export default {
       font-weight: 500;
       color: #ffffff;
       line-height: 2.25rem;
+      margin-bottom: 0.4rem;
     }
 
     .c2 {
       display: flex;
       align-items: center;
-
-      margin: 8px 0;
+      margin-bottom: 0.4rem;
 
       img {
         width: 1rem;
@@ -579,7 +580,7 @@ export default {
 
   .cardArea {
     width: 100%;
-    min-height: 30.6rem;
+    min-height: 70%;
     background: #ffffff;
     border-radius: 0.8rem 0.8rem 0px 0px;
     overflow: hidden; // 解决溢出
@@ -748,10 +749,10 @@ export default {
   left: 50%;
   transform: translate(-50%, -50%);
 
-  font-size: 22px;
+  font-size: 0.8rem;
   font-family: PingFangSC-Regular, PingFang SC;
   font-weight: 400;
-  color: #383838;
+  color: #6F6F6F;
 }
 
 //--------------------------loading-------------------------
@@ -759,7 +760,6 @@ export default {
   width: 375px;
 }
 
-/deep/ .ant-skeleton-content .ant-skeleton-paragraph {}
 
 /deep/ .ant-skeleton-content .ant-skeleton-paragraph>li {
   background: #f4f4f4;

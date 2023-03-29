@@ -2,8 +2,8 @@
   <div class="fixPos">
     <div class="container">
       <div class="c1">
-        <img src="../../assets/img/logo1Big.png" alt="" />
-        <div class="c1-1">FansChat</div>
+        <img src="../../assets/img/logo1.jpg" alt="" />
+        <div class="c1-1">FansBridge</div>
         <span class="c1-2">{{ $t("pp10") }}</span>
       </div>
       <a-button @click="OnClick" id="downloadButton" class="c2">{{
@@ -16,7 +16,7 @@
 
 <script>
 import BloggerDialong from '../../component/BloggerDialong.vue';
-import { _isMobile, listenDownInfo, getParams } from "../../utils/tools";
+import { _isMobile, listenDownInfo, getParams, jumpUrl } from "../../utils/tools";
 export default {
   components: { BloggerDialong },
   data() {
@@ -46,20 +46,20 @@ export default {
       if (this.type == 0) {
         console.log('pc端的博主啊');
         //TODO 二维码是 博主身份进入下载页面
-        this.targetUrl = 'https://fanschat.kr-cell.com/invite'
+        this.targetUrl = `${jumpUrl}` + 'invite'
         this.bloggerDialong = true
       }
       else if (this.type == 1) {
         console.log('pc端的粉丝啊');
         //TODO 二维码是 粉丝身份进入下载页面
         var u = getParams().u;
-        this.targetUrl = `https://fanschat.kr-cell.com/${u}-1`
+        this.targetUrl = `${jumpUrl}` + `${u}-1`
         this.bloggerDialong = true
       }
       else {
         console.log('pc端的路人啊');
         //TODO 二维码是 路人身份进入下载页面
-        this.targetUrl = 'https://fanschat.kr-cell.com/1-2'
+        this.targetUrl = `${jumpUrl}` + '1-2'
         this.bloggerDialong = true
       }
     },
@@ -99,6 +99,7 @@ export default {
     img {
       width: 4.5rem;
       height: 4.5rem;
+      border-radius: 1rem;
     }
 
     .c1-1 {

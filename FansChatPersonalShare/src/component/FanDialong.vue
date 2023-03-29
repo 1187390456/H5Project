@@ -5,8 +5,8 @@
             <img class="closeImg" src="../assets/img/close.png" alt="" @click="$emit('CloseEvent')">
             <div class="flex_content">
                 <img class="c1" src="../assets/img/fans.png" alt="">
-                <div class="c2">{{ gender == 1 ? $t('pp11') : $t('pp11_1') }}</div>
-                <div class="c3">{{ gender == 1 ? $t('pp13') : $t('pp13_1') }}</div>
+                <div class="c2">{{ gender == '1' ? $t('pp11') : $t('pp11_1') }}</div>
+                <div class="c3">{{ gender == '1' ? $t('pp13') : $t('pp13_1') }}</div>
                 <vue-qr class="c4" :logoSrc="imageUrl" :text="url" :size="200"></vue-qr>
             </div>
         </div>
@@ -23,14 +23,14 @@ export default {
             type: String
         },
         gender: {
-            default: 0,
-            type: Number
+            default: '',
+            type: String
         }
     },
     components: { vueQr },
     data() {
         return {
-            imageUrl: require('../assets/img/logo1Big.png')
+            imageUrl: require('../assets/img/logo1.jpg')
         }
     }
 }

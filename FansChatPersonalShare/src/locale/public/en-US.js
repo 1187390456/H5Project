@@ -1,6 +1,6 @@
 export default {
-  pp1: "Download FansChat now to find her!",
-  pp1_1: "Download FansChat now to find She!",
+  pp1: "Download FansBridge now to find her!",
+  pp1_1: "Download FansBridge now to find She!",
   pp2: "Online",
   pp3: "Star Bloggers",
   pp4: "Album",
@@ -12,9 +12,9 @@ export default {
   pp10: "Create the first social media that connects influencers and fans across the entire internet.",
   pp11: "He's Online!",
   pp11_1: "She's Online!",
-  pp12: "Download the FansChat App to get closer to her",
-  pp12_1: "Download the FansChat App to get closer to She",
-  pp13: "Go to the FansChat App to get closer to her, scan the QR code below and download it",
+  pp12: "Download the FansBridge App to get closer to her",
+  pp12_1: "Download the FansBridge App to get closer to She",
+  pp13: "Go to the FansBridge App to get closer to her, scan the QR code below and download it",
   pp13_1:
-    "Go to the FansChat App to get closer to She, scan the QR code below and download it",
+    "Go to the FansBridge App to get closer to She, scan the QR code below and download it",
 };
