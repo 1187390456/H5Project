@@ -1,5 +1,5 @@
 {
-  "name": "Night-Chat",
+  "name": "FansBridge",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -12,11 +12,14 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@sentry/webpack-plugin": "^1.20.0",
     "ant-design-vue": "^1.7.8",
     "axios": "^1.2.0",
     "core-js": "^2.6.5",
     "es6-promise": "^4.2.8",
     "postcss-pxtorem": "^5.1.1",
+    "script-ext-html-webpack-plugin": "^2.1.5",
+    "uglifyjs-webpack-plugin": "^2.2.0",
     "vant": "^2.12.53",
     "vconsole": "^3.15.0",
     "vue": "^2.6.10",
@@ -30,13 +33,15 @@
     "@vue/cli-service": "^3.0.4",
     "@vue/eslint-config-standard": "^4.0.0",
     "babel-eslint": "^10.1.0",
+    "babel-plugin-import": "^1.13.6",
     "compression-webpack-plugin": "^10.0.0",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
     "less": "^3.0.4",
     "less-loader": "^5.0.0",
     "vue-i18n": "^6.1.3",
-    "vue-template-compiler": "^2.6.10"
+    "vue-template-compiler": "^2.6.10",
+    "zip-webpack-plugin": "^3.0.0"
   },
   "eslintConfig": {
     "root": true,

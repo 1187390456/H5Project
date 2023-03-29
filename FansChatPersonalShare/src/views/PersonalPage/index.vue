@@ -117,11 +117,11 @@
       <!-- 浮动按钮 -->
       <div class="bottomBtn">
         <a-button @click="DownLoad($event)" class="c1">
-          <img src="../../assets/img/chat.png" alt="">
+          <img src="../../assets/img/chatbig.png" alt="">
           <span style="margin-left: 8px;">{{ $t('pp6') }}</span>
         </a-button>
         <a-button @click="DownLoad($event)" class="c2">
-          <img src="../../assets/img/addFridend.png" alt="">
+          <img src="../../assets/img/addFridendBig.png" alt="">
           <span style="margin-left: 8px;">{{ $t('pp7') }}</span>
         </a-button>
       </div>
@@ -440,7 +440,7 @@ export default {
       }
 
       span {
-        font-size: 0.7rem;
+        font-size: 0.66rem;
         font-family: PingFangSC-Regular, PingFang SC;
         font-weight: 400;
         color: #ffffff;
@@ -724,6 +724,11 @@ export default {
       color: #f6892c;
 
       margin-right: 0.8rem;
+
+      img {
+        width: 20px;
+        height: 21px;
+      }
     }
 
     .c2 {
@@ -739,6 +744,11 @@ export default {
       font-family: PingFangSC-Regular, PingFang SC;
       font-weight: 400;
       color: #ffffff;
+
+      img {
+        width: 20px;
+        height: 21px;
+      }
     }
   }
 }

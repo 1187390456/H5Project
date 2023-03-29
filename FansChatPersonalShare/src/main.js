@@ -8,8 +8,7 @@ import axios from "axios";
 // import vConsole from "./vconsole";
 
 // ant
-import "ant-design-vue/dist/antd.css";
-import { Button, Card, Spin, message, Skeleton } from "ant-design-vue";
+import { Button, Spin, Skeleton, message, Card } from "ant-design-vue";
 
 // global
 import "../src/assets/style/global.css";

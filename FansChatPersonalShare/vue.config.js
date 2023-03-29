@@ -1,5 +1,12 @@
 // require("babel-polyfill");
 
+const path = require("path");
+const { IgnorePlugin } = require("webpack");
+function resolve(dir) {
+  // path.join()方法用于连接路径
+  return path.join(__dirname, dir);
+}
+
 module.exports = {
   // 基本路径 baseURL已经过时
   publicPath: "./",
@@ -26,6 +33,14 @@ module.exports = {
     overlay: {
       warnings: false,
       errors: false,
+    },
+  },
+  configureWebpack: {
+    plugins: [new IgnorePlugin(/^\.\/locale$/, /moment$/)],
+    resolve: {
+      alias: {
+        "@ant-design/icons/lib/dist$": resolve("./src/antd/icons.js"),
+      },
     },
   },
 };
