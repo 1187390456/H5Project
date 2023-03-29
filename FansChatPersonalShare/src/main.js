@@ -24,7 +24,7 @@ Vue.prototype.$message = message;
 Vue.prototype.$format = formatMsgTime;
 Vue.prototype.$listenObj = listenObj;
 
-Vue.use(Button);
+Vue.component(Button.name, Button);
 Vue.use(Card);
 Vue.use(Spin);
 Vue.use(Skeleton);
