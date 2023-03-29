@@ -71,6 +71,12 @@ export const cantOpen = () => {
     return false;
   }
 };
+// 机型判断
+export const isiOS = () => {
+  const u = navigator.userAgent;
+  const isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+  return isiOS;
+};
 
 // 弹窗
 export const pop = function (text, time = 2) {
