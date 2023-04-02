@@ -1,7 +1,7 @@
 import Vue from "../main";
 import { getUrlKey } from "../utils/tools";
 
-const isTestServer = true;
+const isTestServer = false;
 const tag = isTestServer ? "h_test_" : "h_";
 var lastMsg = {};
 
@@ -20,7 +20,7 @@ export const ReSetIM = async function (data) {
   // 获取云信参数
   var token = data.selfInfo.wyToken;
   var account = tag + data.selfInfo.id;
-  var appKey = "590d2352a5d8778b6d1f427b5ecc8c62";
+  var appKey = "590d2352a5d8778b6d1f427b5ecc8c62"; // b3a260acb5754d61d2d46ddc22351b4e // 590d2352a5d8778b6d1f427b5ecc8c62
   var nimInfo = {
     token,
     account,
