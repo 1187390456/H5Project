@@ -1,7 +1,7 @@
 import { bloggerUrlRecord } from "../../api/PersonPage";
 
 // 跳转地址
-export var jumpUrl = "https://fanschat.kr-cell.com/"; // https://fanschat.kr-cell.com/
+export var jumpUrl = "https://fansbridge.kr-cell.com/"; // https://fanschat.kr-cell.com/
 // 全局监听对象
 export var listenObj = {
   type: false,
@@ -139,7 +139,7 @@ export function listenDownInfo(type, listenObj) {
     () => {
       new OpenInstall(
         {
-          appKey: "bkpxqm",
+          appKey: "phbish",
           onready: function () {
             var m = this;
             m.schemeWakeup();
