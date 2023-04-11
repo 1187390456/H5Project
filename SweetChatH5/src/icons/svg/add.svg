@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>添加</title>
+    <defs>
+        <filter id="filter-1">
+            <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 1.000000 0 0 0 0 1.000000 0 0 0 0 1.000000 0 0 0 1.000000 0"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="工作台-管理员后台初始状态" transform="translate(-662.000000, -460.000000)">
+            <g id="添加" transform="translate(622.000000, 438.000000)" filter="url(#filter-1)">
+                <g transform="translate(40.000000, 22.000000)">
+                    <rect id="矩形" fill="#000000" fill-rule="nonzero" opacity="0" x="0" y="0" width="23.9991539" height="24"></rect>
+                    <path d="M11.9995769,24 C5.3719725,24 0,18.626992 0,12 C0,5.3721619 5.3719725,0 11.9995769,0 C18.6263353,0 24,5.3721619 24,12 C24,18.6278381 18.6263353,24 11.9995769,24 Z M18.0002115,10.8001692 L13.2002115,10.8001692 L13.2002115,6 L10.8006346,6 L10.8006346,10.8001692 L5.99978847,10.8001692 L5.99978847,13.1998308 L10.7997885,13.1998308 L10.7997885,18 L13.1993654,18 L13.1993654,13.1998308 L17.9993654,13.1998308 L17.9993654,10.8001692 L18.0002115,10.8001692 Z" id="形状" fill="#000000" fill-rule="nonzero"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

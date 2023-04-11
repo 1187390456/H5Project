@@ -1,0 +1,6 @@
+[defaults]
+url=https://sentry.io/
+org=cherry14
+project=vue-5e
+[auth]
+token=fa50dc6536de4f7094fe560d126d13a13be77035f3ee4ae9839732e2df2d8058

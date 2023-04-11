@@ -1,0 +1,23 @@
+apps:
+  - script: server.js
+    name: 'timing'
+    watch: true
+    env:
+      NODE_ENV: development
+    env_production:
+      NODE_ENV: production
+deploy:
+  production:
+    user: root
+    key: C:/key/key.pem
+    host:
+      - 120.79.210.19
+    port: 22
+    ref: origin/master
+    repo: git@121.43.48.157:HEarTache/Learning-Canteen.git
+    path: /www/timing/production
+    ssh_options: StrictHostKeyChecking=no
+    pre-deploy: git fetch --all
+    post-deploy: 'npm install --unsafe-perm && npm run build:test && pm2 startOrRestart server.js'
+    env:
+      NODE_ENV: production

@@ -1,0 +1,376 @@
+@import './variables.scss';
+@import './mixin.scss';
+@import './transition.scss';
+@import './element-ui.scss';
+@import './sidebar.scss';
+
+body {
+  height: 100%;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB,
+    Microsoft YaHei, Arial, sans-serif;
+}
+
+html {
+  height: 100%;
+  box-sizing: border-box;
+  font-family: PingFangSC-Medium, PingFang SC;
+}
+
+#app {
+  height: 100%;
+  width: 100%;
+  .el-header {
+    padding: 0 !important;
+  }
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+.infinite-status-prompt {
+  padding: 5px 0 10px 0;
+}
+
+/*谷歌、safari、qq浏览器、360浏览器滚动条样式*/
+/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
+::-webkit-scrollbar {
+  width: 7px;
+  height: 10px;
+  background-color: #f5f5f5;
+}
+/*定义滚动条轨道 内阴影+圆角*/
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  background-color: #f5f5f5;
+}
+/*定义滑块 内阴影+圆角*/
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #bdbdbd;
+}
+/*滑块效果*/
+::-webkit-scrollbar-thumb:hover {
+  border-radius: 5px;
+  -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.4);
+}
+
+a:focus,
+a:active {
+  outline: none;
+}
+
+a,
+a:focus,
+a:hover {
+  cursor: pointer;
+  color: inherit;
+  text-decoration: none;
+}
+
+div:focus {
+  outline: none;
+}
+
+.clearfix {
+  &:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: ' ';
+    clear: both;
+    height: 0;
+  }
+}
+.app-container {
+  padding: 20px 40px 20px 10px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.el-card {
+  padding:0 24px;
+}
+.el-card__header {
+  color: #333;
+  font-weight: 600;
+  font-size: 14px;
+  // margin: 0 20px;
+  padding: 24px 0;
+}
+.el-table thead {
+  background:rgba(250,250,251,1);
+  font-size: 14px;
+  color: #393939;
+  font-weight:400;
+}
+.el-table thead tr {
+  background: transparent;
+}
+.el-table thead th {
+  background: transparent;
+  font-size: 14px;
+  font-weight: 400!important;
+}
+.el-table td,
+.el-table th {
+  text-align: center;
+}
+.el-table td{
+  color: rgba(57, 57, 57,.6);
+}
+// .el-table td, .el-table th {
+//   padding: 24px;
+// }
+.fs20 {
+  font-size: 20px;
+}
+.el-avatar > img {
+  width: 100%;
+}
+.fs18 {
+  font-size: 18px;
+}
+// 文字超出两行隐藏
+.textover2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+// 文字超出一行隐藏
+.textover1 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+// 清浮动
+.clearfix {
+  &:after {
+    content: '';
+    height: 0;
+    display: block;
+    overflow: hidden;
+    clear: both;
+  }
+}
+.fl {
+  float: left;
+}
+.fr {
+  float: right;
+}
+.select-none {
+  user-select: none;
+}
+.select-none * {
+  user-select: none;
+}
+// TIP: 扩大点击范围 (使用时注意伪类冲突)
+.tap-area {
+  position: relative;
+  &::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+  }
+}
+// 强制换行
+.break-word {
+  word-break: break-all; /* 支持IE和chrome，FF不支持*/
+  word-wrap: break-word; /* 以上三个浏览器均支持 */
+}
+.linkto {
+  color: #777;
+  cursor: pointer;
+}
+.form-tip {
+  padding-bottom: 20px;
+  .el-link {
+    font-size: 10px;
+  }
+}
+.has-underline::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 0;
+  bottom: 0;
+  border-bottom: 1px solid #7050F3 ;
+}
+.none {
+  display: none;
+}
+.el-dialog__header {
+  border-bottom: 1px solid #eee;
+}
+.el-dialog__footer {
+  border-top: 1px solid #eee;
+}
+.date-popper-class {
+  .el-button.el-picker-panel__link-btn.el-button--text.el-button--mini {
+    display: none;
+  }
+}
+.desc-tip {
+  color: #999;
+}
+
+.no-img {
+  border: 1px solid #ccc;
+}
+
+.has-shadow {
+  box-shadow: 0px 3px 6px rgba(0, 200, 150, 1);
+}
+
+.el-pagination {
+  padding: 30px 0 15px 0;
+  width: 100%;
+  text-align: right;
+  .el-pager li {
+    min-width:30px;
+    &.active{
+      background: rgba(0, 200, 150, 1);
+      color: #fff;
+      border-radius: 4px;
+    }
+  }
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+.el-input--medium .el-input__inner{
+  height: 34px;
+  line-height: 34px;
+}
+.has-required {
+  .el-form-item__label::before {
+    content: '*';
+    color: #f56c6c;
+    margin-right: 4px;
+  }
+}
+
+.el-textarea .el-input__count {
+  bottom: 1px !important;
+  background: transparent;
+}
+.el-textarea__inner{
+  padding-bottom: 25px!important;
+}
+.el-table--small {
+  font-size: 14px;
+}
+.el-button--primary.is-disabled,
+.el-button--primary.is-disabled:hover,
+.el-button--primary.is-disabled:focus,
+.el-button--primary.is-disabled:active {
+  background-color: rgba(220,223,230,1)!important;
+  border-color: rgba(220,223,230,1)!important;
+}
+.el-scrollbar__wrap {
+  overflow-x: hidden;
+}
+.desc-pay-live {
+  font-size: 14px;
+  color: #191919;
+  margin-bottom: 0;
+}
+.uploader-desc {
+  width: 260px;
+  height: 80px;
+  background: rgba(0, 200, 150, 0.1);
+  border-radius: 4px;
+  padding: 10px;
+  box-sizing: border-box;
+  line-height: 1.7;
+  margin-top: 3px;
+  margin-left: 6px;
+  b {
+    color: #ff4140;
+  }
+  span {
+    color: #7050F3 ;
+    cursor: pointer;
+  }
+}
+// 全局message覆盖
+// .el-message-box__btns{
+//   text-align: center;
+// }
+// .el-message-box{
+//   padding-bottom: 0;
+// }
+// .el-message-box__btns{
+//   padding:15px;
+//   text-align: center;
+//   background: #eee;
+// }
+// .el-message-box__content{
+//   min-height: 80px;
+// }
+// .el-message-box__status{
+//   top: 22px;
+// }
+// .el-message-box{
+//   width: 320px;
+// }
+.el-input__inner{
+  color: #333333!important;
+  background-color: #F1EEFE!important;
+}
+.fs12{
+  font-size: 12px;
+}
+.fs14{
+  font-size: 14px;
+}
+.h41{
+  height: 41px;
+}
+.w150{
+  width: 150px;
+}
+// 隐藏默认的筛选图标
+.el-table__column-filter-trigger{
+  opacity: 0;
+}
+// 菜单样式
+.el-menu{
+  height: 100%;
+  background-color: transparent!important;
+  border: none !important;
+}
+.sidebar-container{
+  height: 100%;
+}
+.el-main{
+  padding: 0!important;
+}
+.el-input__inner{
+  padding: 0 10px;
+}
+.el-table th:first-child{
+  text-align: left!important;
+}
+.el-table table tr td:first-child {
+  text-align: left;
+}
