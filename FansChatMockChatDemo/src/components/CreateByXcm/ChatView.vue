@@ -24,9 +24,12 @@
         </div>
       </div>
       <div class="bottom">
-        <el-input class="inputArea" type="textarea" placeholder="Enter a new message" v-model="textarea"
-          @keydown.native="listen($event)">
-        </el-input>
+        <div class="input">
+          <el-input class="inputArea" type="textarea" placeholder="Enter a new message" v-model="textarea"
+            @keydown.native="listen($event)">
+          </el-input>
+          <el-button v-if="textarea != ''" class="elBtn" @click="SendText">Send</el-button>
+        </div>
         <div class="btnlist">
           <img src="../../assets/images/麦克风2.png" alt="">
           <img src="../../assets/images/相册、照片-m.png" alt="">
@@ -273,9 +276,19 @@ export default {
     align-items: center;
     justify-content: flex-start;
 
-    .inputArea {
-      width: 17.15rem;
-      border-radius: 0.5rem;
+    .input {
+      display: flex;
+      align-items: center;
+      max-width: 15rem;
+
+      .inputArea {
+        width: 17.15rem;
+        border-radius: 0.5rem;
+      }
+
+      .elBtn {
+        margin-left: 15px;
+      }
     }
 
     .btnlist {
