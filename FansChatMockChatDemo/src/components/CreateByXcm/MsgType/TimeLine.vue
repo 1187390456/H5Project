@@ -1,6 +1,6 @@
 <template>
   <div class="timeLine flex-center-center">
-    <div class="time font-10-500-ffffff">{{ timeInfo | timeFilter }}</div>
+    <div class="time">{{ timeInfo | timeFilter }}</div>
   </div>
 </template>
 
@@ -23,13 +23,15 @@ export default {
 
 <style lang="less" scoped>
 .timeLine {
-  height: 40px;
   width: 100%;
+  min-height: 0.85rem;
 
   .time {
-    padding: 2px 7px;
-    background: #b6b6b6;
-    border-radius: 9px;
+    font-size: 0.6rem;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #B2B2B2;
+    line-height: 0.85rem;
   }
 }
 </style>

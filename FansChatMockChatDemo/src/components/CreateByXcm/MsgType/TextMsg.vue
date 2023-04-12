@@ -1,10 +1,8 @@
 <template>
   <div class="textRoot">
     <div :class="['textMsg', isleft ? 'leftColor' : 'rightColor']">
-      <div class="font-15-400-060606 wordBrake">{{ info.text }}</div>
-      <div class="time">
-        <span class="font-10-400-979797">{{ info.time | timeFilter }}</span>
-      </div>
+      <div class="text wordBrake">{{ info.text }}</div>
+      <div class="time"> {{ info.time | timeFilter }} PM </div>
     </div>
   </div>
 </template>
@@ -31,76 +29,44 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.readColor {
-  background: #ff3c74;
-  border-radius: 9px;
-}
-
-.unReadColor {
-  background: #000000;
-  border-radius: 9px;
-  opacity: 0.4;
-}
-
-.leftColor {
-  background: #ffffff;
-}
-
-.rightColor {
-  background: #d7f8fc;
-}
-
 .textRoot {
-  // min-width: 15%;
-  // max-width: 45%;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  margin-top: 4px;
 
   .textMsg {
-    margin: 5px 10px 0 10px;
-    // padding: 5px 13px;
-    padding: 5px 7px 0px 8px;
-
-    // min-width: 277px;
-    // min-height: 42px;
-
+    padding: 4px 12px;
     max-width: 277px;
-
-
     border-radius: 8px 15px 15px 8px;
-    border: 1px solid #d7f8fc;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .text {
+      font-size: 15px;
+      font-family: PingFangSC-Regular, PingFang SC;
+      font-weight: 400;
+      color: #060606;
+      line-height: 21px;
+    }
 
     .time {
       display: flex;
       justify-content: flex-end;
-      margin: 3px 0;
-    }
-  }
-
-  .crash {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    margin-left: 0px;
-    padding: 3px 5px;
-
-    .img {
-      width: 100%;
-      height: 100%;
-    }
-
-    .center {
-      margin: 0 2px;
 
       font-size: 10px;
       font-family: PingFangSC-Regular, PingFang SC;
       font-weight: 400;
-      color: #ffffff;
+      color: #979797;
       line-height: 14px;
     }
   }
+}
+
+.leftColor {
+  background: #F9F9F9;
+}
+
+.rightColor {
+  background: #FEEDDE;
 }
 </style>

@@ -1,31 +1,38 @@
 <template>
   <div :class="['fixPos', moveTrigger ? 'moveLeft' : '']">
-    <div class="contentTitle" style="top: 0">聊天</div>
-    <div class="chatList">
-      <div v-for="(item, i) in chatList" :key="i" :class="[
-        'flex-center-center',
-        'chatItem',
-        i == chatActive ? 'chatActive' : '',
-      ]" @click="OnClickChatItem(i, item)">
-        <div class="l">
-          <img :src="item.targetUserInfo.avatar" alt="" />
-          <div v-if="item.targetUserInfo.onlineInfo.isOnline" class="float"></div>
+    <div class="contentTitle" style="top: 0">
+      <span class="c1">Chats</span>
+      <div class="c2">
+        <div class="search">
+          <img src="../../assets/images/search.png" alt="">
         </div>
-        <div class="r flex-col-nor-sbt">
-          <div class="flex-center-sbt">
-            <span class="font-14-500-161616">{{ item.targetUserInfo.nick }}</span>
-            <span class="font-12-400-908f91">{{
+        <div class="avatar">
+          <img src="../../assets/img/Test/OIP-C (9).jpg" alt="">
+        </div>
+      </div>
+    </div>
+    <div class="chatList">
+      <div v-for="(item, i) in chatList" :key="i" class="chatItem" @click="OnClickChatItem(i, item)">
+        <div class="avatar">
+          <img :src="item.targetUserInfo.avatar" alt="" />
+          <div class="unRead">
+            {{ item.unread }}
+          </div>
+        </div>
+        <div class="listInfo">
+          <div class="name">
+            <span class="c1">{{ item.targetUserInfo.nick }}</span>
+            <span class="c2">{{
               item.lastMsg.time | timeFilter
             }}</span>
           </div>
-          <div class="limit twolineElp font-14-400-908f91">
-            {{ item.lastMsg.file == null ? item.lastMsg.text : "图片" }}
+          <div class="info">
+            <!-- <img class="unRead" src="../../assets/images/正确.png" alt=""> -->
+            <img class="Read" src="../../assets/images/已读备份.png" alt="">
+            {{ item.lastMsg.text }}
           </div>
+          <div class="line"></div>
         </div>
-        <div class="tip" v-if="item.unread > 0">
-          {{ item.unread }}
-        </div>
-        <div class="float"></div>
       </div>
     </div>
     <div class="contentTitle" style="bottom: 0">占位区域</div>
@@ -43,7 +50,7 @@ export default {
   },
   filters: {
     timeFilter(val) {
-      return formatDate(val, "YYYY-MM-DD hh:mm:ss");
+      return formatDate(val, "hh:mm");
     },
   },
   data() {
@@ -89,10 +96,6 @@ export default {
   background: #ececec;
 }
 
-.limit {
-  max-width: 282px;
-  word-break: break-all;
-}
 
 .fixPos {
   position: fixed;
@@ -104,6 +107,9 @@ export default {
   background: #000000;
 
   transition: transform 0.3s;
+
+  display: flex;
+  flex-direction: column;
 }
 
 .moveLeft {
@@ -111,97 +117,176 @@ export default {
 }
 
 .contentTitle {
-  position: absolute;
-
   width: 375px;
-  height: 2.2rem;
-  background: #F2F2F2;
-  font-size: 0.8rem;
-  font-family: PingFangSC-Medium, PingFang SC;
-  font-weight: 500;
-  color: #161616;
-  text-align: center;
-  line-height: 2.2rem;
-}
+  min-height: 52px;
+  background: #FFFFFF;
 
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 16px;
+  box-sizing: border-box;
+
+  .c1 {
+    font-size: 27px;
+    font-family: Helvetica-Bold, Helvetica;
+    font-weight: bold;
+    color: #161616;
+    line-height: 32px;
+  }
+
+  .c2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .search {
+      width: 36px;
+      height: 36px;
+      background: #F1F1F1;
+      border-radius: 50%;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      margin-right: 12px;
+
+      img {
+        width: 18px;
+        height: 18px;
+      }
+    }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+
+      img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+    }
+  }
+}
 
 
 .chatList {
   width: 375px;
-  // max-height: 953px;
-  height: calc(100vh - 80px);
-
   background: #ffffff;
-
   overflow-y: auto;
   overflow-x: hidden;
+  margin-top: 0rem;
 
   .chatItem {
     width: 375px;
-    height: 73px;
     background: #ffffff;
     position: relative;
-    padding: 8px 13px 10px;
+    padding: 0 0.45rem 0 0.6rem;
     box-sizing: border-box;
+    display: flex;
+    align-content: center;
+    justify-content: center;
 
-    .l {
-      width: 55px;
-      height: 55px;
-      margin-right: 8px;
+    margin-top: 0.5rem;
+
+    .avatar {
+      width: 2.55rem;
+      height: 2.55rem;
+      margin-right: 0.4rem;
       position: relative;
 
       img {
         width: 100%;
         height: 100%;
         border-radius: 50%;
+        object-fit: cover;
       }
 
-      .float {
+      .unRead {
         position: absolute;
-        bottom: 0;
-        left: 38px;
-        width: 15px;
-        height: 15px;
-        background: #4cc81e;
-        border: 2px solid #ffffff;
+        top: 0.15rem;
+        left: 1.78rem;
+        width: 0.8rem;
+        height: 0.8rem;
         border-radius: 50%;
+        background: #FF0000;
+        text-align: center;
+        font-size: 0.5rem;
+        font-family: PingFangSC-Regular, PingFang SC;
+        font-weight: 400;
+        color: #FFFFFF;
+        line-height: 0.7rem;
       }
     }
 
-    .r {
-      height: 100%;
+    .listInfo {
       flex: 1;
-    }
+      display: flex;
+      flex-direction: column;
 
-    .tip {
-      position: absolute;
-      bottom: 15px;
-      right: 5px;
+      .name {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
 
-      background: red;
-      color: #fff;
-      font-size: 12px;
-      text-align: center;
-      width: 20px;
-      height: 20px;
-      line-height: 20px;
-      border-radius: 50%;
-      margin-left: 10px;
+        .c1 {
+          //TODO名字长度限制
+          font-size: 0.7rem;
+          font-family: PingFangSC-Medium, PingFang SC;
+          font-weight: 500;
+          color: #161616;
+          line-height: 1rem;
+        }
+
+        .c2 {
+          font-size: 0.6rem;
+          font-family: PingFangSC-Regular, PingFang SC;
+          font-weight: 400;
+          color: #908F91;
+          line-height: 0.85rem;
+        }
+      }
+
+      .info {
+        max-width: 14.75rem;
+        min-height: 1.7rem;
+
+        word-break: break-all;
+        display: -webkit-box;
+        text-overflow: ellipsis;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        font-size: 0.7rem;
+        font-family: PingFangSC-Regular, PingFang SC;
+        font-weight: 400;
+        color: #908F91;
+        line-height: 0.85rem;
+
+        img {
+          width: 0.65rem;
+          height: 0.65rem;
+        }
+      }
+
+      .line {
+        margin-top: 10px;
+        border-bottom: 1px solid #E7E7E7;
+      }
     }
 
     .float {
       position: absolute;
-      left: 75px;
+      left: 3.75rem;
       bottom: 0;
       width: 100%;
-      height: 1px;
+      height: 0.05rem;
       background-color: #cac9cd;
     }
-  }
-
-  .chatItem:hover {
-    background: #e9e9e9;
-    cursor: pointer;
   }
 }
 </style>
