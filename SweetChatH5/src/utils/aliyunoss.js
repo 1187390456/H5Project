@@ -47,7 +47,7 @@ export const ossUpload = async (
   videoCoverID = videoCoverID ? videoCoverID : 0;
   videoTimeLen = videoTimeLen ? videoTimeLen : 0;
   const { bloggerInfo, baseURL } = store.getters;
-  let newImgName = `web${bloggerInfo.id}_${Math.ceil(
+  let newImgName = `H5_${bloggerInfo.id}_${Math.ceil(
     Math.random() * 100000
   )}_${new Date().getTime()}.${file.raw.type.split("/")[1]}`;
   var imageBody = "";
@@ -67,7 +67,7 @@ export const ossUpload = async (
     '"userKey":"' +
     bloggerInfo.token +
     '",' +
-    '"osType":"web"' +
+    '"osType":"H5"' +
     "," +
     '"fileName":"' +
     newImgName +
