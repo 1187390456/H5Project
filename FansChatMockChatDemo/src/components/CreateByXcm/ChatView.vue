@@ -25,7 +25,7 @@
       </div>
       <div class="bottom">
         <div class="input">
-          <el-input class="inputArea" type="textarea" placeholder="Enter a new message" v-model="textarea"
+          <el-input class="inputArea" type="text" placeholder="Enter a new message" v-model="textarea"
             @keydown.native="listen($event)">
           </el-input>
           <el-button v-if="textarea != ''" class="elBtn" @click="SendText">Send</el-button>
@@ -152,17 +152,22 @@ export default {
 </script>
 
 <style lang="less" scoped>
-/deep/ .el-textarea__inner {
+/deep/ .el-input__inner {
   border: none;
+  width: 17.15rem;
+  height: 2.1rem;
+  background: #F9F9F9;
+  border-radius: 0.5rem;
 
-  height: 42px;
-  line-height: 32px;
-  font-size: 15px;
-  font-family: PingFangSC-Regular, PingFang SC;
-  font-weight: 400;
-
-  background: #F9F9F9 !important;
+  &::placeholder {
+    font-size: 0.75rem;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #D4D4D4;
+    line-height: 1.05rem;
+  }
 }
+
 
 ::-webkit-scrollbar {
   width: 0px;
@@ -278,16 +283,11 @@ export default {
 
     .input {
       display: flex;
-      align-items: center;
-      max-width: 15rem;
-
-      .inputArea {
-        width: 17.15rem;
-        border-radius: 0.5rem;
-      }
+      position: relative;
 
       .elBtn {
-        margin-left: 15px;
+        position: absolute;
+        right: 0;
       }
     }
 

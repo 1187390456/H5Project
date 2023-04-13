@@ -1,7 +1,7 @@
 <template>
   <div class="imgMsg">
     <el-image class="img" :src="info.file.url" fit="cover" :lazy="false" :preview-src-list="[info.file.url]"></el-image>
-    <div class="float">{{ info.time | timeFilter }} PM</div>
+    <div class="float">{{ info.time | timeFilter }} PM </div>
   </div>
 </template>
 
