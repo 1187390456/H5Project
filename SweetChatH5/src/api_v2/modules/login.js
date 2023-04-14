@@ -1,13 +1,26 @@
 import fetch from "../fetch";
-//登录
-export const login = (data) => {
+
+// 登录 -- 第三方授权登录
+export const commonLogin = (data) => {
   return fetch({
-    url: "api/backend/login-by-username",
+    url: "/api/user-account/common-account-login",
     method: "post",
-    createLogin: true,
+    // createLogin: true,
     data,
   });
 };
+
+// 登录 -- 第三方授权登录
+export const phoneLogin = (data) => {
+  return fetch({
+    url: "/api/user-account/login-by-phone",
+    method: "post",
+    // createLogin: true,
+    headerType: 1,
+    data,
+  });
+};
+
 //退出登录
 // sp_id
 export const loginOut = (data) => {

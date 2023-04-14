@@ -79,10 +79,12 @@ export default function fetch(options) {
       if (tempArr[tempArr.length - 1] == "login-by-username")
         return { ...config, ...cusConfig };
       if (config.headerType && config.headerType == 1) {
-        config.headers.regionCode = "CN";
-        config.headers["Accept-Language"] = "zh-CN";
-        config.headers.userID = store.state.user.bloggerInfo.id;
-        config.headers.userToken = store.state.user.bloggerInfo.token;
+        config.headers.regionCode = "US";
+        config.headers["Accept-Language"] = "en-US";
+        config.headers.bgUserId = "";
+        config.headers.bgUserToken = "";
+        // config.headers.userID = store.state.user.bloggerInfo.id;
+        // config.headers.userToken = store.state.user.bloggerInfo.token;
       } else if (config.headerType && config.headerType == 2) {
         // config.headers.userID = store.state.user.bloggerInfo.id;
         // config.headers.userToken = store.state.user.bloggerInfo.token;

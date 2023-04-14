@@ -73,8 +73,8 @@ export default {
     return {
       type: 1,
       isInputPhone: false,
-      phoneNumber: "134 7588 2565",
-      countryCode: 1,
+      phoneNumber: "",
+      countryCode: 86,
       seconds: 60,
       phoneCodebox: ["", "", "", "", "", ""],
       isRetrieveCode: false,
@@ -94,6 +94,29 @@ export default {
           this.seconds--;
         }, 1000);
       }
+    },
+    phoneCodebox: {
+      handler(newVal) {
+        let str = newVal.join("");
+        if (str == "000000") {
+          this.$api
+            .phoneLogin({
+              phone: this.phoneNumber,
+              captcha: str,
+            })
+            .then((res) => {
+              if (res.result) {
+                this.$store.commit("user/SET_LOGIN_INFO", res.data);
+                sessionStorage.setItem(
+                  "User",
+                  JSON.stringify({ id: res.data.userInfo.id })
+                );
+                this.$store.dispatch("permission/generateRoutes", []);
+              }
+            });
+        }
+      },
+      deep: true,
     },
   },
   created() {},

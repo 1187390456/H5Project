@@ -17,8 +17,8 @@ export default {
   created() {
     this.ListenWindowRoot();
     this.ParamCatch();
-    sessionStorage.setItem("User", JSON.stringify({ id:141 }));
-    this.$store.dispatch("permission/generateRoutes", []);
+    // sessionStorage.setItem("User", JSON.stringify({ id:141 }));
+    // this.$store.dispatch("permission/generateRoutes", []);
   },
   methods: {
     ListenWindowRoot() {
@@ -29,7 +29,7 @@ export default {
       let html = document.documentElement;
       let rootFont = document.body.clientWidth;
 
-      console.log('获取到的', rootFont);
+      console.log("获取到的", rootFont);
       if (rootFont < 768) {
         console.log(rootFont);
         html.style.fontSize = `${rootFont / 20}px`;
@@ -39,10 +39,7 @@ export default {
         console.log(html.style.fontSize, "PC端1");
       }
     },
-    ParamCatch() {
-
-    }
-  }
+    ParamCatch() {},
+  },
 };
 </script>
-

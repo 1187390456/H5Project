@@ -14,7 +14,7 @@
         <img src="../../assets/images/login/google@3x.png" alt="" />
         <p>Continue with Google</p>
       </li>
-      <!-- <li @click="handleToLogin(4)">
+      <li @click="handleToLogin(4)">
         <img src="../../assets/images/login/apple@3x.png" alt="" />
         <p>Continue with Apple</p>
       </li>
@@ -26,7 +26,7 @@
       <li @click="handleToLogin(1)">
         <img src="../../assets/images/login/iphones@3x.png" alt="" />
         <p>Phone Number</p>
-      </li> -->
+      </li>
     </ul>
     <!-- 同意相关协议 -->
     <div class="agreement">
@@ -49,6 +49,8 @@
 </template>
 
 <script>
+import jwt from "jsonwebtoken";
+
 export default {
   name: "",
   mixins: [],
@@ -57,12 +59,24 @@ export default {
   data() {
     return {
       isChecked: false,
+      client_id:
+        "527306987343-auqpkaj7a2qacv2vp4f3jopie3g257h6.apps.googleusercontent.com",
+      redirect_uri: "http://localhost:8883/",
+      openId: "",
+      accessToken: "",
     };
   },
   computed: {},
   watch: {},
   created() {},
-  mounted() {},
+  mounted() {
+    const params = this.parseHash(location.hash.substring(1));
+    console.log(params, "000");
+    params.id_token && (this.openId = jwt.decode(params.id_token).sub);
+    this.accessToken = params.access_token;
+    console.log(this.openId, "openId");
+    // this.trySampleRequest();
+  },
   methods: {
     handleAgree() {
       this.isChecked = !this.isChecked;
@@ -81,11 +95,80 @@ export default {
           // Facebook授权登录
           break;
         case 6:
+          this.trySampleRequest();
           // 谷歌授权登录
           break;
         default:
           break;
       }
+    },
+
+    // commonLogin() {
+    //   this.$api.login({
+    //     openID: this.openId,
+    //     accessToken: this.accessToken,
+    //   }).;
+    // },
+
+    trySampleRequest() {
+      const params = this.parseHash(location.hash.substring(1));
+      if (params && params["access_token"]) {
+        const xhr = new XMLHttpRequest();
+        xhr.open(
+          "GET",
+          "https://www.googleapis.com/drive/v3/about?fields=user&" +
+            "access_token=" +
+            params["access_token"]
+        );
+        xhr.onreadystatechange = function (e) {
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            console.log(JSON.parse(xhr.response));
+          } else if (xhr.readyState === 4 && xhr.status === 401) {
+            // Token invalid, so prompt for user permission.
+            oauth2SignIn();
+          }
+        };
+        xhr.send(null);
+      } else {
+        this.oauth2SignIn();
+      }
+    },
+    oauth2SignIn() {
+      const oauth2Endpoint = "https://accounts.google.com/o/oauth2/v2/auth";
+      const form = document.createElement("form");
+      form.setAttribute("method", "GET");
+      form.setAttribute("action", oauth2Endpoint);
+
+      const params = {
+        client_id: this.client_id,
+        redirect_uri: this.redirect_uri,
+        nonce: "saer234",
+        scope: "https://www.googleapis.com/auth/drive.metadata.readonly",
+        // scope: "https://www.googleapis.com/auth/plus.login",
+        state: "try_sample_request",
+        include_granted_scopes: "true",
+        response_type: "token id_token",
+      };
+
+      for (let p in params) {
+        const input = document.createElement("input");
+        input.setAttribute("type", "hidden");
+        input.setAttribute("name", p);
+        input.setAttribute("value", params[p]);
+        form.appendChild(input);
+      }
+
+      document.body.appendChild(form);
+      form.submit();
+    },
+    parseHash(hash) {
+      const params = {};
+      const regex = /([^&=]+)=([^&]*)/g;
+      let m;
+      while ((m = regex.exec(hash))) {
+        params[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
+      }
+      return params;
     },
   },
 };
@@ -198,7 +281,7 @@ export default {
 
       a {
         font-family: PingFangSC-Medium;
-        text-decoration: underline;
+        color: #fff;
       }
     }
   }

@@ -11,6 +11,7 @@ const state = {
   roles: [],
   bloggerInfo: {},
   baseURL: baseURL,
+  loginInfo: {},
 };
 
 const mutations = {
@@ -29,6 +30,9 @@ const mutations = {
   },
   SET_INFO: (state, info) => {
     state.bloggerInfo = { ...info };
+  },
+  SET_LOGIN_INFO: (state, info) => {
+    state.loginInfo = { ...info };
   },
 };
 

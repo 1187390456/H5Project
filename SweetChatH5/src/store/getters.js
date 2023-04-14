@@ -9,5 +9,6 @@ const getters = {
   bloggerInfo: (state) => state.user.bloggerInfo,
   baseURL: (state) => state.user.baseURL,
   userId: (state) => state.user.userId,
+  loginInfo: (state) => state.user.loginInfo,
 };
 export default getters;
