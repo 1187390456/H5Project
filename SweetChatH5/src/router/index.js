@@ -61,50 +61,49 @@ export const constantRoutes = [
     meta: { title: "登录", keepAlive: false },
   },
   {
-		path: '/Chats',
-		component: Layout,
-		redirect: '/Chats',
-		children: [
-			{
-				path: '/Chats',
-				name: 'Chats',
-				component: () => import('views/Discover/index'),
-				meta: {
-					icon:'chats.png',
-				}
-			},
-		]
+    path: "/Chats",
+    component: Layout,
+    redirect: "/Chats",
+    children: [
+      {
+        path: "/Chats",
+        name: "Chats",
+        component: () => import("views/Chats/index"),
+        meta: {
+          icon: "chats.png",
+        },
+      },
+    ],
   },
   {
-		path: '/',
-		component: Layout,
-		redirect: '/Discover',
-		children: [
-			{
-				path: '/Discover',
-				name: 'Discover',
-				component: () => import('views/Discover/index'),
-				meta: {
-					icon:'discover.png',
-				}
-			},
-		]
+    path: "/",
+    component: Layout,
+    redirect: "/Discover",
+    children: [
+      {
+        path: "/Discover",
+        name: "Discover",
+        component: () => import("views/Discover/index"),
+        meta: {
+          icon: "discover.png",
+        },
+      },
+    ],
   },
   {
-		path: '/Posts',
-		component: Layout,
-		children: [
-			{
-				path: '/Posts',
-				name: 'Posts',
-				component: () => import('views/Posts/index'),
-				meta: {
-					icon:'posts.png',
-				}
-			},
-		]
-	},
- 
+    path: "/Posts",
+    component: Layout,
+    children: [
+      {
+        path: "/Posts",
+        name: "Posts",
+        component: () => import("views/Posts/index"),
+        meta: {
+          icon: "posts.png",
+        },
+      },
+    ],
+  },
 ];
 
 export const asyncRoutes = [{ path: "/*", redirect: "/", hidden: true }];

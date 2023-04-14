@@ -1,5 +1,4 @@
 import Vue from "../main";
-
 const isTestServer = true;
 const tag = isTestServer ? "b_test_" : "b_";
 
@@ -7,12 +6,14 @@ const tag = isTestServer ? "b_test_" : "b_";
 export const ReSetIM = async function (vue) {
   var that = vue;
 
-  // 效验
-  if (that.$store.state.user.bloggerInfo.id == null) return;
+  // 解析参数
+  var userInfo = vue.$store.state.user.loginInfo.userInfo;
+  console.log("我的信息", userInfo);
+  that.myUserInfo = userInfo;
 
   // 获取云信参数
-  var token = that.$store.state.user.bloggerInfo.wyToken;
-  var account = tag + that.$store.state.user.bloggerInfo.id;
+  var token = userInfo.wyToken;
+  var account = tag + userInfo.id;
   var appKey = "590d2352a5d8778b6d1f427b5ecc8c62";
 
   // 实例初始化
@@ -55,6 +56,7 @@ export const ReSetIM = async function (vue) {
         that.userIdList.push(tag + tempUid); // 云信id转换
       }
     });
+    console.log("====== 会话云信id列表 ======", that.userIdList);
 
     that.nim.getUsers({
       accounts: that.userIdList,
@@ -64,6 +66,7 @@ export const ReSetIM = async function (vue) {
 
     async function getUsersDone(error, data) {
       data.reverse();
+      console.log("====== 获取云信id列表的用户信息 ======", data);
       // 添加相关的用户信息
       for (var i = chatList.length - 1; i >= 0; i--) {
         for (var j = chatList.length - 1; j >= 0; j--) {
@@ -78,8 +81,7 @@ export const ReSetIM = async function (vue) {
         userIDList: tempUidList.join(","),
       });
       if (!res.result) return that.$message.error("获取在线信息失败");
-      console.log("获取到了在线信息");
-      console.log(res);
+      console.log("获取到了云信id列表的在线信息", res);
 
       // 整合用户信息
       for (var i = 0; i < chatList.length; i++) {
@@ -95,10 +97,8 @@ export const ReSetIM = async function (vue) {
       }
       that.chatList = chatList;
       that.chatListGetDone = true;
-      console.log("整合完毕左侧列表信息");
-      console.log(that.chatList);
+      console.log("整合完毕左侧列表信息", that.chatList);
     }
-    that.chatList = chatList;
   }
 
   // 收到会话更新
@@ -126,10 +126,8 @@ export const ReSetIM = async function (vue) {
     // 自动设置该消息
     that.SetCurrentSession(msg, msg.sessionId);
 
-    // 重置索引
-    //  that.$refs.chatlist.IndexAdd();
-
-    // that.$refs.chatView.ResetScroll();
+    // 滚动到底部
+    that.$refs.chatView.ResetScroll();
 
     // // 将当前会话与第一个会话进行交换
     // var targetIndex = that.chatList.findIndex((x) => x.id == msg.sessionId);
