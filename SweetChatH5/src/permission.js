@@ -20,7 +20,6 @@ const whiteList = ["/login"];
 router.beforeEach((to, from, next) => {
   Nprogress.start();
   document.title = getPageTitle(to.meta.title);
-
   let user = JSON.parse(sessionStorage.getItem("User"));
   if (user && user.id) {
     if (to.path === "/login") {
@@ -35,6 +34,7 @@ router.beforeEach((to, from, next) => {
       // alert(1)
       next();
     } else {
+      console.log(1111111);
       next(`/login?redirect=${to.path}`); // 否则全部重定向到登录页
     }
   }

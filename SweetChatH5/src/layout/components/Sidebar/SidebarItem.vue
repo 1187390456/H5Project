@@ -19,9 +19,12 @@
         <el-menu-item
           :index="resolvePath(onlyOneChild.path)"
           :disabled="item.disabled"
+          class="menu-item"
         >
-           <i :class="onlyOneChild.meta.icon" style="font-size:24px"></i>
-           <span slot="title">{{onlyOneChild.meta.title}}</span>
+          <div>
+            <div><img src="@/assets/layout/chats.png" alt=""></div>
+            <div>{{onlyOneChild.meta.title}}</div>
+          </div>
         </el-menu-item>
       </app-link>
     </template>
@@ -34,10 +37,9 @@ import path from "path";
 import { isExternal } from "@/utils/validate";
 import AppLink from "./Link";
 import FixiOSBug from "./FixiOSBug";
-import Item from "./Item";
 export default {
   name: "SidebarItem",
-  components: { AppLink, Item },
+  components: { AppLink },
   computed: {
     ...mapGetters(["userInfo"]),
   },
@@ -98,4 +100,23 @@ export default {
   },
 };
 </script>
+<style scoped lang="scss">
+.menu-wrapper{
+  height: 100%;
+}
+
+.menu-item{
+  font-size: .5333rem;
+  color: #A4AAB2;
+  // line-height: .7467rem;
+  text-align: center;
+  img{
+    width: 1.2267rem;
+    height: 1.2267rem;    
+  }
+  .active{
+    color: #8032FF;
+  }
+}
+</style>
 

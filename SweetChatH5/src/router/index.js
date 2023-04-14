@@ -60,6 +60,60 @@ export const constantRoutes = [
     breadcrumb: true,
     meta: { title: "登录", keepAlive: false },
   },
+  {
+		path: '/Chats',
+		component: Layout,
+		redirect: '/Chats',
+		children: [
+			{
+				path: '/Chats',
+				name: 'Chats',
+				component: () => import('views/Discover/index'),
+				meta: {
+					title: '消息',
+					icon:'el-icon-chat-dot-round',
+					iconSize: 24,
+					activeMenu: '/Chats'
+				}
+			},
+		]
+  },
+  {
+		path: '/',
+		component: Layout,
+		redirect: '/Discover',
+		children: [
+			{
+				path: '/Discover',
+				name: 'Discover',
+				component: () => import('views/Discover/index'),
+				meta: {
+					title: '消息',
+					icon:'el-icon-chat-dot-round',
+					iconSize: 24,
+					activeMenu: '/Discover'
+				}
+			},
+		]
+  },
+  {
+		path: '/Posts',
+		component: Layout,
+		children: [
+			{
+				path: '/Posts',
+				name: 'Posts',
+				component: () => import('views/Posts/index'),
+				meta: {
+					title: '消息',
+					icon:'el-icon-chat-dot-round',
+					iconSize: 24,
+					activeMenu: '/Posts'
+				}
+			},
+		]
+	},
+ 
 ];
 
 export const asyncRoutes = [{ path: "/*", redirect: "/", hidden: true }];
