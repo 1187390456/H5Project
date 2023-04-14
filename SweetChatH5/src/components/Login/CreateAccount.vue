@@ -112,19 +112,22 @@
         <p :class="{ 'sign-up': isSignUp }">Sign Up</p>
       </div>
     </div>
-    <crop-picture :showCropper="showCropper" :imgData="imgData"></crop-picture>
+    <!-- <crop-picture :showCropper="showCropper" :imgData="imgData"></crop-picture> -->
   </div>
 </template>
 
 <script>
 import CommonHeader from "./CommonHeader.vue";
-import CropPicture from "./CropPicture.vue";
+// import CropPicture from "./CropPicture.vue";
 import { initOss, ossUpload } from "@/utils/aliyunoss.js";
 
 export default {
   name: "",
   mixins: [],
-  components: { CommonHeader, CropPicture },
+  components: {
+    CommonHeader,
+    // CropPicture
+  },
   props: {},
   data() {
     return {

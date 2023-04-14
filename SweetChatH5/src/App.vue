@@ -17,6 +17,8 @@ export default {
   created() {
     this.ListenWindowRoot();
     this.ParamCatch();
+    sessionStorage.setItem("User", JSON.stringify({ id:141 }));
+    this.$store.dispatch("permission/generateRoutes", []);
   },
   methods: {
     ListenWindowRoot() {
