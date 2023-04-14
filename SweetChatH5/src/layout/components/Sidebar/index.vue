@@ -1,13 +1,12 @@
 <template>
-  <div>
-    <el-menu
+  <el-menu
+      class="el-menu"
       ref="menu"
+      mode="horizontal"
       :default-active="activeMenu"
       :collapse="isCollapse"
       :unique-opened="false"
       :collapse-transition="false"
-      :text-color="variables.menuText"
-      :active-text-color="variables.menuActiveText"
       @select="handleSelect"
       router
     >
@@ -18,14 +17,13 @@
         :base-path="route.path"
       />
     </el-menu>
-  </div>
 </template>
 
 <script>
 import { isExternal } from '@/utils/validate'
 import { mapGetters } from 'vuex'
 import SidebarItem from './SidebarItem'
-import variables from '@/styles/variables.scss'
+// import variables from '@/styles/variables.scss'
 
 export default {
   components: { SidebarItem },
@@ -47,9 +45,9 @@ export default {
       }
       return path
     },
-    variables() {
-      return variables
-    },
+    // variables() {
+    //   return variables
+    // },
     isCollapse() {
       return !this.sidebar.opened
     },
@@ -81,3 +79,11 @@ export default {
   },
 }
 </script>
+<style scoped>
+.el-menu{
+  height: 100%;
+  display:flex;
+  justify-content:space-around;
+  align-items: center;
+}
+</style>

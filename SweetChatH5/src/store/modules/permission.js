@@ -42,6 +42,7 @@ const state = {
 
 const mutations = {
   SET_ROUTES: (state, routes) => {
+    
     //   全部路由
     state.routes = constantRoutes.concat(routes)
     // 添加路由
