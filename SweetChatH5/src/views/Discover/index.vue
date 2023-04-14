@@ -8,11 +8,11 @@
                 <img class="shade" src="@/assets/images/discover/shade.png" alt="">
                 <div class="btm-info">
                     <div class="name">{{item.nickname}}</div>  
-                    <div class="mark">
+                    <div class="mark" v-if="item.identity">
                         <img src="@/assets/images/discover/attestation.png" alt="">
                         <span>World Cosplay Sum #2</span>
                     </div>
-                    <div class="fans">
+                    <div class="fans" v-if="item.identity">
                         <img src="@/assets/images/discover/terrace.png" alt="">
                         <span>154.3K Fans</span>
                     </div>
@@ -106,8 +106,7 @@ export default {
                     height: 1.1733rem;
                     line-height: 1.1733rem;
                 }
-                .mark{                  
-                   font-family: PingFangSC-Regular, PingFang SC;
+                .mark{                   
                     margin-left: .48rem;
                     margin-top: .2133rem;
                     img{
@@ -126,6 +125,7 @@ export default {
                     }
                 }
                 .mark,.fans{
+                    font-family: PingFangSC-Regular, PingFang SC;
                     display: flex;
                     align-items: center;
                     height: .8533rem;

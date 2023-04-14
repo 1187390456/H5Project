@@ -1,5 +1,5 @@
 <template>
-  <el-container style="background:#F6F7FB">
+  <el-container style="font-family: PingFangSC-Medium, PingFang SC;">
     <el-header> <navbar /> </el-header>
     <el-main class="el-main">
       <!-- <el-container style="width:100%;min-width:1080px; margin:0 auto;padding:0px">

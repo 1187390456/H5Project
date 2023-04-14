@@ -70,10 +70,7 @@ export const constantRoutes = [
 				name: 'Chats',
 				component: () => import('views/Discover/index'),
 				meta: {
-					title: '消息',
-					icon:'el-icon-chat-dot-round',
-					iconSize: 24,
-					activeMenu: '/Chats'
+					icon:'chats.png',
 				}
 			},
 		]
@@ -88,10 +85,7 @@ export const constantRoutes = [
 				name: 'Discover',
 				component: () => import('views/Discover/index'),
 				meta: {
-					title: '消息',
-					icon:'el-icon-chat-dot-round',
-					iconSize: 24,
-					activeMenu: '/Discover'
+					icon:'discover.png',
 				}
 			},
 		]
@@ -105,10 +99,7 @@ export const constantRoutes = [
 				name: 'Posts',
 				component: () => import('views/Posts/index'),
 				meta: {
-					title: '消息',
-					icon:'el-icon-chat-dot-round',
-					iconSize: 24,
-					activeMenu: '/Posts'
+					icon:'posts.png',
 				}
 			},
 		]
