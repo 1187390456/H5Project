@@ -9,7 +9,6 @@ const state = {
     : "",
   avatar: "",
   roles: [],
-  bloggerInfo: {},
   baseURL: baseURL,
   loginInfo: {},
 };
@@ -27,9 +26,6 @@ const mutations = {
   },
   SET_ROLES: (state, roles) => {
     state.roles = [...roles];
-  },
-  SET_INFO: (state, info) => {
-    state.bloggerInfo = { ...info };
   },
   SET_LOGIN_INFO: (state, info) => {
     state.loginInfo = { ...info };
@@ -68,7 +64,6 @@ const actions = {
   logout({ commit, state }) {
     console.log(state);
     var bloggerUserID = 0;
-    if (state.bloggerInfo.id) bloggerUserID = state.bloggerInfo.id;
     cancenAccount({ bloggerUserID })
       .then((res) => {
         commit("SET_NAME", "");

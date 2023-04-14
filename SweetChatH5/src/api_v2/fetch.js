@@ -83,11 +83,7 @@ export default function fetch(options) {
         config.headers["Accept-Language"] = "en-US";
         config.headers.bgUserId = "";
         config.headers.bgUserToken = "";
-        // config.headers.userID = store.state.user.bloggerInfo.id;
-        // config.headers.userToken = store.state.user.bloggerInfo.token;
       } else if (config.headerType && config.headerType == 2) {
-        // config.headers.userID = store.state.user.bloggerInfo.id;
-        // config.headers.userToken = store.state.user.bloggerInfo.token;
         config.headers.userID = 141;
         config.headers.userToken = "CdVW5ElzOMkJr0y92FsVKX3vhHb1Ride";
       } else {

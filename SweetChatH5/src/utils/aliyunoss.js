@@ -1,4 +1,4 @@
-import { getSts } from "@/api_v2/modules/trends.js";
+import { getSts } from "@/api_v2/modules/login.js";
 import { Message } from "element-ui";
 import OSS from "ali-oss";
 import store from "@/store";
@@ -46,8 +46,8 @@ export const ossUpload = async (
 ) => {
   videoCoverID = videoCoverID ? videoCoverID : 0;
   videoTimeLen = videoTimeLen ? videoTimeLen : 0;
-  const { bloggerInfo, baseURL } = store.getters;
-  let newImgName = `H5_${bloggerInfo.id}_${Math.ceil(
+  const { loginInfo, baseURL } = store.getters;
+  let newImgName = `H5_${loginInfo.userInfo.id}_${Math.ceil(
     Math.random() * 100000
   )}_${new Date().getTime()}.${file.raw.type.split("/")[1]}`;
   var imageBody = "";
@@ -62,10 +62,10 @@ export const ossUpload = async (
   }
   let tempBody =
     '{"userID":"' +
-    bloggerInfo.id +
+    loginInfo.userInfo.id +
     '",' +
     '"userKey":"' +
-    bloggerInfo.token +
+    loginInfo.userInfo.token +
     '",' +
     '"osType":"H5"' +
     "," +

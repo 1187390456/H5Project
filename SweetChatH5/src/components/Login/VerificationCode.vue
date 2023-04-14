@@ -107,10 +107,10 @@ export default {
             .then((res) => {
               if (res.result) {
                 this.$store.commit("user/SET_LOGIN_INFO", res.data);
-                sessionStorage.setItem(
-                  "User",
-                  JSON.stringify({ id: res.data.userInfo.id })
-                );
+                const id = res.data.userInfo.id;
+                const name = res.data.userInfo.nickname;
+                sessionStorage.setItem("User", JSON.stringify({ name, id }));
+                this.$router.push({ path: "/Discover" });
                 this.$store.dispatch("permission/generateRoutes", []);
               }
             });
