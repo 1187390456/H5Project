@@ -22,8 +22,8 @@
           class="menu-item"
         >
           <div>
-            <div><img src="@/assets/layout/chats.png" alt=""></div>
-            <div>{{onlyOneChild.meta.title}}</div>
+            <div><img :src="require(`@/assets/layout/${onlyOneChild.path == activePath ? 're'+onlyOneChild.meta.icon :onlyOneChild.meta.icon}`)" alt=""></div>
+            <div class="title">{{onlyOneChild.name}}</div>
           </div>
         </el-menu-item>
       </app-link>
@@ -40,8 +40,7 @@ import FixiOSBug from "./FixiOSBug";
 export default {
   name: "SidebarItem",
   components: { AppLink },
-  computed: {
-    ...mapGetters(["userInfo"]),
+  computed: {    
   },
   mixins: [FixiOSBug],
   props: {
@@ -58,10 +57,15 @@ export default {
       type: String,
       default: "",
     },
+    activePath:{
+      type: String,
+      default: "",
+    }
   },
   data() {
     this.onlyOneChild = null;
-    return {};
+    return {
+    };
   },
   methods: {
     hasOneShowingChild(children = [], parent) {
@@ -101,10 +105,6 @@ export default {
 };
 </script>
 <style scoped lang="scss">
-.menu-wrapper{
-  height: 100%;
-}
-
 .menu-item{
   font-size: .5333rem;
   color: #A4AAB2;
@@ -114,9 +114,16 @@ export default {
     width: 1.2267rem;
     height: 1.2267rem;    
   }
+  .title{
+    height: .7467rem;
+    line-height: .7467rem;
+  }
   .active{
     color: #8032FF;
   }
+}
+::v-deep .is-active{
+  color: #8032FF;
 }
 </style>
 

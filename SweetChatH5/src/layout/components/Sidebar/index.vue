@@ -15,6 +15,7 @@
         :key="route.path"
         :item="route"
         :base-path="route.path"
+        :activePath ="activePath"
       />
     </el-menu>
 </template>
@@ -29,7 +30,7 @@ export default {
   components: { SidebarItem },
   data() {
     return {
-      // activeMenu: this.$route.path
+      activePath: this.$route.path
     }
   },
   computed: {
@@ -54,6 +55,7 @@ export default {
   },
   methods:{
     handleSelect(key, keyPath){
+      this.activePath = key
       if (isExternal(key)) {
         this.$api
         .getPanCode({})
