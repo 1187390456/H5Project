@@ -3,6 +3,7 @@
     <login-method
       v-if="showWhichMethod == 0"
       @changeLoginMethod="changeLoginMethod"
+      @changeThirdAccountInfo="changeThirdAccountInfo"
     ></login-method>
     <verification-code
       v-if="showWhichMethod == 1"
@@ -10,6 +11,7 @@
     ></verification-code>
     <create-account
       v-if="showWhichMethod == 2"
+      :thirdAccountInfo="thirdAccountInfo"
       @changeLoginMethod="changeLoginMethod"
     ></create-account>
   </div>
@@ -31,7 +33,8 @@ export default {
   props: {},
   data() {
     return {
-      showWhichMethod: 0,
+      showWhichMethod: 2,
+      thirdAccountInfo: null,
     };
   },
   computed: {},
@@ -41,6 +44,10 @@ export default {
   methods: {
     changeLoginMethod(index) {
       this.showWhichMethod = index;
+    },
+
+    changeThirdAccountInfo(info) {
+      this.thirdAccountInfo = { ...info };
     },
   },
 };

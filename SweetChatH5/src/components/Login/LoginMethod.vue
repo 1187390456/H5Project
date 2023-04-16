@@ -62,6 +62,7 @@ export default {
       client_id:
         "527306987343-auqpkaj7a2qacv2vp4f3jopie3g257h6.apps.googleusercontent.com",
       redirect_uri: "http://localhost:8883/",
+      app_id: "634502518469740",
       openId: "",
       accessToken: "",
     };
@@ -75,7 +76,27 @@ export default {
     params.id_token && (this.openId = jwt.decode(params.id_token).sub);
     this.accessToken = params.access_token;
     console.log(this.openId, "openId");
-    // this.trySampleRequest();
+
+    FB.init({
+      appId: this.app_id,
+      cookie: true,
+      xfbml: true,
+      version: "v10.0",
+    });
+
+    // FB.getLoginStatus(function (response) {
+    //   if (response.status === "connected") {
+    //     // 用户已登录并授权
+    //     var uid = response.authResponse.userID;
+    //     var accessToken = response.authResponse.accessToken;
+    //     console.log(uid, accessToken, "facebook login success ------");
+    //     // 处理获取用户信息的逻辑
+    //   } else if (response.status === "not_authorized") {
+    //     // 用户已登录但未授权
+    //   } else {
+    //     // 用户未登录
+    //   }
+    // });
   },
   methods: {
     handleAgree() {
@@ -93,6 +114,25 @@ export default {
           break;
         case 5:
           // Facebook授权登录
+          FB.login(
+            (response) => {
+              this.openId =
+                response.authResponse && response.authResponse.userID;
+              this.accessToken =
+                response.authResponse && response.authResponse.accessToken;
+
+              FB.api("/me", { fields: "id,name,email,picture" }, (res) => {
+                // 处理获取用户信息的逻辑
+                const userinfo = {
+                  nickname: res.name,
+                  avatar: res.picture.data.url,
+                };
+                this.$emit("changeThirdAccountInfo", userinfo);
+                this.$emit("changeLoginMethod", 2);
+              });
+            },
+            { scope: "public_profile,email" }
+          );
           break;
         case 6:
           this.trySampleRequest();

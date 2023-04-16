@@ -15,6 +15,8 @@ import Bus from "./bus";
 import "./directive";
 import { Api } from "./api_v2";
 
+import vConsole from "./vconsole";
+
 // 视频播放组件
 import VideoPlayer from "vue-video-player";
 require("video.js/dist/video-js.css");
@@ -31,6 +33,12 @@ import "viewerjs/dist/viewer.css";
 import "./assets/font/index.css";
 import "./assets/style/xcm.css";
 import "./assets/style/xcm.less";
+
+import "vant/lib/index.css";
+import { Icon, Picker, Popup } from "vant";
+Vue.use(Icon);
+Vue.use(Picker);
+Vue.use(Popup);
 
 // ant
 // import "ant-design-vue/dist/antd.css";
