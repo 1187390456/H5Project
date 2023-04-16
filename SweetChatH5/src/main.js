@@ -15,6 +15,7 @@ import Bus from "./bus";
 import "./directive";
 import { Api } from "./api_v2";
 
+
 // 视频播放组件
 import VideoPlayer from "vue-video-player";
 require("video.js/dist/video-js.css");

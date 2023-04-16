@@ -61,7 +61,7 @@ export const constantRoutes = [
     meta: { title: "登录", keepAlive: false },
   },
   {
-		path: '/Chats',
+		path: '/',
 		component: Layout,
 		redirect: '/Chats',
 		children: [
@@ -74,22 +74,7 @@ export const constantRoutes = [
 				}
 			},
 		]
-  },
-  {
-		path: '/',
-		component: Layout,
-		redirect: '/Discover',
-		children: [
-			{
-				path: '/Discover',
-				name: 'Discover',
-				component: () => import('views/Discover/index'),
-				meta: {
-					icon:'discover.png',
-				}
-			},
-		]
-  },
+  },  
   {
 		path: '/Posts',
 		component: Layout,
@@ -103,7 +88,21 @@ export const constantRoutes = [
 				}
 			},
 		]
-	},
+  },
+  {
+		path: '/',
+		component: Layout,
+		children: [
+			{
+				path: '/Discover',
+				name: 'Discover',
+				component: () => import('views/Discover/index'),
+				meta: {
+					icon:'discover.png',
+				}
+			},
+		]
+  },
  
 ];
 
