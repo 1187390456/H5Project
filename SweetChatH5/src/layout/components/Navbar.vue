@@ -1,6 +1,6 @@
 <template>
   <div class="navbar">
-    <span>Discover</span>
+    <span>{{activePath}}</span>
     <img :src="loginInfo.userInfo && loginInfo.userInfo.avatar" alt="" />
   </div>
 </template>
@@ -11,13 +11,8 @@ import { chromeDownUrl } from "@/config";
 export default {
   data() {
     return {
-      noticeList: "", //气泡数据
-      visible: false,
-      fullscreen: false,
-      rotate: true,
       chromeDownUrl,
-      dropMenu: false,
-      bloggerList: [],
+      activePath:this.$route.path
     };
   },
   components: {},
@@ -27,8 +22,18 @@ export default {
       user: (state) => state.user,
     }),
   },
+  watch: {
+    "$route.path":{
+      handler (newVal, oldValue) {
+        this.activePath = newVal.substring(1)
+      },
+      immediate:true
+    }
+  },
   methods: {},
-  mounted() {},
+  mounted() {
+  },
+
 };
 </script>
 
