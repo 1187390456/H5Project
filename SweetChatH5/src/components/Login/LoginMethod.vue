@@ -30,16 +30,16 @@
     </ul>
     <!-- 同意相关协议 -->
     <div class="agreement">
-      <div @click="handleAgree">
+      <!-- <div @click="handleAgree">
         <img
           v-if="isChecked"
           src="../../assets/images/login/checked@3x.png"
           alt=""
         />
         <img v-else src="../../assets/images/login/unchecked@3x.png" alt="" />
-      </div>
+      </div> -->
+      <p>By signing up or continuing.you agree to</p>
       <p>
-        Agree to
         <a href="#">Privacy Policy</a>
         and
         <a href="#">Terms of Service</a>
@@ -107,7 +107,7 @@ export default {
       switch (type) {
         case 1:
           // 手机号登录
-          this.$emit("changeLoginMethod", 1);
+          this.$root.$emit("changeLoginMethod", 1);
           break;
         case 4:
           // 苹果账号授权登录
@@ -127,8 +127,8 @@ export default {
                   nickname: res.name,
                   avatar: res.picture.data.url,
                 };
+                this.commonLogin(type);
                 this.$emit("changeThirdAccountInfo", userinfo);
-                this.$emit("changeLoginMethod", 2);
               });
             },
             { scope: "public_profile,email" }
@@ -143,12 +143,32 @@ export default {
       }
     },
 
-    // commonLogin() {
-    //   this.$api.login({
-    //     openID: this.openId,
-    //     accessToken: this.accessToken,
-    //   }).;
-    // },
+    commonLogin(type) {
+      this.$api
+        .commonLogin({
+          type,
+          openID: this.openId,
+          accessToken: this.accessToken,
+        })
+        .then((res) => {
+          console.log(res);
+          if (res.result) {
+            this.$store.commit("user/SET_LOGIN_INFO", res.data);
+            if (res.data.isEdit) {
+              // 直接进入
+              console.log("直接进入===");
+            } else {
+              // 去编辑资料
+              this.$root.$emit("changeLoginMethod", 2);
+            }
+            // const id = res.data.userInfo.id;
+            // const name = res.data.userInfo.nickname;
+            // sessionStorage.setItem("User", JSON.stringify({ name, id }));
+            // this.$router.push({ path: "/Discover" });
+            // this.$store.dispatch("permission/generateRoutes", []);
+          }
+        });
+    },
 
     trySampleRequest() {
       const params = this.parseHash(location.hash.substring(1));
@@ -219,13 +239,13 @@ export default {
   // font-family: PingFangSC-Medium, PingFang SC;
   width: 100%;
   height: 100%;
-  // overflow: auto;
-  // scrollbar-width: none; //（仅限firefox）
-  // -ms-overflow-style: none; //（仅限IE 10+）
+  overflow: auto;
+  scrollbar-width: none; //（仅限firefox）
+  -ms-overflow-style: none; //（仅限IE 10+）
 
-  // &::-webkit-scrollbar {
-  //   display: none; /* Chrome Safari */
-  // }
+  &::-webkit-scrollbar {
+    display: none; /* Chrome Safari */
+  }
 
   .app-name {
     text-align: center;
@@ -297,6 +317,7 @@ export default {
   .agreement {
     width: 100%;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     margin-top: 4.533333rem /* 85/18.75 */;
@@ -317,7 +338,6 @@ export default {
       font-size: 0.64rem /* 12/18.75 */;
       font-family: PingFangSC-Regular;
       margin: 0;
-      margin-left: 0.266667rem /* 5/18.75 */;
 
       a {
         font-family: PingFangSC-Medium;

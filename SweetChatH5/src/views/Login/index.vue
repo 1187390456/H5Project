@@ -2,17 +2,12 @@
   <div class="login-container">
     <login-method
       v-if="showWhichMethod == 0"
-      @changeLoginMethod="changeLoginMethod"
       @changeThirdAccountInfo="changeThirdAccountInfo"
     ></login-method>
-    <verification-code
-      v-if="showWhichMethod == 1"
-      @changeLoginMethod="changeLoginMethod"
-    ></verification-code>
+    <verification-code v-if="showWhichMethod == 1"></verification-code>
     <create-account
       v-if="showWhichMethod == 2"
       :thirdAccountInfo="thirdAccountInfo"
-      @changeLoginMethod="changeLoginMethod"
     ></create-account>
   </div>
 </template>
@@ -33,14 +28,16 @@ export default {
   props: {},
   data() {
     return {
-      showWhichMethod: 2,
+      showWhichMethod: 0,
       thirdAccountInfo: null,
     };
   },
   computed: {},
   watch: {},
   created() {},
-  mounted() {},
+  mounted() {
+    this.$root.$on("changeLoginMethod", this.changeLoginMethod);
+  },
   methods: {
     changeLoginMethod(index) {
       this.showWhichMethod = index;

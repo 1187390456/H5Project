@@ -4,11 +4,11 @@
     <div class="container">
       <ul>
         <li class="avatar-box" @click="toUploadAvatar">
+          <!-- capture="camera" -->
           <input
             type="file"
             name=""
             accept="image/*"
-            capture="camera"
             ref="inputFile"
             @change="onChangeAvatar"
           />
@@ -123,7 +123,7 @@
         </li>
       </ul>
       <div class="btn-box">
-        <p :class="{ 'sign-up': isSignUp }">Sign Up</p>
+        <p :class="{ 'sign-up': isSignUp }" @click="signUp">Sign Up</p>
       </div>
     </div>
     <van-popup v-model="showBirthPopup" round position="bottom">
@@ -139,13 +139,27 @@
         @confirm="onConfirmBirth"
       />
     </van-popup>
-    <crop-picture
-      v-if="showCropper"
-      :showCropper="showCropper"
-      :imgData="imgData"
-      @changeShowCropper="changeShowCropper"
-      @changeUploadAvatar="changeUploadAvatar"
-    ></crop-picture>
+    <van-popup
+      v-model="showCropper"
+      position="bottom"
+      :close-on-click-overlay="false"
+      :style="{ height: '100%' }"
+    >
+      <div class="crop-options">
+        <div class="title">
+          <van-icon name="cross" @click="cancleCropper" />
+          <p>Move and scale</p>
+          <van-icon name="success" @click="submitCropper" />
+        </div>
+        <div class="crop-outer">
+          <crop-picture
+            ref="cropComp"
+            v-if="showCropper"
+            :imgData="imgData"
+          ></crop-picture>
+        </div>
+      </div>
+    </van-popup>
   </div>
 </template>
 
@@ -154,6 +168,8 @@ import CommonHeader from "./CommonHeader.vue";
 import CropPicture from "./CropPicture.vue";
 import { initOss, ossUpload } from "@/utils/aliyunoss.js";
 import { regFormatDate, daysInMonth } from "../../utils/date";
+import { getImageFileFromUrl } from "../../utils/ymt";
+import { mapGetters } from "vuex";
 
 export default {
   name: "",
@@ -186,6 +202,7 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(["loginInfo"]),
     todayArr() {
       let formatStr = regFormatDate(new Date(), "YYYY-MM-DD");
       let todayArr = formatStr.split("-");
@@ -272,18 +289,68 @@ export default {
       deep: true,
     },
   },
-  created() {},
+  created() {
+    initOss();
+  },
   mounted() {
     if (this.isIOS()) {
-      this.$refs.inputFile.removeAttribute("capture");
+      console.log("IOS ===");
+      // this.$refs.inputFile.removeAttribute("capture");
     }
     console.log(this.thirdAccountInfo);
     if (this.thirdAccountInfo) {
       this.accountForm.nickname = this.thirdAccountInfo.nickname;
       this.showAavatarUrl = this.thirdAccountInfo.avatar;
+      getImageFileFromUrl(this.thirdAccountInfo.avatar, "fileName")
+        .then((response) => {
+          // 返回的是文件对象，使用变量接收即可
+          setTimeout(() => {
+            ossUpload(response, {
+              fileType: 1,
+              fileSort: "avatar",
+            }).then((res) => {
+              if (res.result) {
+                this.accountForm.avatar = res.data.fileID;
+              } else {
+              }
+            });
+          }, 1000);
+        })
+        .catch((e) => {
+          console.error(e);
+        });
     }
   },
   methods: {
+    signUp() {
+      if (this.isSignUp) {
+        this.$api
+          .registerEditInfo({
+            nickname: this.accountForm.nickname,
+            gender: parseInt(this.accountForm.gender),
+            birthday: this.accountForm.birth.replace(/\//g, "-"),
+            avatarID: this.accountForm.avatar,
+          })
+          .then((res) => {
+            console.log(res);
+            if (res.result) {
+              let temoObj = {
+                isNew: this.loginInfo.isNew,
+                isEdit: this.loginInfo.isEdit,
+                ...this.loginInfo.userInfo,
+                ...res.data,
+              };
+              this.$store.commit("user/SET_LOGIN_INFO", temoObj);
+              const id = res.data.userInfo.id;
+              const name = res.data.userInfo.nickname;
+              sessionStorage.setItem("User", JSON.stringify({ name, id }));
+              this.$router.push({ path: "/Discover" });
+              this.$store.dispatch("permission/generateRoutes", []);
+            }
+          });
+      }
+    },
+
     hancleBirthClick() {
       this.showBirthPopup = true;
       setTimeout(() => {
@@ -335,9 +402,42 @@ export default {
       };
     },
 
+    submitCropper() {
+      let canvas = this.$refs.cropComp.cropper.getCroppedCanvas();
+      let base64 = canvas.toDataURL("image/jpeg");
+      const nfile = this.base64ToFile(base64, "avatar.png");
+      this.changeUploadAvatar(base64);
+      this.showCropper = false;
+      ossUpload(nfile, {
+        fileType: 1,
+        fileSort: "avatar",
+      }).then((res) => {
+        if (res.result) {
+          this.accountForm.avatar = res.data.fileID;
+        } else {
+        }
+      });
+    },
+
+    cancleCropper() {
+      this.showCropper = false;
+    },
+
     toUploadAvatar() {
-      // initOss();
       this.$refs.inputFile.click();
+    },
+
+    base64ToFile(dataurl, fileName) {
+      // global atob Uint8Array File
+      let arr = dataurl.split(",");
+      let imgType = arr[0].match(/:(.*?);/)[1];
+      let bstr = atob(arr[1]);
+      let n = bstr.length;
+      let u8arr = new Uint8Array(n);
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+      return new File([u8arr], fileName, { type: imgType });
     },
 
     isIOS() {
@@ -539,6 +639,29 @@ export default {
     .sign-up {
       opacity: 1;
     }
+  }
+}
+.crop-options {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: #000;
+
+  .title {
+    height: 2.346667rem /* 44/18.75 */;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 0.533333rem /* 10/18.75 */;
+  }
+
+  .crop-outer {
+    flex: 1;
+    width: 100vw;
+    position: relative;
   }
 }
 </style>

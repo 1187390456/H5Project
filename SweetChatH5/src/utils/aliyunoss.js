@@ -49,7 +49,7 @@ export const ossUpload = async (
   const { loginInfo, baseURL } = store.getters;
   let newImgName = `H5_${loginInfo.userInfo.id}_${Math.ceil(
     Math.random() * 100000
-  )}_${new Date().getTime()}.${file.raw.type.split("/")[1]}`;
+  )}_${new Date().getTime()}.${file.type.split("/")[1]}`;
   var imageBody = "";
   if (fileType == 1) {
     imageBody =
@@ -115,7 +115,7 @@ export const ossUpload = async (
     ossClient
       .put(
         `${fileType == 1 ? "image" : "video"}/${fileSort}/${newImgName}`,
-        file.raw,
+        file,
         options
       )
       .then((res) => {

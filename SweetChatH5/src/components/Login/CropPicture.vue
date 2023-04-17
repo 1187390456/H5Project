@@ -1,23 +1,9 @@
 <template>
   <div class="cropper-box">
     <!-- 剪裁图片组件 -->
-    <van-popup
-      v-model="showCropper"
-      position="top"
-      duration="0"
-      :style="{ height: '100%' }"
-    >
-      <div class="crop-options">
-        <div class="title">
-          <van-icon name="cross" @click="cancleCropper" />
-          <p>Move and scale</p>
-          <van-icon name="success" @click="submitCropper" />
-        </div>
-        <div class="crop-box">
-          <img id="cropImage" :src="imgData" alt="" />
-        </div>
-      </div>
-    </van-popup>
+    <div class="crop-box">
+      <img id="cropImage" :src="imgData" alt="" />
+    </div>
   </div>
 </template>
 
@@ -30,9 +16,6 @@ export default {
   mixins: [],
   components: {},
   props: {
-    showCropper: {
-      type: Boolean,
-    },
     imgData: {
       type: [Blob, String],
     },
@@ -46,7 +29,7 @@ export default {
   watch: {},
   created() {},
   mounted() {
-    this.initCropper();
+    this.imgData && this.initCropper();
   },
   methods: {
     initCropper() {
@@ -74,31 +57,6 @@ export default {
       });
     },
 
-    submitCropper() {
-      let canvas = this.cropper.getCroppedCanvas();
-      let base64 = canvas.toDataURL("image/jpeg");
-      const nfile = this.base64ToFile(base64, "avatar.png");
-      this.$emit("changeUploadAvatar", base64);
-      this.$emit("changeShowCropper", false);
-    },
-
-    cancleCropper() {
-      this.$emit("changeShowCropper", false);
-    },
-
-    base64ToFile(dataurl, fileName) {
-      // global atob Uint8Array File
-      let arr = dataurl.split(",");
-      let imgType = arr[0].match(/:(.*?);/)[1];
-      let bstr = atob(arr[1]);
-      let n = bstr.length;
-      let u8arr = new Uint8Array(n);
-      while (n--) {
-        u8arr[n] = bstr.charCodeAt(n);
-      }
-      return new File([u8arr], fileName, { type: imgType });
-    },
-
     // methods end
   },
 };
@@ -106,31 +64,18 @@ export default {
 
 <style scoped lang="scss">
 .cropper-box {
-  .van-popup {
-    background: #141313;
-  }
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 
-  .crop-options {
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-
-    .title {
-      height: 2.346667rem /* 44/18.75 */;
-      color: #fff;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 0.533333rem /* 10/18.75 */;
-    }
-
-    .crop-box {
-      flex: 1;
-      width: 100vw;
-      overflow: hidden;
-    }
+  .crop-box {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
   }
 }
 </style>

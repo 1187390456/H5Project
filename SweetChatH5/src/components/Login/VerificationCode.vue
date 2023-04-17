@@ -1,6 +1,6 @@
 <template>
   <div class="verification-code">
-    <common-header :type="type"></common-header>
+    <common-header :type="type" @changeType="changeType"></common-header>
     <!-- 标题 -->
     <div class="container">
       <!-- 输入手机号 -->
@@ -22,7 +22,7 @@
         <div class="btn-box">
           <p
             :class="{ 'input-phone': phoneNumber.length == 11 }"
-            @click="handleToCode"
+            @click="changeType(2)"
           >
             Get verification code
           </p>
@@ -107,11 +107,19 @@ export default {
             .then((res) => {
               if (res.result) {
                 this.$store.commit("user/SET_LOGIN_INFO", res.data);
-                const id = res.data.userInfo.id;
-                const name = res.data.userInfo.nickname;
-                sessionStorage.setItem("User", JSON.stringify({ name, id }));
-                this.$router.push({ path: "/Discover" });
-                this.$store.dispatch("permission/generateRoutes", []);
+                if (res.data.isEdit) {
+                  // 直接进入
+                  console.log("直接进入===");
+                  const id = res.data.userInfo.id;
+                  const name = res.data.userInfo.nickname;
+                  sessionStorage.setItem("User", JSON.stringify({ name, id }));
+                  sessionStorage.setItem("userToken", res.data.userInfo.token);
+                  this.$router.push({ path: "/Discover" });
+                  this.$store.dispatch("permission/generateRoutes", []);
+                } else {
+                  // 去编辑资料
+                  this.$root.$emit("changeLoginMethod", 2);
+                }
               }
             });
         }
@@ -122,8 +130,8 @@ export default {
   created() {},
   mounted() {},
   methods: {
-    handleToCode() {
-      this.type = 2;
+    changeType(type) {
+      this.type = type;
     },
 
     onFocusCode() {

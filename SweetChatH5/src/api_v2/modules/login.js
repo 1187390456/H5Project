@@ -16,7 +16,15 @@ export const phoneLogin = (data) => {
     url: "/api/user-account/login-by-phone",
     method: "post",
     // createLogin: true,
-    headerType: 1,
+    data,
+  });
+};
+
+// 注册编辑资料
+export const registerEditInfo = (data) => {
+  return fetch({
+    url: "/api/user-account/register-edit-user-info",
+    method: "post",
     data,
   });
 };
@@ -26,7 +34,6 @@ export const getSts = (data) => {
   return fetch({
     url: "/api/oss/sts",
     method: "post",
-    headerType: 1, // 头部信息
     data,
   });
 };
