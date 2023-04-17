@@ -1,5 +1,5 @@
 module.exports = {
-  title: "FansBridge",
+  title: "SweetFans",
 
   /**
    * @type {boolean} true | false

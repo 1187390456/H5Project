@@ -8,13 +8,13 @@
       <!-- 下载浮窗 -->
       <div class="download">
         <div class="c1">
-          <img src="../../assets/img/logo1.jpg" alt="" />
+          <img src="../../assets/img/downLoad/logo.png" alt="" />
           <span>{{ gender == 1 ? $t('pp1') : $t('pp1_1') }}</span>
         </div>
         <a-button data-name="downHandler" @click="DownLoad($event)" class="c2">{{ $t('pp8') }}</a-button>
       </div>
       <!-- 个人信息 -->
-      <div v-if="loading">
+      <div v-if="loading" style="min-height: 50px;background-color: #E7E7E7;">
         <a-skeleton class="l_personDes" active :title="false" :paragraph="SkeletonParagraphProps"
           :avatar="false"></a-skeleton>
       </div>
@@ -30,8 +30,11 @@
             <img :src="this.userInfo.identityV.icon" alt="">
             <span>{{ this.userInfo.identityV.desc }}</span>
           </div>
-          <!--  其他认证信息 -->
-          <ul class="c3" v-if="this.userInfo.identityApp && this.userInfo.identityApp.length > 0">
+        </div>
+        <!--  其他认证信息 -->
+        <div class="otherDes">
+          <div class="des">Fans in other social platform</div>
+          <ul class="list" v-if="this.userInfo.identityApp && this.userInfo.identityApp.length > 0">
             <li v-for="(item, i) in this.userInfo.identityApp" :key="i">
               <img :src="item.icon" alt="">
               <span>{{ item.desc }}</span>
@@ -120,10 +123,10 @@
           <img src="../../assets/img/chatbig.png" alt="">
           <span style="margin-left: 8px;">{{ $t('pp6') }}</span>
         </a-button>
-        <a-button @click="DownLoad($event)" class="c2">
+        <!-- <a-button @click="DownLoad($event)" class="c2">
           <img src="../../assets/img/addFridendBig.png" alt="">
           <span style="margin-left: 8px;">{{ $t('pp7') }}</span>
-        </a-button>
+        </a-button> -->
       </div>
       <!-- 博主注册pc弹窗 -->
       <blogger-dialong v-if="bloggerDialong" @CloseEvent="bloggerDialong = false" :url="targetUrl"></blogger-dialong>
@@ -157,7 +160,7 @@ export default {
 
       // loading
       SkeletonParagraphProps: {
-        rows: 5,
+        rows: 6,
         width: ["2.2rem", "9.1rem", "9.1rem", "18.75rem", "18.75rem"]
       },
       SkeletonParagraphPropsli: {
@@ -341,6 +344,7 @@ export default {
 
 /deep/ .ant-card-head {
   border-bottom: none;
+  padding: 0;
 }
 
 /deep/ .ant-card-head .ant-tabs-bar {
@@ -411,7 +415,7 @@ export default {
     position: fixed;
     top: 0;
     width: 375px;
-    min-height: 412px;
+    height: 18.75rem;
     object-fit: cover;
   }
 
@@ -467,7 +471,7 @@ export default {
 
   .floatShade {
     position: fixed;
-    top: 15rem;
+    top: 10.7rem;
     width: 375px;
     height: 8rem;
     background: linear-gradient(180deg,
@@ -480,8 +484,8 @@ export default {
     position: relative;
     top: 0;
     width: 100%;
-    margin-top: 13.2rem;
-    margin-bottom: 10px; // 解决遮罩
+    // margin-top: 13.2rem;
+    margin-top: 10.5rem;
     padding: 0 0.5rem;
     display: flex;
     flex-direction: column;
@@ -544,45 +548,103 @@ export default {
       }
     }
 
-    .c3 {
+    // .c3 {
+    //   li {
+    //     min-height: 1.4rem;
+    //     padding: 0.25rem 0.45rem;
+    //     margin-bottom: 0.3rem;
+    //     margin-right: 0.3rem;
+
+    //     // height: 28px;
+    //     background: #000000;
+    //     background-color: rgba(0, 0, 0, 0.4);
+    //     border-radius: 14px;
+
+    //     float: left;
+    //     display: flex;
+    //     align-items: center;
+    //     justify-content: center;
+
+    //     img {
+    //       width: 0.9rem;
+    //       height: 0.9rem;
+    //     }
+
+    //     span {
+    //       margin-left: 0.2rem;
+    //       font-size: 0.7rem;
+    //       font-family: PingFangSC-Regular, PingFang SC;
+    //       font-weight: 400;
+    //       color: #ffffff;
+    //       line-height: 1rem;
+    //     }
+    //   }
+    // }
+  }
+
+  .otherDesFloat {}
+
+  .otherDes {
+    width: 375px;
+    background: #EFEEF3;
+    position: relative;
+    padding-bottom: 20px;
+
+
+    .des {
+      padding: 16px 0 8px 16px;
+
+
+      font-size: 12px;
+      font-family: PingFangSC-Regular, PingFang SC;
+      font-weight: 400;
+      color: #898989;
+      line-height: 17px;
+    }
+
+    .list {
+      display: flex;
+      overflow-x: auto;
+      margin-left: 12px;
+      margin-right: 4px;
+
       li {
-        min-height: 1.4rem;
-        padding: 0.25rem 0.45rem;
-        margin-bottom: 0.3rem;
-        margin-right: 0.3rem;
-
-        // height: 28px;
-        background: #000000;
-        background-color: rgba(0, 0, 0, 0.4);
-        border-radius: 14px;
-
-        float: left;
+        flex: none;
+        background: #FFFFFF;
+        border-radius: 0.55rem;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
+        box-sizing: content-box;
+        padding: 0.5rem 1.4rem;
+        margin-right: 0.4rem;
+        min-height: 70px;
 
         img {
-          width: 0.9rem;
-          height: 0.9rem;
+          width: 1.6rem;
+          height: 1.6rem;
         }
 
         span {
-          margin-left: 0.2rem;
-          font-size: 0.7rem;
-          font-family: PingFangSC-Regular, PingFang SC;
-          font-weight: 400;
-          color: #ffffff;
-          line-height: 1rem;
+          font-size: 10px;
+          font-family: PingFangSC-Medium, PingFang SC;
+          font-weight: 500;
+          color: #7B7B7B;
+          line-height: 14px;
+          margin-top: 4px;
         }
+
       }
     }
+
   }
 
   .cardArea {
     width: 100%;
     min-height: 70%;
     background: #ffffff;
-    border-radius: 0.8rem 0.8rem 0px 0px;
+    // border-radius: 0.8rem 0.8rem 0px 0px;
     overflow: hidden; // 解决溢出
     margin-top: -10px; // 解决遮罩
 
@@ -713,17 +775,16 @@ export default {
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 6.8rem;
+      width: 15.25rem;
       height: 2.1rem;
       background: #ffefd1;
-      border-radius: 1.25rem;
+      border-radius: 1.05rem;
       border: none;
       font-size: 0.7rem;
       font-family: PingFangSC-Regular, PingFang SC;
       font-weight: 400;
       color: #f6892c;
 
-      margin-right: 0.8rem;
 
       img {
         width: 20px;
@@ -731,25 +792,25 @@ export default {
       }
     }
 
-    .c2 {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 9.6rem;
-      height: 2.1rem;
-      background: #8032ff;
-      border-radius: 1.05rem;
-      border: none;
-      font-size: 0.7rem;
-      font-family: PingFangSC-Regular, PingFang SC;
-      font-weight: 400;
-      color: #ffffff;
+    // .c2 {
+    //   display: flex;
+    //   align-items: center;
+    //   justify-content: center;
+    //   width: 9.6rem;
+    //   height: 2.1rem;
+    //   background: #8032ff;
+    //   border-radius: 1.05rem;
+    //   border: none;
+    //   font-size: 0.7rem;
+    //   font-family: PingFangSC-Regular, PingFang SC;
+    //   font-weight: 400;
+    //   color: #ffffff;
 
-      img {
-        width: 20px;
-        height: 21px;
-      }
-    }
+    //   img {
+    //     width: 20px;
+    //     height: 21px;
+    //   }
+    // }
   }
 }
 
@@ -797,5 +858,14 @@ export default {
   margin-top: 14.2rem;
   padding: 0 0.5rem;
 }
+
+
+// .flex_safe {
+//   justify-content: safe;
+// }
+
+// .flex_center {
+//   justify-content: center;
+// }
 </style>
   

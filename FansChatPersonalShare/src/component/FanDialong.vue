@@ -30,7 +30,7 @@ export default {
     components: { vueQr },
     data() {
         return {
-            imageUrl: require('../assets/img/logo1.jpg')
+            imageUrl: require('../assets/img/downLoad/logo.png')
         }
     }
 }
