@@ -274,10 +274,6 @@ export default {
       justify-content: center;
       position: relative;
 
-      .elBtn {
-        position: absolute;
-        right: 0;
-      }
     }
 
     .btnlist {
