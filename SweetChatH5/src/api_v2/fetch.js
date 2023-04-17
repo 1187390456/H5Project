@@ -18,16 +18,18 @@ window.addEventListener("offline", function () {
 });
 
 export default function fetch(options) {
-  console.log(options);
+  // console.log(options);
   let headers;
   if (options.createForm) {
     headers = {};
   } else if (options.createLogin) {
-    headers = {
-      bgUserID: -1,
-    };
+
   } else {
-    headers = { "Content-Type": "application/json;charset = UTF-8" };
+    headers = {
+      "Content-Type": "application/json;charset = UTF-8",
+      "regionCode": "US",
+      "Accept-Language": "en-US",
+    };
   }
   configs.api.before_fetch && configs.api.before_fetch();
   // 超时 10s
@@ -74,22 +76,17 @@ export default function fetch(options) {
 
   instance.interceptors.request.use(
     (config) => {
+     
       let cusConfig = configs.api.set_config(config);
       const tempArr = config.url.split("/");
-      if (tempArr[tempArr.length - 1] == "login-by-username")
-        return { ...config, ...cusConfig };
+      if (tempArr[tempArr.length - 1] == "login-by-username") return { ...config, ...cusConfig };
+      config.headers.userID = 174;
+      config.headers.userToken = "MBE7izgQevlCrIx0WqxufW133KoXjUzb";
+      console.log(config,config.headers);
       if (config.headerType && config.headerType == 1) {
-        config.headers.regionCode = "US";
-        config.headers["Accept-Language"] = "en-US";
-        config.headers.bgUserId = "";
-        config.headers.bgUserToken = "";
-      } else if (config.headerType && config.headerType == 2) {
-        config.headers.userID = 174;
-        config.headers.userToken = "MBE7izgQevlCrIx0WqxufW133KoXjUzb";
-      } else {
-        config.headers.bgUserToken = window.sessionStorage.getItem("token");
-        config.headers.bgUserID = store.state.user.userId;
-      }
+        // config.headers.regionCode = "US";
+        // config.headers["Accept-Language"] = "en-US";
+      } 
 
       return { ...config, ...cusConfig };
     },

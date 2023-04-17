@@ -6,12 +6,35 @@
         <div class="btn interested" :class="showType?'active':''" @click="changeType(1)">Interested</div>
     </div>
     <van-pull-refresh v-model="isLoading" :head-height="80" @refresh="onRefresh">
-        <div class="content" v-if="postList.length" v-infinite-scroll="load" infinite-scroll-distance="62" :infinite-scroll-disabled="disabled">
-        <div v-for="item in postList" :key="item.id">
+        <!-- 下拉提示，通过 scale 实现一个缩放效果 -->
+        <template #pulling="props">
+            <img
+            class="doge"
+            src="https://fastly.jsdelivr.net/npm/@vant/assets/doge.png"
+            :style="{ transform: `scale(${props.distance / 80})` }"
+            />
+        </template>
+        
+        <!-- 释放提示 -->
+        <template #loosing>
+            <img
+            class="doge"
+            src="https://fastly.jsdelivr.net/npm/@vant/assets/doge.png"
+            />
+        </template>
+         <!-- 加载提示 -->
+        <template #loading>
+            <img
+            class="doge"
+            src="https://fastly.jsdelivr.net/npm/@vant/assets/doge-fire.jpeg"
+            />
+        </template>
+        <div class="content" v-if="postList.length" v-infinite-scroll="load" :infinite-scroll-disabled="disabled">
+        <div v-for="item in postList" :key="item.id" @click="toDetail(item)">
             <div class="con-info">
                 <img :src="item.authorInfo.avatar" alt="">
                 <div class="info">
-                    <div class="name">{{item.authorInfo.nickname}}</div>
+                    <div :class="item.authorInfo.identity?'name1':'name'">{{item.authorInfo.nickname}}</div>
                     <div class="mark" v-if="item.authorInfo.identity">
                         <img src="@/assets/images/discover/attestation.png" alt="">
                         <span>Miss World 2019 No.3</span>
@@ -27,10 +50,11 @@
                 <img v-for="(imgItem,imgI) in item.imageList" :key="imgI" :src="imgItem" alt="">
             </div>
             <div class="con-btm">
-                <div class="time">{{item.postTime}}｜{{item.postAddress}}</div>
+                <div class="time">{{item.postTime | timeFilter}}｜{{item.postAddress}}</div>
                 <div class="bottom">
                     <div>
-                        <img src="@/assets/images/posts/like.png" alt="">
+                        <img v-if="item.isLike" src="@/assets/images/posts/like.png" @click.stop="cancelLike(item)" alt="">
+                        <img v-else src="@/assets/images/posts/nolike.png" @click.stop="getLike(item)" alt="">
                         <span>{{item.likeCount}}</span>
                         <img src="@/assets/images/posts/comment.png" alt="">
                         <span>{{item.commentCount}}</span>
@@ -46,10 +70,19 @@
         <img src="@/assets/images/posts/addpost.png" alt="">
         <span>New Post</span>
     </div>
+    <van-popup
+    v-model="showDetail"
+    position="right"
+    :style="{ width: '100%', height: '100%' }">
+        <detail @exitDetails="exitDetails" @cancelLike="cancelLike" @getLike="getLike" :detailData="detailData" /> 
+    </van-popup>
+        
   </div>
 </template>
 
 <script>
+import { relativeTime } from "@/utils/date.js";
+import Detail  from "@/components/Posts/detail"
 export default {
   data() {
     return {
@@ -57,12 +90,19 @@ export default {
         postList:[],
         noMore :false,
         pageNum:1,
-        isLoading:false
+        isLoading:false,
+        showDetail:false,
+        detailData:null,// 动态详情内容
     }
   },
   components: {
-
+    Detail,
   },
+    filters: {
+        timeFilter(val) {
+        return relativeTime(val);
+        },
+    },
   computed:{
     disabled () {
         return this.noMore
@@ -84,6 +124,37 @@ export default {
             }
         })
     },
+    // 点赞
+    getLike(item) {
+      this.$api.giveLike({ dynamicID: item.id }).then((res) => {
+        if (res.result) {
+          item.likeCount++;
+          this.$set(item, "isLike", true);
+          this.$root.$emit("parGetNewNotice");
+        } else {
+          this.$message.error(res.errorMsg);
+        }
+      });
+    },
+    // 取消点赞
+    cancelLike(item) {
+      this.$api.cancelLike({ dynamicID: item.id }).then((res) => {
+        if (res.result) {
+          item.likeCount--;
+          this.$set(item, "isLike", false);
+        } else {
+          this.$message.error(res.errorMsg);
+        }
+      });
+    },
+    // 跳转至 动态详情页面
+    toDetail(val){
+        this.showDetail = true
+        this.detailData = val
+    },
+    exitDetails(){
+        this.showDetail = false
+    },
     changeType(type){
         this.showType = type
     },
@@ -93,7 +164,9 @@ export default {
     },
     onRefresh(){
         console.log("下拉刷新");
+        this.isLoading = true
     },
+    
     
   }
 }
@@ -102,6 +175,7 @@ export default {
 <style scoped lang="scss">
 .containner-posts{    
     box-sizing: border-box;
+    height: 100%;
     padding: 0 15.9994px;
     img{
         object-fit: cover;  
@@ -164,9 +238,18 @@ export default {
         }
         .info{
             margin-left: .4267rem;
-            .name{
-                color: #383838;
-                font-size: .8533rem;
+            color: #383838;
+            font-size: .8533rem;
+            .name{                
+                // height: 1.1733rem;
+                // line-height: 1.1733rem;
+                position: relative;
+                transform:translateY(50%)
+                
+            }
+            .name1{
+                position: static;
+                transform: none;
                 height: 1.1733rem;
                 line-height: 1.1733rem;
             }
@@ -302,5 +385,11 @@ export default {
 }
 .mark,.con-center,.con-btm{
     font-family: PingFangSC-Regular, PingFang SC;
+}
+.van-pull-refresh__head{
+    img{
+        width: 100px;
+        height: 100px;
+    }
 }
 </style>

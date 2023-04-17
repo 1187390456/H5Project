@@ -135,6 +135,6 @@ export const relativeTime = (timeStamp) => {
       return  Math.floor(leaveSecond / 60) + "分钟前"
     }
   } else {
-    return  "刚刚发布"
+    return  "Just now"
   }
 };

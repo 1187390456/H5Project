@@ -2,15 +2,15 @@
 <template>
   <div class="containner-posts">
     <div class="top">
-        <img src="@/assets/return.png" />
+        <img src="@/assets/return.png" @click="$emit('exitDetails')" />
         <span>Posts</span>
     </div>
     <div class="content">
         <div class="con-info">
-            <img src="https://img2.baidu.com/it/u=2421090168,324781765&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500" alt="">
+            <img :src="detailData.authorInfo.avatar" alt="">
             <div class="info">
-                <div class="name">Peach Claire</div>
-                <div class="mark">
+                <div :class="detailData.authorInfo.identity?'name1':'name'">{{detailData.authorInfo.nickname}}</div>
+                <div class="mark" v-if="detailData.identity">
                     <img src="@/assets/images/discover/attestation.png" alt="">
                     <span>Miss World 2019 No.3</span>
                     <img src="@/assets/images/discover/terrace.png" alt="">
@@ -19,19 +19,20 @@
             </div>
         </div>
         <div class="con-center">
-            The fool has his heart on his tongue,the wise man keeps his heart 
+            {{detailData.content}} 
         </div>
-        <div class="con-img">
-            <img src="https://img2.baidu.com/it/u=3963450029,593837318&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500" alt="">
+        <div class="con-img" v-if="detailData.imageList" :class="{img2:detailData.imageList.length == 2,'img-more':detailData.imageList.length >= 2,img3:detailData.imageList.length >= 3,img4:detailData.imageList.length == 4}" >
+                <img v-for="(imgItem,imgI) in detailData.imageList" :key="imgI" :src="imgItem" alt="">
         </div>
         <div class="con-btm">
-            <div class="time">4 days ago｜UK</div>
-            <div class="bottom">
+            <div class="time">{{detailData.postTime | timeFilter}}｜{{detailData.postAddress}}</div>
+              <div class="bottom">
                 <div>
-                    <img src="@/assets/images/posts/like.png" alt="">
-                    <span>123</span>
+                    <img v-if="detailData.isLike" src="@/assets/images/posts/like.png" @click="$emit('cancelLike',detailData)" alt="">
+                    <img v-else src="@/assets/images/posts/nolike.png" @click="$emit('getLike',detailData)" alt="">
+                    <span>{{detailData.likeCount}}</span>
                     <img src="@/assets/images/posts/comment.png" alt="">
-                    <span>45</span>
+                    <span>{{detailData.commentCount}}</span>
                 </div>
                 <img src="@/assets/images/posts/more.png" alt="">
             </div>
@@ -49,13 +50,28 @@
 </template>
 
 <script>
+import { relativeTime } from "@/utils/date.js";
 export default {
   data() {
     return {
     }
   },
+  props:{
+    detailData:{
+        type: Object,
+        default:{}
+    }
+  },
+  filters: {
+    timeFilter(val) {
+    return relativeTime(val);
+    },
+},
   components: {
 
+  },
+  mounted(){
+    console.log(this.detailData,"动态详情内容");
   },
   methods: {
   }
@@ -69,7 +85,6 @@ export default {
     }
 }
 .top{
-    margin: 0 16px;
     position: relative;
     height: 52px;
     line-height: 52px;
@@ -88,7 +103,7 @@ export default {
 }
 .content{
     position: relative;
-    padding: 12px 16px;
+    padding: 12px 0;
     border-bottom: 1px solid rgba(238,238,238,.7);
     .con-info{
         display: flex;
@@ -98,12 +113,21 @@ export default {
             border-radius: 50%;
         }
         .info{
-            margin-left: 8px;
-            .name{
-                color: #383838;
-                font-size: 16px;
-                height: 22px;
-                line-height: 22px;
+            margin-left: .4267rem;
+            color: #383838;
+            font-size: .8533rem;
+            .name{                
+                // height: 1.1733rem;
+                // line-height: 1.1733rem;
+                position: relative;
+                transform:translateY(50%)
+                
+            }
+            .name1{
+                position: static;
+                transform: none;
+                height: 1.1733rem;
+                line-height: 1.1733rem;
             }
             .mark{
                 display: flex;
