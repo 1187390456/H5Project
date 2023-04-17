@@ -61,49 +61,48 @@ export const constantRoutes = [
     meta: { title: "登录", keepAlive: false },
   },
   {
-		path: '/',
-		component: Layout,
-		redirect: '/Chats',
-		children: [
-			{
-				path: '/Chats',
-				name: 'Chats',
-				component: () => import('views/Discover/index'),
-				meta: {
-					icon:'chats.png',
-				}
-			},
-		]
-  },  
-  {
-		path: '/Posts',
-		component: Layout,
-		children: [
-			{
-				path: '/Posts',
-				name: 'Posts',
-				component: () => import('views/Posts/index'),
-				meta: {
-					icon:'posts.png',
-				}
-			},
-		]
+    path: "/",
+    component: Layout,
+    redirect: "/Chats",
+    children: [
+      {
+        path: "/Chats",
+        name: "Chats",
+        component: () => import("views/Chats/index"),
+        meta: {
+          icon: "chats.png",
+        },
+      },
+    ],
   },
   {
-		path: '/Discover',
-		component: Layout,
-		children: [
-			{
-				path: '/Discover',
-				name: 'Discover',
-				component: () => import('views/Discover/index'),
-				meta: {
-					icon:'discover.png',
-				}
-			},
-		]
+    path: "/Posts",
+    component: Layout,
+    children: [
+      {
+        path: "/Posts",
+        name: "Posts",
+        component: () => import("views/Posts/index"),
+        meta: {
+          icon: "posts.png",
+        },
+      },
+    ],
   },
- 
+  {
+    path: "/Discover",
+    component: Layout,
+    children: [
+      {
+        path: "/Discover",
+        name: "Discover",
+        component: () => import("views/Discover/index"),
+        meta: {
+          icon: "discover.png",
+        },
+      },
+    ],
+  },
 ];
 
 export const asyncRoutes = [];

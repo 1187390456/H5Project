@@ -1,13 +1,7 @@
 <template>
   <div class="imgMsg">
-    <el-image
-      class="img"
-      :src="info.file.url"
-      fit="cover"
-      :lazy="false"
-      :preview-src-list="[info.file.url]"
-    ></el-image>
-    <div class="float font-10-400-5F5F5F">{{ info.time | timeFilter }}</div>
+    <el-image class="img" :src="info.file.url" fit="cover" :lazy="false" :preview-src-list="[info.file.url]"></el-image>
+    <div class="float">{{ info.time | timeFilter }} PM </div>
   </div>
 </template>
 
@@ -29,21 +23,20 @@ export default {
 </script>
 
 <style lang="less" scoped>
+/deep/ .el-image {
+  display: flex;
+}
+
 .imgMsg {
-  margin: 2px 0 0 10px;
-
-  min-width: 15%;
-  height: 300px;
-  border-radius: 8px 15px 15px 8px;
-  border: 1px solid #d7f8fc;
-
+  margin-top: 0.1rem;
+  max-width: 14.45rem;
+  border-radius: 0.4rem 0.75rem 0.75rem 0.4rem;
   position: relative;
 
   .img {
-    width: 100%;
-    height: 100%;
-    border-radius: 8px 15px 15px 8px;
+    border-radius: 0.4rem 0.75rem 0.75rem 0.4rem;
   }
+
   .img:after {
     content: "查看原图";
     color: #fff;
@@ -62,21 +55,25 @@ export default {
     opacity: 0;
     transition: all 0.3s;
   }
+
   .img:hover:after {
     opacity: 1;
   }
 
   .float {
     position: absolute;
-    bottom: 6px;
-    right: 6px;
-
-    padding: 2px 7px;
-    line-height: 16px;
-
+    bottom: 0.3rem;
+    right: 0.3rem;
+    padding: 0.1rem 0.35rem;
+    line-height: 0.8rem;
     background: #ffffff;
-    border-radius: 9px;
+    border-radius: 0.45rem;
     opacity: 0.6;
+    font-size: 0.5rem;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #2D2D2D;
+    line-height: 0.7rem;
   }
 }
 </style>
