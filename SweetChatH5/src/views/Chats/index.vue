@@ -1,5 +1,5 @@
 <template>
-    <div style="display: flex">
+    <div class="chatContainer">
         <chat-list :chatList="chatList" v-if="chatListGetDone && viewType == 'list'"
             @SelectChatCallback="SelectChatCallback" ref="chatlist"></chat-list>
         <chat-view :chatViewList="chatViewList" :sessionInfo="sessionInfo" :fileImageWidth="fileImageWidth"
@@ -128,7 +128,8 @@ export default {
             if (msg != "") {
                 var msg = that.nim.sendText({
                     scene: "p2p",
-                    to: that.sessionInfo.account, // "b_test_207"
+                    to: that.sessionInfo.account,
+                    // to: "b_test_206",
                     text: msg,
                     done: sendMsgDone,
                 });
@@ -351,6 +352,12 @@ export default {
 </script>
   
 <style lang="less" scoped>
+.chatContainer {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
 .btnStyle {
     height: 32px;
     background: #ffffff;

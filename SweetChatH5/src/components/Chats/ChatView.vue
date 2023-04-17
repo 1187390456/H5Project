@@ -24,8 +24,7 @@
     </div>
     <div class="bottom">
       <div class="input">
-        <el-input class="inputArea" type="text" placeholder="Enter a new message" v-model="textarea"
-          @keydown.native="listen($event)">
+        <el-input type="text" placeholder="Enter a new message" v-model="textarea" @keydown.native="listen($event)">
         </el-input>
         <el-button v-if="textarea != ''" class="elBtn" @click="SendText">Send</el-button>
       </div>
@@ -152,7 +151,8 @@ export default {
 <style lang="less" scoped>
 /deep/ .el-input__inner {
   border: none;
-  width: 17.15rem;
+  // width: 17.15rem;
+  width: 80vw;
   height: 2.1rem;
   background: #F9F9F9;
   border-radius: 0.5rem;
@@ -185,10 +185,9 @@ export default {
 }
 
 .chatView {
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   background: #ffffff;
-
   position: relative;
 
   .top {
@@ -245,13 +244,13 @@ export default {
 
   .topline {
     width: 100vw;
-    height: 3px;
+    height: 0.15rem;
     background-color: #F7F7F7;
   }
 
   .content {
     width: 100vw;
-    max-height: calc(100% - 160px);
+    max-height: calc(100% - 2.6rem - 0.15rem - 5.45rem - 5px); // 5px的自适应
     overflow: scroll;
     overflow-x: hidden;
 
@@ -260,8 +259,8 @@ export default {
   }
 
   .bottom {
-    position: fixed;
-    bottom: 62px;
+    position: absolute;
+    bottom: 0;
     width: 100vw;
     height: 5.45rem;
     display: flex;
@@ -270,7 +269,9 @@ export default {
     justify-content: flex-start;
 
     .input {
+      width: 100%;
       display: flex;
+      justify-content: center;
       position: relative;
 
       .elBtn {
