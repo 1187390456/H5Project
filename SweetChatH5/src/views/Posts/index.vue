@@ -1,48 +1,47 @@
 // 动态
 <template>
   <div class="containner-posts">
-    <div class="top">
-        <span>Posts</span>
-        <img src="https://img2.baidu.com/it/u=260211041,3935441240&fm=253&app=120&size=w931&n=0&f=JPEG&fmt=auto?sec=1681405200&t=1225abc639a903c582497356f281b638" alt="">
-    </div>
     <div class="sel">
         <div class="btn all" :class="showType?'':'active'" @click="changeType(0)">All</div>
         <div class="btn interested" :class="showType?'active':''" @click="changeType(1)">Interested</div>
     </div>
-    <div class="content">
-       <div v-for="item in 1" :key="item">
-         <div class="con-info">
-            <img src="https://img2.baidu.com/it/u=2421090168,324781765&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500" alt="">
-            <div class="info">
-                <div class="name">Peach Claire</div>
-                <div class="mark">
-                    <img src="@/assets/images/discover/attestation.png" alt="">
-                    <span>Miss World 2019 No.3</span>
-                    <img src="@/assets/images/discover/terrace.png" alt="">
-                    <span>154.3K Fans</span>
+    <van-pull-refresh v-model="isLoading" :head-height="80" @refresh="onRefresh">
+        <div class="content" v-if="postList.length" v-infinite-scroll="load" infinite-scroll-distance="62" :infinite-scroll-disabled="disabled">
+        <div v-for="item in postList" :key="item.id">
+            <div class="con-info">
+                <img :src="item.authorInfo.avatar" alt="">
+                <div class="info">
+                    <div class="name">{{item.authorInfo.nickname}}</div>
+                    <div class="mark" v-if="item.authorInfo.identity">
+                        <img src="@/assets/images/discover/attestation.png" alt="">
+                        <span>Miss World 2019 No.3</span>
+                        <img src="@/assets/images/discover/terrace.png" alt="">
+                        <span>154.3K Fans</span>
+                    </div>
+                </div>
+            </div>
+            <div class="con-center">
+                {{item.content}}
+            </div>
+            <div class="con-img" v-if="item.imageList" :class="{img2:item.imageList.length == 2,'img-more':item.imageList.length >= 2,img3:item.imageList.length >= 3,img4:item.imageList.length == 4}" >
+                <img v-for="(imgItem,imgI) in item.imageList" :key="imgI" :src="imgItem" alt="">
+            </div>
+            <div class="con-btm">
+                <div class="time">{{item.postTime}}｜{{item.postAddress}}</div>
+                <div class="bottom">
+                    <div>
+                        <img src="@/assets/images/posts/like.png" alt="">
+                        <span>{{item.likeCount}}</span>
+                        <img src="@/assets/images/posts/comment.png" alt="">
+                        <span>{{item.commentCount}}</span>
+                    </div>
+                    <img src="@/assets/images/posts/more.png" alt="">
                 </div>
             </div>
         </div>
-        <div class="con-center">
-            The fool has his heart on his tongue,the wise man keeps his heart 
+        <div class="no-more" v-show="noMore">Already at bottom</div>
         </div>
-        <div class="con-img">
-            <img src="https://img2.baidu.com/it/u=3963450029,593837318&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500" alt="">
-        </div>
-        <div class="con-btm">
-            <div class="time">4 days ago｜UK</div>
-            <div class="bottom">
-                <div>
-                    <img src="@/assets/images/posts/like.png" alt="">
-                    <span>123</span>
-                    <img src="@/assets/images/posts/comment.png" alt="">
-                    <span>45</span>
-                </div>
-                <img src="@/assets/images/posts/more.png" alt="">
-            </div>
-        </div>
-       </div>
-    </div>
+    </van-pull-refresh>
     <div class="addpost">
         <img src="@/assets/images/posts/addpost.png" alt="">
         <span>New Post</span>
@@ -55,21 +54,54 @@ export default {
   data() {
     return {
         showType:0,
+        postList:[],
+        noMore :false,
+        pageNum:1,
+        isLoading:false
     }
   },
   components: {
 
   },
+  computed:{
+    disabled () {
+        return this.noMore
+    }
+  },
+  mounted(){
+    this.getInitData()
+  },
   methods: {
+    getInitData(){
+        this.$api.postsList({pageNum:this.pageNum}).then((res)=>{
+            console.log(res);
+            if(res.result){
+                this.postList.push(...res.data.list)
+                this.noMore = res.data.isEnd
+                this.pageNum = res.data.pageNum
+            } else{
+                this.$messages.error(res.errorMsg)
+            }
+        })
+    },
     changeType(type){
         this.showType = type
     },
+    load(){
+        console.log("正在加载中。。。。。");
+        this.getInitData()
+    },
+    onRefresh(){
+        console.log("下拉刷新");
+    },
+    
   }
 }
 </script>
 
 <style scoped lang="scss">
-.containner-posts{
+.containner-posts{    
+    box-sizing: border-box;
     padding: 0 15.9994px;
     img{
         object-fit: cover;  
@@ -116,10 +148,9 @@ export default {
         background-color: rgba(130,42,253,.1);
     }
 }
-.content{
-    padding: .64rem 0;
+.content{    
     >div{
-        margin-top: .64rem;        
+        padding: .64rem 0;        
         &:first-of-type{
             margin-top: 0;
         }
@@ -173,6 +204,45 @@ export default {
             border-radius: .2667rem; 
         }
     }
+    .img-more{
+        // display: flex;        
+        img{
+            margin-left: .4267rem;
+            &:first-of-type,&:nth-of-type(4){
+                margin-left: 0;
+            }
+        }        
+    }
+    .img2{        
+        img{
+            width: 8.9067rem;
+            height: 8.9067rem;
+        }
+    }
+    .img3{        
+        img{
+            width: 5.8133rem;
+            height: 5.8133rem;
+        }
+    }
+    .img4{      
+        img{
+            vertical-align: bottom;
+            width: 5.8133rem;
+            height: 5.8133rem;  
+            margin-top: .4267rem;          
+            &:nth-of-type(3){
+                margin-left: 0;                
+            }
+            &:nth-of-type(4){
+                margin-left: .4267rem;                
+            }
+            &:nth-of-type(even){
+                margin-right: 6.1333rem;                
+            }
+            
+        }
+    }
     .con-btm{
         .time{
             color: #808080; 
@@ -204,11 +274,16 @@ export default {
             }
         }
     }
+    .no-more{
+        font-size: .7467rem;
+        text-align: center;
+        color: #808080;
+    }
 }
 .addpost{
     position: fixed;
     right: .8533rem;
-    bottom: .8533rem;
+    bottom: 4.16rem;
     width: 5.9733rem;
     height: 1.92rem;
     background: #8032FF;
@@ -218,10 +293,14 @@ export default {
     justify-content: center;
     color: #fff;
     font-size: .7467rem;
+    font-family: PingFangSC-Semibold, PingFang SC;
     img{
         width: .96rem;
         height: .96rem;
         margin-right: .32rem;
     }
+}
+.mark,.con-center,.con-btm{
+    font-family: PingFangSC-Regular, PingFang SC;
 }
 </style>

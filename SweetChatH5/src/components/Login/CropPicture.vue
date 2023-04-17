@@ -1,148 +1,136 @@
 <template>
-  <!-- 剪裁图片组件 -->
-  <van-popup
-    class="bg-tran"
-    v-model="showCropper"
-    closeable
-    position="top"
-    :style="{ height: '100%' }"
-  >
-    <div class="flex-column-center height100">
-      <vue-cropper
-        ref="cropper"
-        :img="option.img"
-        :outputSize="option.outputSize"
-        :outputType="option.outputType"
-        :info="option.info"
-        :full="option.full"
-        :autoCropWidth="option.autoCropWidth"
-        :autoCropHeight="option.autoCropHeight"
-        :canMove="option.canMove"
-        :canMoveBox="option.canMoveBox"
-        :original="option.original"
-        :autoCrop="option.autoCrop"
-        :fixed="option.fixed"
-        :fixedNumber="option.fixedNumber"
-        :centerBox="option.centerBox"
-        :infoTrue="option.infoTrue"
-        :fixedBox="option.fixedBox"
-        :high="option.high"
-        :mode="option.mode"
-      ></vue-cropper>
-      <!-- <van-col span="24" class="font14 col-white">
-        <van-col span="8" class="p-2"
-          ><span @click="cancelCropper">取消</span></van-col
-        >
-        <van-col span="8" class="p-2 text-center"
-          ><span @click="rotateImage" class="font18"
-            ><van-icon name="replay" /></span
-        ></van-col>
-        <van-col span="8" class="p-2 text-right"
-          ><span @click="getCropBlob">确定</span></van-col
-        >
-      </van-col> -->
-    </div>
-  </van-popup>
+  <div class="cropper-box">
+    <!-- 剪裁图片组件 -->
+    <van-popup
+      v-model="showCropper"
+      position="top"
+      duration="0"
+      :style="{ height: '100%' }"
+    >
+      <div class="crop-options">
+        <div class="title">
+          <van-icon name="cross" @click="cancleCropper" />
+          <p>Move and scale</p>
+          <van-icon name="success" @click="submitCropper" />
+        </div>
+        <div class="crop-box">
+          <img id="cropImage" :src="imgData" alt="" />
+        </div>
+      </div>
+    </van-popup>
+  </div>
 </template>
 
 <script>
-import { VueCropper } from "vue-cropper";
+import "cropperjs/dist/cropper.css";
+import Cropper from "cropperjs";
 
 export default {
   name: "",
   mixins: [],
-  components: { VueCropper },
+  components: {},
   props: {
     showCropper: {
       type: Boolean,
     },
     imgData: {
-      type: [Blob, Object],
+      type: [Blob, String],
     },
   },
   data() {
     return {
-      option: {
-        img: "",
-        outputSize: 0.8,
-        info: false, // 裁剪框的大小信息
-        outputType: "png", // 裁剪生成图片的格式
-        canScale: false, // 图片是否允许滚轮缩放
-        autoCrop: true, // 是否默认生成截图框
-        autoCropWidth: window.innerWidth - 100 + "px", // 默认生成截图框宽度
-        autoCropHeight: window.innerWidth - 100 + "px", // 默认生成截图框高度
-        high: true, // 是否按照设备的dpr 输出等比例图片
-        fixedBox: true, // 固定截图框大小 不允许改变
-        fixed: true, // 是否开启截图框宽高固定比例
-        fixedNumber: [1, 1], // 截图框的宽高比例
-        full: true, // 是否输出原图比例的截图
-        canMoveBox: false, // 截图框能否拖动
-        original: false, // 上传图片按照原始比例渲染
-        centerBox: false, // 截图框是否被限制在图片里面
-        infoTrue: false, // true 为展示真实输出图片宽高 false 展示看到的截图框宽高
-        mode: "100% auto", // 图片默认渲染方式
-      },
+      cropper: null,
     };
   },
   computed: {},
-  watch: {
-    showCropper(newVal) {
-      if (newVal) {
-        this.imageToBase64(this.imgData);
-      }
-    },
-  },
+  watch: {},
   created() {},
-  mounted() {},
+  mounted() {
+    this.initCropper();
+  },
   methods: {
-    // 将本地图片转化为Base64，否则vue-cropper组件显示不出要本地需要剪裁的图片
-    imageToBase64(file) {
-      let reader = new FileReader();
-      reader.readAsDataURL(file.raw);
-      reader.onload = () => {
-        // 截图框中的图片
-        this.option.img = reader.result;
-      };
-      reader.onerror = function (error) {
-        console.log("Error: ", error);
-      };
-    },
-
-    // 确认剪裁并上传图片
-    getCropBlob() {
-      this.$comMethods.toast("上传中", 0);
-      let formData = new FormData();
-      this.$refs.cropper.getCropBlob((data) => {
-        formData.append("avatar", data, this.imageFileName);
-        // formData私有类对象，访问不到，可以通过get判断值是否传进去
-        console.log(formData.get("avatar"));
-        // 上传图片至服务器
-        this.$api
-          .modifyProfile(formData)
-          .then((res) => {
-            if (res.code === 200) {
-              this.$toast("更改头像成功");
-              // do something...
-            } else {
-              this.$toast("上传失败");
-            }
-          })
-          .catch((err) => console.error(err));
+    initCropper() {
+      let cropImageDom = document.querySelector("#cropImage");
+      this.cropper = new Cropper(cropImageDom, {
+        aspectRatio: 1, // 设置宽高比例为1:1
+        autoCrop: false,
+        autoCropArea: 0.5, // 0-1之间的数值，定义自动剪裁区域的大小，默认0.8
+        background: false,
+        viewMode: 1, // 裁切模式，裁剪框可移动缩放，但不能超出图片范围
+        guides: false, //是否在剪裁框上显示虚线。
+        dragCrop: true, //是否允许移除当前的剪裁框，并通过拖动来新建一个剪裁框区域。
+        autoCropArea: 0.2,
+        movable: true, //是否允许移动裁剪框
+        resizable: true, //是否允许改变剪裁框的大小。
+        zoomable: true, //是否允许放大缩小底部图片。
+        minCropBoxWidth: 100, //设置最小裁切框宽度
+        minCropBoxHeight: 100, //设置最小裁切框高度
+        ready: () => {
+          this.cropper.crop();
+        },
+        cropend: (res) => {
+          console.log(res, "裁切完成");
+        },
       });
     },
 
-    // 旋转图片
-    rotateImage() {
-      this.$refs.cropper.rotateRight();
+    submitCropper() {
+      let canvas = this.cropper.getCroppedCanvas();
+      let base64 = canvas.toDataURL("image/jpeg");
+      const nfile = this.base64ToFile(base64, "avatar.png");
+      this.$emit("changeUploadAvatar", base64);
+      this.$emit("changeShowCropper", false);
     },
 
-    // 取消截图上传头像
-    cancelCropper() {
-      this.showCropper = false; // 隐藏切图遮罩
-      this.showPopup = true;
+    cancleCropper() {
+      this.$emit("changeShowCropper", false);
     },
+
+    base64ToFile(dataurl, fileName) {
+      // global atob Uint8Array File
+      let arr = dataurl.split(",");
+      let imgType = arr[0].match(/:(.*?);/)[1];
+      let bstr = atob(arr[1]);
+      let n = bstr.length;
+      let u8arr = new Uint8Array(n);
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+      return new File([u8arr], fileName, { type: imgType });
+    },
+
+    // methods end
   },
 };
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.cropper-box {
+  .van-popup {
+    background: #141313;
+  }
+
+  .crop-options {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+
+    .title {
+      height: 2.346667rem /* 44/18.75 */;
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 0.533333rem /* 10/18.75 */;
+    }
+
+    .crop-box {
+      flex: 1;
+      width: 100vw;
+      overflow: hidden;
+    }
+  }
+}
+</style>

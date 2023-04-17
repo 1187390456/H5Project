@@ -2,14 +2,6 @@
   <el-container style="font-family: PingFangSC-Medium, PingFang SC;">
     <el-header> <navbar /> </el-header>
     <el-main class="el-main">
-      <!-- <el-container style="width:100%;min-width:1080px; margin:0 auto;padding:0px">
-        <el-aside style="background-color:#fff;width:180px;border:none">
-          <sidebar class="sidebar-container"  />
-        </el-aside>
-        <el-main style="padding: 0 40px 0 0;">
-          <app-main />
-        </el-main>
-      </el-container> -->
       <app-main />
     </el-main>
     <el-footer ><sidebar /></el-footer>
@@ -18,14 +10,13 @@
 </template>
 
 <script>
-import { Navbar, Sidebar, AppMain,AppFooter } from './components'
+import { Navbar, Sidebar, AppMain } from './components'
 export default {
   name: 'Layout',
   components: {
     Navbar,
     Sidebar,
-    AppMain,
-    AppFooter
+    AppMain
   },
   // mixins: [ResizeMixin],
   computed: {
@@ -33,7 +24,6 @@ export default {
       return this.$store.state.app.sidebar
     },
     device() {
-      console.log(this.$store.state.app.device,"+++++++++++");
       return this.$store.state.app.device
     },
   },

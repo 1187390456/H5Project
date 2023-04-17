@@ -128,7 +128,7 @@ export default {
             if (msg != "") {
                 var msg = that.nim.sendText({
                     scene: "p2p",
-                    to: that.sessionInfo.account,
+                    to: that.sessionInfo.account, // "b_test_207"
                     text: msg,
                     done: sendMsgDone,
                 });

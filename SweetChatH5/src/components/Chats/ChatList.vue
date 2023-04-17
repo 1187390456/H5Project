@@ -13,13 +13,13 @@
     </div> -->
     <div class="chatList">
       <div v-for="(item, i) in chatList" :key="i" class="chatItem" @click="OnClickChatItem(i, item)">
-        <div class="avatar">
+        <div class="avatar" v-if="item.targetUserInfo">
           <img :src="item.targetUserInfo.avatar" alt="" />
           <div class="unRead">
             {{ item.unread }}
           </div>
         </div>
-        <div class="listInfo">
+        <div class="listInfo" v-if="item.targetUserInfo">
           <div class="name">
             <span class="c1">{{ item.targetUserInfo.nick }}</span>
             <span class="c2">{{
@@ -98,7 +98,6 @@ export default {
 }
 
 .contentTitle {
-  width: 375px;
   min-height: 52px;
   background: #FFFFFF;
 
@@ -156,14 +155,13 @@ export default {
 
 
 .chatList {
-  width: 375px;
+  width: 100vw;
   background: #ffffff;
   overflow-y: auto;
   overflow-x: hidden;
   margin-top: 0rem;
 
   .chatItem {
-    width: 375px;
     background: #ffffff;
     position: relative;
     padding: 0 0.45rem 0 0.6rem;

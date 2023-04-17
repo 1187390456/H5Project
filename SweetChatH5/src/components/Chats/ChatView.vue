@@ -1,44 +1,43 @@
 <template>
-  <div class="fixPos">
-    <div class="chatView">
-      <div class="top ">
-        <div class="l">
-          <img @click="$emit('ReturnList')" class="return" src="../../assets/images/chats/返回.png" alt="">
-          <img class="avatar" :src="sessionInfo.avatar" alt="" />
-          <span class="name">{{ sessionInfo.nick }}</span>
-        </div>
-        <div class="r"> 10 </div>
+  <div class="chatView">
+    <div class="top ">
+      <div class="l">
+        <img @click="$emit('ReturnList')" class="return" src="../../assets/images/chats/返回.png" alt="">
+        <img class="avatar" :src="sessionInfo.avatar" alt="" />
+        <span class="name">{{ sessionInfo.nick }}</span>
       </div>
-      <div class="topline"></div>
-      <div class="content" ref="chatViewRef">
-        <time-line v-if="chatViewList.length > 0" :timeInfo="chatViewList[0].time"></time-line>
-        <div :class="[
-          'w100p',
-          item.from == sessionInfo.account
-            ? 'flex-col-start-center'
-            : 'flex-col-end-center',
-        ]" v-for="(item, i) in chatViewList" :key="i">
-          <img-msg v-if="item.file != null" :info="item"></img-msg>
+      <div class="r"> 10 </div>
+    </div>
+    <div class="topline"></div>
+    <div class="content" ref="chatViewRef">
+      <time-line v-if="chatViewList.length > 0" :timeInfo="chatViewList[0].time"></time-line>
+      <div :class="[
+        'w100p',
+        item.from == sessionInfo.account
+          ? 'flex-col-start-center'
+          : 'flex-col-end-center',
+      ]" v-for="(item, i) in chatViewList" :key="i">
+        <img-msg v-if="item.file != null" :info="item"></img-msg>
 
-          <text-msg v-else :info="item" :isleft="item.from == sessionInfo.account"></text-msg>
-        </div>
+        <text-msg v-else :info="item" :isleft="item.from == sessionInfo.account"></text-msg>
       </div>
-      <div class="bottom">
-        <div class="input">
-          <el-input class="inputArea" type="text" placeholder="Enter a new message" v-model="textarea"
-            @keydown.native="listen($event)">
-          </el-input>
-          <el-button v-if="textarea != ''" class="elBtn" @click="SendText">Send</el-button>
-        </div>
-        <div class="btnlist">
-          <img src="../../assets/images/chats/麦克风2.png" alt="">
-          <img src="../../assets/images/chats/相册、照片-m.png" alt="">
-          <img src="../../assets/images/chats/表情笑脸.png" alt="">
-          <img src="../../assets/images/chats/礼物.png" alt="">
-        </div>
+    </div>
+    <div class="bottom">
+      <div class="input">
+        <el-input class="inputArea" type="text" placeholder="Enter a new message" v-model="textarea"
+          @keydown.native="listen($event)">
+        </el-input>
+        <el-button v-if="textarea != ''" class="elBtn" @click="SendText">Send</el-button>
       </div>
-      <!-- 表情 -->
-      <!-- <el-popover placement="top" :width="fileImageWidth" trigger="click" style="margin-right: 20px; position: fixed">
+      <div class="btnlist">
+        <img src="../../assets/images/chats/麦克风2.png" alt="">
+        <img src="../../assets/images/chats/相册、照片-m.png" alt="">
+        <img src="../../assets/images/chats/表情笑脸.png" alt="">
+        <img src="../../assets/images/chats/礼物.png" alt="">
+      </div>
+    </div>
+    <!-- 表情 -->
+    <!-- <el-popover placement="top" :width="fileImageWidth" trigger="click" style="margin-right: 20px; position: fixed">
         <p>最多可上传1张图片</p>
         <el-upload action="#" ref="imageUpload" list-type="picture-card"
           :on-change="(file, fileList) => handleImageChange(file, fileList)"
@@ -52,8 +51,8 @@
         <el-button style="bottom: 150px" class="emj_img_btn" slot="reference" @click="$refs.imageUpload.clearFiles()"><img
             src="../../assets/images/xcm/t.png" alt="" /></el-button>
       </el-popover> -->
-      <!-- 图片 -->
-      <!-- <el-popover placement="top" :width="fileImageWidth" trigger="click" style="margin-right: 20px; position: fixed">
+    <!-- 图片 -->
+    <!-- <el-popover placement="top" :width="fileImageWidth" trigger="click" style="margin-right: 20px; position: fixed">
         <p>最多可上传1张图片</p>
         <el-upload action="#" ref="imageUpload" list-type="picture-card" :on-change="
           (file, fileList) => $emit('handleImageChange', file, fileList)
@@ -68,7 +67,6 @@
         <el-button style="bottom: 18px;" class="emj_img_btn" slot="reference" @click="$refs.imageUpload.clearFiles()"><img
             src="../../assets/images/xcm/c.png" alt="" /></el-button>
       </el-popover> -->
-    </div>
   </div>
 </template>
 
@@ -173,16 +171,6 @@ export default {
   width: 0px;
 }
 
-.fixPos {
-  position: fixed;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #000000;
-}
-
 .emj_img_btn {
   position: fixed;
   background: #f6f7fb;
@@ -197,14 +185,14 @@ export default {
 }
 
 .chatView {
-  width: 375px;
+  width: 100vw;
   height: 100vh;
   background: #ffffff;
 
   position: relative;
 
   .top {
-    width: 375px;
+    width: 100vw;
     height: 2.6rem;
     display: flex;
     align-items: center;
@@ -256,13 +244,13 @@ export default {
   }
 
   .topline {
-    width: 375px;
+    width: 100vw;
     height: 3px;
     background-color: #F7F7F7;
   }
 
   .content {
-    width: 375px;
+    width: 100vw;
     max-height: calc(100% - 160px);
     overflow: scroll;
     overflow-x: hidden;
@@ -273,8 +261,8 @@ export default {
 
   .bottom {
     position: fixed;
-    bottom: 0;
-    width: 375px;
+    bottom: 62px;
+    width: 100vw;
     height: 5.45rem;
     display: flex;
     flex-direction: column;

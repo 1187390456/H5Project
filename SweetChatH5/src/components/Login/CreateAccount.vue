@@ -3,7 +3,7 @@
     <common-header :type="type"></common-header>
     <div class="container">
       <ul>
-        <li class="avatar-box" @click="uploadAvatar">
+        <li class="avatar-box" @click="toUploadAvatar">
           <input
             type="file"
             name=""
@@ -12,11 +12,19 @@
             ref="inputFile"
             @change="onChangeAvatar"
           />
-          <img src="../../assets/images/login/upload_img@3x.png" alt="" />
-          <p>Upload avatar</p>
+          <div class="avatar-not-empty" v-if="uploadAvatar || thirdAccountInfo">
+            <img :src="uploadAvatar || thirdAccountInfo.avatar" alt="" />
+            <div><p>Re-upload</p></div>
+          </div>
+          <div class="avatar-empty" v-else>
+            <img src="../../assets/images/login/upload_img@3x.png" alt="" />
+            <p>Upload avatar</p>
+          </div>
         </li>
         <li class="gender-box">
-          <p>Select your gender</p>
+          <p :class="{ 'fill-in-content': accountForm.gender }">
+            Select your gender
+          </p>
           <div>
             <input
               type="radio"
@@ -87,23 +95,29 @@
           </div>
         </li>
         <li class="nickname-box">
-          <p>Nickname</p>
+          <p :class="{ 'fill-in-content': accountForm.nickname }">Nickname</p>
           <div>
             <input
               v-model="accountForm.nickname"
               type="text"
               placeholder="enter a nickname"
+              maxlength="16"
             />
           </div>
         </li>
-        <li class="birth-box">
-          <p>Date of birth</p>
+        <li class="birth-box" @click="hancleBirthClick">
+          <p :class="{ 'fill-in-content': accountForm.birth }">Date of birth</p>
           <div>
-            <input
-              v-model="accountForm.birth"
-              type="text"
-              placeholder="please choose your birth"
-            />
+            <p
+              class="birth-content"
+              :style="{ color: accountForm.birth ? '#fff' : '' }"
+            >
+              {{
+                accountForm.birth
+                  ? accountForm.birth
+                  : "please choose your birth"
+              }}
+            </p>
             <img src="../../assets/images/login/get_into@3x.png" alt="" />
           </div>
         </li>
@@ -112,38 +126,137 @@
         <p :class="{ 'sign-up': isSignUp }">Sign Up</p>
       </div>
     </div>
-    <!-- <crop-picture :showCropper="showCropper" :imgData="imgData"></crop-picture> -->
+    <van-popup v-model="showBirthPopup" round position="bottom">
+      <van-picker
+        ref="birthPicker"
+        show-toolbar
+        title="Select Date"
+        :columns="birthColumns"
+        confirm-button-text="Confirm"
+        cancel-button-text="Cancel"
+        @change="onChangeBirth"
+        @cancel="showBirthPopup = false"
+        @confirm="onConfirmBirth"
+      />
+    </van-popup>
+    <crop-picture
+      v-if="showCropper"
+      :showCropper="showCropper"
+      :imgData="imgData"
+      @changeShowCropper="changeShowCropper"
+      @changeUploadAvatar="changeUploadAvatar"
+    ></crop-picture>
   </div>
 </template>
 
 <script>
 import CommonHeader from "./CommonHeader.vue";
-// import CropPicture from "./CropPicture.vue";
+import CropPicture from "./CropPicture.vue";
 import { initOss, ossUpload } from "@/utils/aliyunoss.js";
+import { regFormatDate, daysInMonth } from "../../utils/date";
 
 export default {
   name: "",
   mixins: [],
   components: {
     CommonHeader,
-    // CropPicture
+    CropPicture,
   },
-  props: {},
+  props: {
+    thirdAccountInfo: {
+      type: Object,
+      default: null,
+    },
+  },
   data() {
     return {
       type: 3,
+      showAavatarUrl: "",
       accountForm: {
-        avatar: "1",
+        avatar: "",
         gender: "",
         nickname: "",
         birth: "",
       },
+      uploadAvatar: "",
       isSignUp: false,
       showCropper: false,
-      imgData: {},
+      imgData: "",
+      showBirthPopup: false,
     };
   },
-  computed: {},
+  computed: {
+    todayArr() {
+      let formatStr = regFormatDate(new Date(), "YYYY-MM-DD");
+      let todayArr = formatStr.split("-");
+      todayArr = todayArr.map((item) =>
+        item.charAt(0) == "0" ? Number(item.slice(1)) : Number(item)
+      );
+      return todayArr;
+    },
+
+    yearArr() {
+      let yearArr = [];
+      for (let i = 1923; i <= this.todayArr[0]; i++) {
+        yearArr.push({ value: i, label: i, children: [] });
+      }
+      return yearArr;
+    },
+
+    monthArr() {
+      return (year) => {
+        let monthArr = [];
+        let month = year == this.todayArr[0] ? this.todayArr[1] : 12;
+        for (let j = 1; j <= month; j++) {
+          monthArr.push({ value: j, label: j, children: [] });
+        }
+        return monthArr;
+      };
+    },
+
+    dayArr() {
+      return ([year, month]) => {
+        let dayArr = [];
+        let days = daysInMonth(year, month);
+        days =
+          year == this.todayArr[0] && month == this.todayArr[1]
+            ? this.todayArr[2]
+            : days;
+        for (let k = 1; k <= days; k++) {
+          dayArr.push({ value: k, label: k, leaf: true });
+        }
+        return dayArr;
+      };
+    },
+
+    birthColumns() {
+      let yearArr = [];
+      for (let i = 1923; i <= this.todayArr[0]; i++) {
+        let monthArr = [];
+        let month = i == this.todayArr[0] ? this.todayArr[1] : 12;
+        for (let j = 1; j <= month; j++) {
+          let dayArr = [];
+          let days = daysInMonth(i, j);
+          days =
+            i == this.todayArr[0] && j == this.todayArr[1]
+              ? this.todayArr[2]
+              : days;
+          for (let k = 1; k <= days; k++) {
+            dayArr.push({ id: k, text: k > 9 ? "" + k : "0" + k, leaf: true });
+          }
+          monthArr.push({
+            id: j,
+            text: j > 9 ? "" + j : "0" + j,
+            children: dayArr,
+          });
+        }
+        yearArr.push({ id: i, text: i, children: monthArr });
+      }
+      return yearArr;
+    },
+
+    // computed end
+  },
   watch: {
     accountForm: {
       handler(newVal) {
@@ -164,26 +277,69 @@ export default {
     if (this.isIOS()) {
       this.$refs.inputFile.removeAttribute("capture");
     }
+    console.log(this.thirdAccountInfo);
+    if (this.thirdAccountInfo) {
+      this.accountForm.nickname = this.thirdAccountInfo.nickname;
+      this.showAavatarUrl = this.thirdAccountInfo.avatar;
+    }
   },
   methods: {
-    onChangeAvatar() {
-      const file = this.$refs.inputFile.files[0];
-      console.log(this.$refs.inputFile.files, file, "===");
-      // 获取blob数据
-      const data = window.URL.createObjectURL(file);
-      // 数据传递至弹出层中
-      this.imgData = file;
-      // 显示出弹出层
-      this.showCropper = true;
-      // file-input  如果选择了同一个文件不会触发change事件
-      // 解决办法就是每次使用完毕，把它的value清空
-      this.$refs.inputFile.value = "";
+    hancleBirthClick() {
+      this.showBirthPopup = true;
+      setTimeout(() => {
+        this.$refs.birthPicker.setIndexes([77, 0, 0]);
+      }, 0);
     },
 
-    uploadAvatar() {
+    onChangeBirth(picker, values, index) {
+      // console.log(picker, values, index);
+      // let month = values[1].charAt(0) == 0 ? values[1].substring(1) : values[1];
+      // let day = values[2].charAt(0) == 0 ? values[2].substring(1) : values[1];
+    },
+
+    onConfirmBirth(value, index) {
+      this.accountForm.birth = value.join("/");
+      this.showBirthPopup = false;
+    },
+
+    changeShowCropper(flag) {
+      this.showCropper = flag;
+    },
+
+    changeUploadAvatar(imgData) {
+      this.uploadAvatar = imgData;
+    },
+
+    onChangeAvatar() {
+      const file = this.$refs.inputFile.files[0];
+      console.log(file, file.name, "选择的图片===");
+      const isFile = /\.jpg|png|jpeg$/i.test(file.name);
+      if (!isFile) {
+        console.log("文件需要为jpg或png或jpeg格式!");
+        this.$message.error("文件需要为jpg或png或jpeg格式!");
+        return isFile;
+      }
+      //  readAsDataURL 方法会读取指定的 Blob 或 File 对象。
+      //   读取操作完成的时候，readyState 会变成已完成DONE，
+      //   并触发 loadend 事件，同时 result 属性将包含一个data:URL格式的字符串（base64编码）
+      //   以表示所读取文件的内容。
+      let reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        let dataURL = reader.result;
+        this.imgData = dataURL;
+        this.showCropper = true;
+        // file-input  如果选择了同一个文件不会触发change事件
+        // 解决办法就是每次使用完毕，把它的value清空
+        this.$refs.inputFile.value = "";
+      };
+    },
+
+    toUploadAvatar() {
       // initOss();
       this.$refs.inputFile.click();
     },
+
     isIOS() {
       var ua = navigator.userAgent.toLowerCase();
       if (ua.match(/iPhone\sOS/i) == "iphone os") {
@@ -212,6 +368,10 @@ export default {
         color: #ffffff;
         font-weight: 500;
       }
+
+      .fill-in-content {
+        color: rgba(255, 255, 255, 0.5);
+      }
     }
 
     .avatar-box {
@@ -220,23 +380,62 @@ export default {
       text-align: center;
       background: rgba(255, 255, 255, 0.1);
       border-radius: 50px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
       overflow: hidden;
 
       input[type="file"] {
         display: none;
       }
 
-      img {
-        width: 1.386667rem /* 26/18.75 */;
-        height: 1.386667rem /* 26/18.75 */;
+      .avatar-base {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
       }
 
-      p {
-        font-size: 0.64rem /* 12/18.75 */;
+      .avatar-empty {
+        @extend .avatar-base;
+
+        img {
+          width: 1.386667rem /* 26/18.75 */;
+          height: 1.386667rem /* 26/18.75 */;
+        }
+
+        p {
+          font-size: 0.64rem /* 12/18.75 */;
+        }
+      }
+
+      .avatar-not-empty {
+        @extend .avatar-base;
+        position: relative;
+
+        img {
+          width: 100%;
+          height: 100%;
+        }
+
+        > div {
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(
+            180deg,
+            rgba(0, 0, 0, 0) 0%,
+            rgba(0, 0, 0, 0.5) 100%
+          );
+          position: absolute;
+          top: 0;
+
+          p {
+            width: 100%;
+            text-align: center;
+            font-size: 0.64rem /* 12/18.75 */;
+            position: absolute;
+            bottom: 0.8rem /* 15/18.75 */;
+          }
+        }
       }
     }
 
@@ -271,7 +470,31 @@ export default {
       }
     }
 
-    .nickname-box,
+    .nickname-box {
+      > div {
+        display: flex;
+        margin-top: 0.32rem /* 6/18.75 */;
+      }
+
+      input[type="text"] {
+        flex: 1;
+        color: #ffffff;
+        font-size: 0.853333rem /* 16/18.75 */;
+        font-family: PingFangSC-Regular, PingFang SC;
+        font-weight: 400;
+        outline-style: none;
+        border: 0rem;
+        border-bottom: 1px solid rgba(197, 197, 209, 0.2);
+        background: transparent;
+        padding-bottom: 0.32rem /* 6/18.75 */;
+
+        &::placeholder {
+          color: #ffffff;
+          opacity: 0.5;
+        }
+      }
+    }
+
     .birth-box {
       > div {
         display: flex;
@@ -284,23 +507,15 @@ export default {
           position: absolute;
           right: 0;
         }
-      }
 
-      input[type="text"] {
-        flex: 1;
-        color: #ffffff;
-        font-size: 0.853333rem /* 16/18.75 */;
-        font-family: PingFangSC-Regular, PingFang SC;
-        font-weight: 100;
-        outline-style: none;
-        border: 0rem;
-        border-bottom: 1px solid rgba(197, 197, 209, 0.2);
-        background: transparent;
-        padding-bottom: 0.32rem /* 6/18.75 */;
-
-        &::placeholder {
-          color: #ffffff;
-          opacity: 0.5;
+        .birth-content {
+          flex: 1;
+          color: rgba(255, 255, 255, 0.5);
+          font-size: 0.853333rem /* 16/18.75 */;
+          font-family: PingFangSC-Regular, PingFang SC;
+          font-weight: 400;
+          padding-bottom: 0.32rem /* 6/18.75 */;
+          border-bottom: 1px solid rgba(197, 197, 209, 0.2);
         }
       }
     }

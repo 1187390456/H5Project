@@ -69,32 +69,32 @@ export const ReSetIM = async function (vue) {
       console.log("====== 获取云信id列表的用户信息 ======", data);
       // 添加相关的用户信息
       for (var i = chatList.length - 1; i >= 0; i--) {
-        for (var j = chatList.length - 1; j >= 0; j--) {
+        for (var j = data.length - 1; j >= 0; j--) {
           if (chatList[i].id == "p2p-" + data[j].account) {
             chatList[i].targetUserInfo = data[j];
           }
         }
       }
 
-      // 添加在线信息
-      var res = await that.$api.onlineInfo({
-        userIDList: tempUidList.join(","),
-      });
-      if (!res.result) return that.$message.error("获取在线信息失败");
-      console.log("获取到了云信id列表的在线信息", res);
+      // 添加在线 整合用户信息
+      // var res = await that.$api.onlineInfo({
+      //   userIDList: tempUidList.join(","),
+      // });
+      // if (!res.result) return that.$message.error("获取在线信息失败");
+      // console.log("获取到了云信id列表的在线信息", res);
 
-      // 整合用户信息
-      for (var i = 0; i < chatList.length; i++) {
-        for (var j = 0; j < res.data.onlineStatusList.length; j++) {
-          if (
-            chatList[i].id.slice(chatList[i].id.lastIndexOf("_") + 1) ==
-            res.data.onlineStatusList[j].userID
-          ) {
-            chatList[i].targetUserInfo.onlineInfo =
-              res.data.onlineStatusList[j];
-          }
-        }
-      }
+      // for (var i = 0; i < chatList.length; i++) {
+      //   for (var j = 0; j < res.data.onlineStatusList.length; j++) {
+      //     if (
+      //       chatList[i].id.slice(chatList[i].id.lastIndexOf("_") + 1) ==
+      //       res.data.onlineStatusList[j].userID
+      //     ) {
+      //       chatList[i].targetUserInfo.onlineInfo =
+      //         res.data.onlineStatusList[j];
+      //     }
+      //   }
+      // }
+
       that.chatList = chatList;
       that.chatListGetDone = true;
       console.log("整合完毕左侧列表信息", that.chatList);

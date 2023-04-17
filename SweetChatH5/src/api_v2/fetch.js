@@ -84,8 +84,8 @@ export default function fetch(options) {
         config.headers.bgUserId = "";
         config.headers.bgUserToken = "";
       } else if (config.headerType && config.headerType == 2) {
-        config.headers.userID = 141;
-        config.headers.userToken = "CdVW5ElzOMkJr0y92FsVKX3vhHb1Ride";
+        config.headers.userID = 174;
+        config.headers.userToken = "MBE7izgQevlCrIx0WqxufW133KoXjUzb";
       } else {
         config.headers.bgUserToken = window.sessionStorage.getItem("token");
         config.headers.bgUserID = store.state.user.userId;
