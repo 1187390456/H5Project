@@ -90,7 +90,7 @@ export const constantRoutes = [
 		]
   },
   {
-		path: '/',
+		path: '/Discover',
 		component: Layout,
 		children: [
 			{
@@ -106,7 +106,7 @@ export const constantRoutes = [
  
 ];
 
-export const asyncRoutes = [{ path: "/*", redirect: "/", hidden: true }];
+export const asyncRoutes = [];
 
 const createRouter = () =>
   new Router({
