@@ -12,7 +12,10 @@
             ref="inputFile"
             @change="onChangeAvatar"
           />
-          <div class="avatar-not-empty" v-if="uploadAvatar || thirdAccountInfo">
+          <div
+            class="avatar-not-empty"
+            v-if="uploadAvatar || thirdAccountInfo.avatar"
+          >
             <img :src="uploadAvatar || thirdAccountInfo.avatar" alt="" />
             <div><p>Re-upload</p></div>
           </div>
@@ -181,7 +184,7 @@ export default {
   props: {
     thirdAccountInfo: {
       type: Object,
-      default: null,
+      default: {},
     },
   },
   data() {
@@ -194,6 +197,7 @@ export default {
         nickname: "",
         birth: "",
       },
+      isInitOss: false,
       uploadAvatar: "",
       isSignUp: false,
       showCropper: false,
@@ -288,23 +292,11 @@ export default {
       },
       deep: true,
     },
-  },
-  created() {
-    initOss();
-  },
-  mounted() {
-    if (this.isIOS()) {
-      console.log("IOS ===");
-      // this.$refs.inputFile.removeAttribute("capture");
-    }
-    console.log(this.thirdAccountInfo);
-    if (this.thirdAccountInfo) {
-      this.accountForm.nickname = this.thirdAccountInfo.nickname;
-      this.showAavatarUrl = this.thirdAccountInfo.avatar;
-      getImageFileFromUrl(this.thirdAccountInfo.avatar, "fileName")
-        .then((response) => {
-          // 返回的是文件对象，使用变量接收即可
-          setTimeout(() => {
+    isInitOss(newVal) {
+      if (newVal && this.thirdAccountInfo.avatar) {
+        getImageFileFromUrl(this.thirdAccountInfo.avatar, "fileName")
+          .then((response) => {
+            // 返回的是文件对象，使用变量接收即可
             ossUpload(response, {
               fileType: 1,
               fileSort: "avatar",
@@ -312,13 +304,28 @@ export default {
               if (res.result) {
                 this.accountForm.avatar = res.data.fileID;
               } else {
+                //
               }
             });
-          }, 1000);
-        })
-        .catch((e) => {
-          console.error(e);
-        });
+          })
+          .catch((e) => {
+            console.error(e);
+          });
+      }
+    },
+  },
+  created() {},
+  async mounted() {
+    this.isInitOss = await initOss();
+
+    if (this.isIOS()) {
+      console.log("IOS ===");
+      // this.$refs.inputFile.removeAttribute("capture");
+    }
+    console.log(this.thirdAccountInfo);
+    if (this.thirdAccountInfo.avatar) {
+      this.accountForm.nickname = this.thirdAccountInfo.nickname;
+      this.showAavatarUrl = this.thirdAccountInfo.avatar;
     }
   },
   methods: {

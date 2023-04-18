@@ -6,29 +6,33 @@ var ossClient;
 var stsInfo;
 // 初始化
 export const initOss = () => {
-  getSts().then((res) => {
-    if (res.result) {
-      stsInfo = res.data;
-      ossClient = new OSS({
-        accessKeyId: stsInfo.accessKeyID,
-        accessKeySecret: stsInfo.accessKeySecret,
-        stsToken: stsInfo.securityToken,
-        refreshSTSToken: () => {
-          getSTS().then((info) => {
-            return {
-              accessKeyId: info.accessKeyId,
-              accessKeySecret: info.accessKeySecret,
-              stsToken: info.stsToken,
-            };
-          });
-        },
-        refreshSTSTokenInterval: 300000,
-        bucket: stsInfo.bucket,
-        endpoint: stsInfo.endpoint,
-      });
-    } else {
-      Message.error(res.errorMsg);
-    }
+  return new Promise((resolve, reject) => {
+    getSts().then((res) => {
+      if (res.result) {
+        stsInfo = res.data;
+        ossClient = new OSS({
+          accessKeyId: stsInfo.accessKeyID,
+          accessKeySecret: stsInfo.accessKeySecret,
+          stsToken: stsInfo.securityToken,
+          refreshSTSToken: () => {
+            getSTS().then((info) => {
+              return {
+                accessKeyId: info.accessKeyId,
+                accessKeySecret: info.accessKeySecret,
+                stsToken: info.stsToken,
+              };
+            });
+          },
+          refreshSTSTokenInterval: 300000,
+          bucket: stsInfo.bucket,
+          endpoint: stsInfo.endpoint,
+        });
+        resolve(true);
+      } else {
+        Message.error(res.errorMsg);
+        reject(true);
+      }
+    });
   });
 };
 
