@@ -337,8 +337,10 @@ export default {
               let temoObj = {
                 isNew: this.loginInfo.isNew,
                 isEdit: this.loginInfo.isEdit,
-                ...this.loginInfo.userInfo,
-                ...res.data,
+                userInfo: {
+                  ...this.loginInfo.userInfo,
+                  ...res.data.userInfo,
+                },
               };
               this.$store.commit("user/SET_LOGIN_INFO", temoObj);
               const id = res.data.userInfo.id;
