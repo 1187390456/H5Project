@@ -35,13 +35,14 @@ import "./assets/style/xcm.css";
 import "./assets/style/xcm.less";
 
 import "vant/lib/index.css";
-import { Icon, Picker, Popup, Overlay, PullRefresh,Uploader  } from "vant";
+import { Icon, Picker, Popup, Overlay, PullRefresh,Uploader,Divider   } from "vant";
 Vue.use(Icon);
 Vue.use(Picker);
 Vue.use(Popup);
 Vue.use(Overlay);
 Vue.use(PullRefresh);
 Vue.use(Uploader);
+Vue.use(Divider);
 
 // ant
 // import "ant-design-vue/dist/antd.css";
