@@ -4,10 +4,22 @@
     <div class="top">
         <img src="@/assets/return.png" />
         <span>New Post</span>
-        <i>Post</i>
+        <i :class="postInput.length?'active':''" @click="submit">Post</i>
     </div>
     <div class="content">        
-        <el-input class="input"  v-model="postInput" :rows="2" type="textarea"  placeholder="What do you want to share at this moment" resize="none" show-word-limit maxlength="200" :autosize="true"></el-input>
+        <div class="con-input">
+            <textarea class="textarea" v-model="postInput" rows="4" maxlength="200"></textarea>
+            <span>{{postInputLen}}</span>
+        </div>
+        <div class="con-upload">
+            <van-uploader class="file" v-model="fileList" :max-count="6" :after-read="afterRead">
+                <img src="@/assets/images/posts/upload.png" alt="">
+                <!-- <template #preview-cover="{ file }">
+                    <img :src="file.content" alt="">
+                    <div class="preview-cover van-ellipsis">{{ file.content }}</div>
+                </template> -->
+            </van-uploader>
+        </div>
     </div>
   </div>
 </template>
@@ -17,12 +29,27 @@ export default {
   data() {
     return {
         postInput:"",
+        postInputLen:200,
+        fileList:[],
+    }
+  },
+  watch:{
+    postInput(newVal,oldVal){
+        this.postInputLen = 200 - newVal.length
     }
   },
   components: {
 
   },
   methods: {
+    afterRead(file,fileList){
+        console.log(file,fileList,"----------");
+    },
+    // 发表动态
+    submit(){
+        if(!this.postInput.length) return
+        console.log("发表动态");
+    }
   }
 }
 </script>
@@ -57,23 +84,50 @@ export default {
         color:#A0A0A2;
         font-weight: normal
     }
+    .active{
+        color: #8032FF;
+    }
 }
 .content{
     padding:0 16px;
-    .input{
+    .con-input{
+        text-align: right;
         font-size: 14px;
-        ::v-deep .el-input__count{
-             color: #A0A0A2;
+        span{
+            color: #A0A0A2;
         }
-    }
+        .textarea{
+            width: 100%;
+            resize : none;
+            border:none;
+        }
+    }  
+    .con-upload{
+        margin-top: 10px;
+        .file{
+           img{
+            width: 112px;
+            height: 112px;
+           }
+           ::v-deep .van-uploader__input-wrapper,
+           ::v-deep .van-uploader__preview-image{
+              width: 112px;
+              height: 112px;
+              border-radius: 5px;
+           }
+           ::v-deep .van-uploader__preview{
+                margin: 0 3px 3px 0;
+                &:nth-of-type(3),&:nth-of-type(6){
+                    margin-right: 0;
+                }
+           }
+           
+        }
+    } 
+   
 }
-::v-deep .el-textarea__inner{
-    border:none !important;
-    width: 100%;
-    font-size:14px ;
+::-webkit-scrollbar{
+    display: none;
 }
-::v-deep .el-textarea__inner::placeholder{
-    color: #A0A0A2;
-    font-size: 14px;
-}
+
 </style>
