@@ -25,3 +25,11 @@ export const giveLike = (data) => {
       data,
     });
   };
+  // 发布动态
+  export const postDynamic = (data) => {
+    return fetch({
+      url: "/api/dynamic/post-dynamic",
+      method: "post",
+      data,
+    });
+  };
