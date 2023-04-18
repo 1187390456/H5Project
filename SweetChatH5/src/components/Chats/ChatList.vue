@@ -1,16 +1,5 @@
 <template>
   <div :class="[moveTrigger ? 'moveLeft' : '']">
-    <!-- <div class="contentTitle" style="top: 0">
-      <span class="c1">Chats</span>
-      <div class="c2">
-        <div class="search">
-          <img src="../../assets/images/chats/search.png" alt="">
-        </div>
-        <div class="avatar">
-          <img src="" alt="">
-        </div>
-      </div>
-    </div> -->
     <div class="chatList">
       <div v-for="(item, i) in chatList" :key="i" class="chatItem" @click="OnClickChatItem(i, item)">
         <div class="avatar" v-if="item.targetUserInfo">
@@ -95,62 +84,6 @@ export default {
 
 .moveLeft {
   transform: translate(-375px);
-}
-
-.contentTitle {
-  min-height: 52px;
-  background: #FFFFFF;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  padding: 0 16px;
-  box-sizing: border-box;
-
-  .c1 {
-    font-size: 27px;
-    font-family: Helvetica-Bold, Helvetica;
-    font-weight: bold;
-    color: #161616;
-    line-height: 32px;
-  }
-
-  .c2 {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    .search {
-      width: 36px;
-      height: 36px;
-      background: #F1F1F1;
-      border-radius: 50%;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      margin-right: 12px;
-
-      img {
-        width: 18px;
-        height: 18px;
-      }
-    }
-
-    .avatar {
-      width: 36px;
-      height: 36px;
-
-      img {
-        width: 100%;
-        height: 100%;
-        border-radius: 50%;
-        object-fit: cover;
-      }
-    }
-  }
 }
 
 

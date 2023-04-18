@@ -35,12 +35,14 @@ import "./assets/style/xcm.css";
 import "./assets/style/xcm.less";
 
 import "vant/lib/index.css";
-import { Icon, Picker, Popup, Overlay, PullRefresh } from "vant";
+import { Icon, Picker, Popup, Overlay, PullRefresh, Tab, Tabs } from "vant";
 Vue.use(Icon);
 Vue.use(Picker);
 Vue.use(Popup);
 Vue.use(Overlay);
 Vue.use(PullRefresh);
+Vue.use(Tab);
+Vue.use(Tabs);
 
 // ant
 // import "ant-design-vue/dist/antd.css";
@@ -91,5 +93,9 @@ window.vm = new Vue({
   el: "#app",
   render: (h) => h(App),
 });
+
+// 自定义指令
+import { formatMsgTime } from "./utils/xcm";
+Vue.prototype.$format = formatMsgTime;
 
 export default Vue;
