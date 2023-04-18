@@ -342,6 +342,7 @@ export default {
       a {
         font-family: PingFangSC-Medium;
         color: #fff;
+        text-decoration: underline;
       }
     }
   }
