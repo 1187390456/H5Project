@@ -40,7 +40,7 @@
     </div>
     <div class="addpost">
         <img src="@/assets/images/posts/white-com.png" alt="">
-        <span>评论</span>
+        <span>comment</span>
     </div>
     <!-- 查看评论 -->
     <div class="check-comment">

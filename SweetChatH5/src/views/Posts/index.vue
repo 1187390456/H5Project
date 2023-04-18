@@ -66,7 +66,7 @@
         <div class="no-more" v-show="noMore">Already at bottom</div>
         </div>
     </van-pull-refresh>
-    <div class="addpost">
+    <div class="addpost" @click="addPost">
         <img src="@/assets/images/posts/addpost.png" alt="">
         <span>New Post</span>
     </div>
@@ -76,13 +76,19 @@
     :style="{ width: '100%', height: '100%' }">
         <detail @exitDetails="exitDetails" @cancelLike="cancelLike" @getLike="getLike" :detailData="detailData" /> 
     </van-popup>
-        
+     <van-popup
+        v-model="newPost"
+        position="right"
+        :style="{ width: '100%', height: '100%' }">
+        <post-add @exitAddPost="exitAddPost"  /> 
+    </van-popup>
   </div>
 </template>
 
 <script>
 import { relativeTime } from "@/utils/date.js";
 import Detail  from "@/components/Posts/detail"
+import PostAdd  from "@/components/Posts/postadd"
 export default {
   data() {
     return {
@@ -91,12 +97,15 @@ export default {
         noMore :false,
         pageNum:1,
         isLoading:false,
-        showDetail:false,
+        showDetail:false, // 动态详情
+        newPost:false,// 新动态
         detailData:null,// 动态详情内容
+        
     }
   },
   components: {
     Detail,
+    PostAdd
   },
     filters: {
         timeFilter(val) {
@@ -151,6 +160,13 @@ export default {
     toDetail(val){
         this.showDetail = true
         this.detailData = val
+    },
+    // 跳转至 发布动态页面
+    addPost(){
+         this.newPost = true
+    },
+    exitAddPost(){
+        this.newPost = false
     },
     exitDetails(){
         this.showDetail = false

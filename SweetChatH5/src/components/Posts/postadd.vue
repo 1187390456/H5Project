@@ -1,13 +1,13 @@
 // 发布动态
 <template>
-  <div class="containner-posts">
+  <div class="containner-add">
     <div class="top">
         <img src="@/assets/return.png" />
         <span>New Post</span>
         <i>Post</i>
     </div>
-    <div>        
-        <el-input v-model="postInput" type="textarea"  placeholder="What do you want to share at this moment" resize="none" :autosize="true"></el-input>
+    <div class="content">        
+        <el-input class="input"  v-model="postInput" :rows="2" type="textarea"  placeholder="What do you want to share at this moment" resize="none" show-word-limit maxlength="200" :autosize="true"></el-input>
     </div>
   </div>
 </template>
@@ -28,7 +28,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.containner-posts{    
+.containner-add{    
     img{
         object-fit: cover;  
     }
@@ -58,8 +58,19 @@ export default {
         font-weight: normal
     }
 }
+.content{
+    padding:0 16px;
+    .input{
+        font-size: 14px;
+        ::v-deep .el-input__count{
+             color: #A0A0A2;
+        }
+    }
+}
 ::v-deep .el-textarea__inner{
     border:none !important;
+    width: 100%;
+    font-size:14px ;
 }
 ::v-deep .el-textarea__inner::placeholder{
     color: #A0A0A2;
