@@ -73,13 +73,6 @@ export default {
   mounted() {
     this.tryGoogleRequest();
 
-    FB.init({
-      appId: this.app_id,
-      cookie: true,
-      xfbml: true,
-      version: "v10.0",
-    });
-
     // FB.getLoginStatus(function (response) {
     //   if (response.status === "connected") {
     //     // 用户已登录并授权
@@ -111,25 +104,7 @@ export default {
           break;
         case 5:
           // Facebook授权登录
-          FB.login(
-            (response) => {
-              this.openId =
-                response.authResponse && response.authResponse.userID;
-              this.accessToken =
-                response.authResponse && response.authResponse.accessToken;
-
-              FB.api("/me", { fields: "id,name,email,picture" }, (res) => {
-                // 处理获取用户信息的逻辑
-                const userinfo = {
-                  nickname: res.name,
-                  avatar: res.picture.data.url,
-                };
-                this.commonLogin(type);
-                this.$emit("changeThirdAccountInfo", userinfo);
-              });
-            },
-            { scope: "public_profile,email" }
-          );
+          this.tryFacebookRequest(type);
           break;
         case 6:
           this.tryGoogleRequest(type);
@@ -166,6 +141,33 @@ export default {
             }
           }
         });
+    },
+
+    async tryFacebookRequest(type) {
+      await FB.init({
+        appId: this.app_id,
+        cookie: true,
+        xfbml: true,
+        version: "v10.0",
+      });
+      FB.login(
+        (response) => {
+          this.openId = response.authResponse && response.authResponse.userID;
+          this.accessToken =
+            response.authResponse && response.authResponse.accessToken;
+
+          FB.api("/me", { fields: "id,name,email,picture" }, (res) => {
+            // 处理获取用户信息的逻辑
+            const userinfo = {
+              nickname: res.name,
+              avatar: res.picture.data.url,
+            };
+            this.commonLogin(type);
+            this.$emit("changeThirdAccountInfo", userinfo);
+          });
+        },
+        { scope: "public_profile,email" }
+      );
     },
 
     getGoogleUserinfo(access_token) {
