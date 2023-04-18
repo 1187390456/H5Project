@@ -40,9 +40,9 @@
       </div> -->
       <p>By signing up or continuing.you agree to</p>
       <p>
-        <a href="#">Privacy Policy</a>
+        <a href="https://www.sweetfans.love/privacy.html">Privacy Policy</a>
         and
-        <a href="#">Terms of Service</a>
+        <a href="https://www.sweetfans.love/service.html">User Agreement</a>
       </p>
     </div>
   </div>
@@ -60,9 +60,9 @@ export default {
     return {
       isChecked: false,
       client_id:
-        "527306987343-auqpkaj7a2qacv2vp4f3jopie3g257h6.apps.googleusercontent.com",
-      redirect_uri: "http://localhost:8883/",
-      app_id: "634502518469740",
+        "527306987343-auqpkaj7a2qacv2vp4f3jopie3g257h6.apps.googleusercontent.com", // Google
+      redirect_uri: "http://localhost:8883/", // Google
+      app_id: "634502518469740", // Facebook
       openId: "",
       accessToken: "",
     };
@@ -71,11 +71,7 @@ export default {
   watch: {},
   created() {},
   mounted() {
-    const params = this.parseHash(location.hash.substring(1));
-    console.log(params, "000");
-    params.id_token && (this.openId = jwt.decode(params.id_token).sub);
-    this.accessToken = params.access_token;
-    console.log(this.openId, "openId");
+    this.tryGoogleRequest();
 
     FB.init({
       appId: this.app_id,
@@ -107,6 +103,7 @@ export default {
       switch (type) {
         case 1:
           // 手机号登录
+          this.$emit("changeThirdAccountInfo", {});
           this.$root.$emit("changeLoginMethod", 1);
           break;
         case 4:
@@ -135,7 +132,7 @@ export default {
           );
           break;
         case 6:
-          this.trySampleRequest();
+          this.tryGoogleRequest(type);
           // 谷歌授权登录
           break;
         default:
@@ -157,42 +154,61 @@ export default {
             if (res.data.isEdit) {
               // 直接进入
               console.log("直接进入===");
+              const id = res.data.userInfo.id;
+              const name = res.data.userInfo.nickname;
+              sessionStorage.setItem("User", JSON.stringify({ name, id }));
+              sessionStorage.setItem("userToken", res.data.userInfo.token);
+              this.$router.push({ path: "/Discover" });
+              this.$store.dispatch("permission/generateRoutes", []);
             } else {
               // 去编辑资料
               this.$root.$emit("changeLoginMethod", 2);
             }
-            // const id = res.data.userInfo.id;
-            // const name = res.data.userInfo.nickname;
-            // sessionStorage.setItem("User", JSON.stringify({ name, id }));
-            // this.$router.push({ path: "/Discover" });
-            // this.$store.dispatch("permission/generateRoutes", []);
           }
         });
     },
 
-    trySampleRequest() {
+    getGoogleUserinfo(access_token) {
+      const xhr = new XMLHttpRequest();
+      xhr.open(
+        "GET",
+        `https://www.googleapis.com/drive/v3/about?fields=user&access_token=${access_token}`
+      );
+      xhr.onreadystatechange = (e) => {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          const res = JSON.parse(xhr.response);
+          console.log(res, "google=====");
+          this.openId = res.user.permissionId;
+          console.log(this.openId, "openId===");
+          this.$emit("changeThirdAccountInfo", {
+            nickname: res.user.displayName,
+            avatar: res.user.photoLink,
+          });
+        } else if (xhr.readyState === 4 && xhr.status === 401) {
+          // Token invalid, so prompt for user permission.
+          this.oauth2SignIn();
+        }
+      };
+      xhr.send(null);
+    },
+
+    tryGoogleRequest(type = 0) {
       const params = this.parseHash(location.hash.substring(1));
       if (params && params["access_token"]) {
-        const xhr = new XMLHttpRequest();
-        xhr.open(
-          "GET",
-          "https://www.googleapis.com/drive/v3/about?fields=user&" +
-            "access_token=" +
-            params["access_token"]
-        );
-        xhr.onreadystatechange = function (e) {
-          if (xhr.readyState === 4 && xhr.status === 200) {
-            console.log(JSON.parse(xhr.response));
-          } else if (xhr.readyState === 4 && xhr.status === 401) {
-            // Token invalid, so prompt for user permission.
-            oauth2SignIn();
-          }
-        };
-        xhr.send(null);
+        this.accessToken = params.access_token;
+        var decodeIdToken;
+        params.id_token && (decodeIdToken = jwt.decode(params.id_token));
+        this.openId = decodeIdToken.sub;
+        this.$emit("changeThirdAccountInfo", {
+          nickname: decodeIdToken.name,
+          avatar: decodeIdToken.picture,
+        });
+        this.commonLogin(6);
       } else {
-        this.oauth2SignIn();
+        type == 6 && this.oauth2SignIn();
       }
     },
+
     oauth2SignIn() {
       const oauth2Endpoint = "https://accounts.google.com/o/oauth2/v2/auth";
       const form = document.createElement("form");
@@ -221,6 +237,7 @@ export default {
       document.body.appendChild(form);
       form.submit();
     },
+
     parseHash(hash) {
       const params = {};
       const regex = /([^&=]+)=([^&]*)/g;
