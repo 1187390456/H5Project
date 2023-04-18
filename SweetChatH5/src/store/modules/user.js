@@ -11,6 +11,7 @@ const state = {
   roles: [],
   baseURL: baseURL,
   loginInfo: {},
+  showSearch: false,
 };
 
 const mutations = {
@@ -29,6 +30,9 @@ const mutations = {
   },
   SET_LOGIN_INFO: (state, info) => {
     state.loginInfo = { ...info };
+  },
+  SET_SEARCHINFO: (state, newState) => {
+    state.showSearch = newState;
   },
 };
 

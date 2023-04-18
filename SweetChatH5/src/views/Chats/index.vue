@@ -6,6 +6,7 @@
             :isSendImg="isSendImg" v-if="chatViewList.length > 0 && viewType == 'view'" @SendText="SendText"
             @handleImageChange="handleImageChange" @handleImageRemove="handleImageRemove" @ReturnList="ReturnList"
             ref="chatView"></chat-view>
+        <user-search v-if="viewType == 'search'"></user-search>
         <!-- <button @click="SendText('123')">测试</button> -->
     </div>
 </template>
@@ -13,10 +14,11 @@
 <script>
 import ChatList from "../../components/Chats/ChatList.vue";
 import ChatView from "../../components/Chats/ChatView.vue";
+import UserSearch from '../../components/Chats/UserSearch.vue'
 import { ReSetIM } from "../../utils/xcm";
 
 export default {
-    components: { ChatList, ChatView },
+    components: { ChatList, ChatView, UserSearch },
     data() {
         return {
             nim: null, // 云信实例
@@ -31,7 +33,7 @@ export default {
             isSendImg: false, // 是否正在上传图片
             fileImageWidth: 400, //图片上传提示框宽度
 
-            viewType: 'list',
+            viewType: 'search',
 
             myUserInfo: {}
         };
@@ -128,8 +130,8 @@ export default {
             if (msg != "") {
                 var msg = that.nim.sendText({
                     scene: "p2p",
-                    to: that.sessionInfo.account,
-                    // to: "b_test_206",
+                    // to: that.sessionInfo.account,
+                    to: "b_test_174",
                     text: msg,
                     done: sendMsgDone,
                 });

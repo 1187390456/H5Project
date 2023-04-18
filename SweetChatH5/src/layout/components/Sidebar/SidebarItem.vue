@@ -8,22 +8,18 @@
 -->
 <template>
   <div v-if="!item.hidden" class="menu-wrapper">
-    <template
-      v-if="
-        hasOneShowingChild(item.children, item) &&
-        (!onlyOneChild.children || onlyOneChild.noShowingChildren) &&
-        !item.alwaysShow
-      "
-    >
+    <template v-if="
+      hasOneShowingChild(item.children, item) &&
+      (!onlyOneChild.children || onlyOneChild.noShowingChildren) &&
+      !item.alwaysShow
+    ">
       <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
-        <el-menu-item
-          :index="resolvePath(onlyOneChild.path)"
-          :disabled="item.disabled"
-          class="menu-item"
-        >
+        <el-menu-item :index="resolvePath(onlyOneChild.path)" :disabled="item.disabled" class="menu-item">
           <div>
-            <div><img :src="require(`@/assets/layout/${onlyOneChild.path == activePath ? 're'+onlyOneChild.meta.icon :onlyOneChild.meta.icon}`)" alt=""></div>
-            <div class="title">{{onlyOneChild.name}}</div>
+            <div><img
+                :src="require(`@/assets/layout/${onlyOneChild.path == activePath ? 're' + onlyOneChild.meta.icon : onlyOneChild.meta.icon}`)"
+                alt=""></div>
+            <div class="title">{{ onlyOneChild.name }}</div>
           </div>
         </el-menu-item>
       </app-link>
@@ -40,7 +36,7 @@ import FixiOSBug from "./FixiOSBug";
 export default {
   name: "SidebarItem",
   components: { AppLink },
-  computed: {    
+  computed: {
   },
   mixins: [FixiOSBug],
   props: {
@@ -57,7 +53,7 @@ export default {
       type: String,
       default: "",
     },
-    activePath:{
+    activePath: {
       type: String,
       default: "",
     }
@@ -105,24 +101,28 @@ export default {
 };
 </script>
 <style scoped lang="scss">
-.menu-item{
+.menu-item {
   font-size: .5333rem;
   color: #A4AAB2;
   // line-height: .7467rem;
   text-align: center;
-  img{
+
+  img {
     width: 1.2267rem;
-    height: 1.2267rem;    
+    height: 1.2267rem;
   }
-  .title{
+
+  .title {
     height: .7467rem;
     line-height: .7467rem;
   }
-  .active{
+
+  .active {
     color: #8032FF;
   }
 }
-::v-deep .is-active{
+
+::v-deep .is-active {
   color: #8032FF;
 }
 </style>
