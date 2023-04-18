@@ -1,21 +1,29 @@
 <template>
   <div class="navbar">
     <span>{{activePath}}</span>
-    <img :src="loginInfo.userInfo && loginInfo.userInfo.avatar" alt="" />
+    <img :src="loginInfo.userInfo && loginInfo.userInfo.avatar" alt="" @click="showMyPage" />
+    <van-popup v-model="showMine" position="left" :overlay="false">
+      <mine />
+    </van-popup>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapState } from "vuex";
 import { chromeDownUrl } from "@/config";
+import Mine from "@/components/Mine"
+
 export default {
   data() {
     return {
       chromeDownUrl,
-      activePath:this.$route.path
+      activePath:this.$route.path,
+      showMine :false,
     };
   },
-  components: {},
+  components: {
+    Mine,
+  },
   computed: {
     ...mapGetters(["loginInfo"]),
     ...mapState({
@@ -30,7 +38,11 @@ export default {
       immediate:true
     }
   },
-  methods: {},
+  methods: {
+    showMyPage(){
+      this.showMine = true
+    }
+  },
   mounted() {
   },
 
@@ -55,5 +67,9 @@ export default {
     height: 1.92rem;
     border-radius: 50%;
   }
+}
+::v-deep .van-popup--left{
+  height: 100%;
+  width: 17.2267rem;
 }
 </style>

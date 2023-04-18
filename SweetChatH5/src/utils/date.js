@@ -121,18 +121,18 @@ export const relativeTime = (timeStamp) => {
       if (leaveSecond > (3600 * 24)) { // 大于24小时
         if (leaveSecond > (3600 * 24 * daysInMonth(year, month))) { // 大于一个月
           if (leaveSecond > (3600 * 24 * daysInMonth(year, month) * 12)) { // 大于一年
-            return  Math.floor(leaveSecond / (3600 * 24 * daysInMonth(year, month) * 12 )) + "年前"
+            return  Math.floor(leaveSecond / (3600 * 24 * daysInMonth(year, month) * 12 )) + "y ago"
           } else {
-            return  Math.floor(leaveSecond / (3600 * 24 * daysInMonth(year, month))) + "月前"
+            return  Math.floor(leaveSecond / (3600 * 24 * daysInMonth(year, month))) + "m ago"
           }
         } else {
-          return  Math.floor(leaveSecond / (3600 * 24) ) + "天前"
+          return  Math.floor(leaveSecond / (3600 * 24) ) + "d ago"
         }
       } else {
-        return  Math.floor(leaveSecond / 3600) + "小时前"
+        return  Math.floor(leaveSecond / 3600) + "h ago"
       }
     } else {
-      return  Math.floor(leaveSecond / 60) + "分钟前"
+      return  Math.floor(leaveSecond / 60) + "min ago"
     }
   } else {
     return  "Just now"

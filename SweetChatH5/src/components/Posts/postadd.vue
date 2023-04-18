@@ -2,22 +2,18 @@
 <template>
   <div class="containner-add">
     <div class="top">
-        <img src="@/assets/return.png" />
+        <img src="@/assets/return.png" @click="clear" />
         <span>New Post</span>
         <i :class="postInput.length?'active':''" @click="submit">Post</i>
     </div>
     <div class="content">        
         <div class="con-input">
-            <textarea class="textarea" v-model="postInput" rows="4" maxlength="200"></textarea>
+            <textarea class="textarea" placeholder="What do you want to share at this moment" v-model="postInput" rows="4" maxlength="200"></textarea>
             <span>{{postInputLen}}</span>
         </div>
         <div class="con-upload">
-            <van-uploader class="file" v-model="fileList" :max-count="6" :after-read="afterRead">
+            <van-uploader class="file" v-model="fileList" :max-count="maxCount" :before-read ="beforeRead" :after-read="afterRead" @delete="deletePreview">
                 <img src="@/assets/images/posts/upload.png" alt="">
-                <!-- <template #preview-cover="{ file }">
-                    <img :src="file.content" alt="">
-                    <div class="preview-cover van-ellipsis">{{ file.content }}</div>
-                </template> -->
             </van-uploader>
         </div>
     </div>
@@ -25,12 +21,16 @@
 </template>
 
 <script>
+import { initOss, ossUpload } from "@/utils/aliyunoss.js";
+
 export default {
   data() {
     return {
         postInput:"",
         postInputLen:200,
         fileList:[],
+        maxCount:6, // 最大上上传数量
+        fileType:1, // 文件类型
     }
   },
   watch:{
@@ -41,15 +41,64 @@ export default {
   components: {
 
   },
+  mounted(){
+    console.log(111);
+    initOss();
+  },
   methods: {
-    afterRead(file,fileList){
-        console.log(file,fileList,"----------");
+    // 文件读取完成回调
+    afterRead(file,detail){
+        console.log(file,detail,this.fileList,"----------");
+    },
+    // 文件读取前回调
+    beforeRead(file,detail){
+        console.log(file,detail,"========");
+        var that = this;
+        const isFile = /\.jpg|png|jpeg$/i.test(file.name);
+        if (isFile) {
+            this.fileType = 1
+            this.maxCount = 6
+        } else {
+             this.fileType = 3
+             this.maxCount = 1
+        }
+        ossUpload(file,{ fileType: that.fileType,fileSort: "dynamic",}).then((res)=>{
+            if(res.result){
+                file.fileID = res.data.fileID;             
+            } else{
+                return false
+            }
+        })
+        return true
+      
+    },
+    // 删除某个图片是时调用
+    deletePreview(file,detail){
+        console.log(file,detail,"删除");
     },
     // 发表动态
     submit(){
         if(!this.postInput.length) return
-        console.log("发表动态");
-    }
+        console.log("发表动态",this.fileList); 
+        var videoID = 0
+        var imageIDList = this.fileList.map((item)=>item.file.fileID).join(",")
+        this.$api.postDynamic({videoID,imageIDList,contentText:this.postInput}).then((res)=>{
+            if(res.result){
+                this.$message.success("发布成功")
+                this.clear()
+                
+            }
+        })
+    },
+    // 清除
+    clear(){
+        this.$emit('exitAddPost')
+        this.postInput = ""
+        this.postInputLen = 200
+        this.fileList = []
+        this.maxCount = 6 
+        this.fileType = 1 
+    },
   }
 }
 </script>
@@ -69,6 +118,9 @@ export default {
     font-size: 16px;
     font-weight: bold;
     color: #161616;
+    span{
+        font-family: Helvetica-Bold, Helvetica;
+    }
     img{
         height: 24px;
         width: 24px;
@@ -91,6 +143,7 @@ export default {
 .content{
     padding:0 16px;
     .con-input{
+        font-family: PingFangSC-Regular, PingFang SC;;
         text-align: right;
         font-size: 14px;
         span{
