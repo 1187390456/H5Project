@@ -1,5 +1,6 @@
 <template>
   <div class="container-mine">
+    <!-- 个人信息 -->
     <div class="info">
         <img class="avatar" src="https://img0.baidu.com/it/u=1993557595,4075530522&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1681923600&t=9b6dddbe05c446e1ace6f480f70ef88c" alt="">
         <div class="info-detail">
@@ -11,6 +12,7 @@
         </div>
         <img class="right" src="@/assets/images/mine/right.png" alt="">
     </div>
+    <!-- 收入 -->
     <div class="income">
         <img class="income-bg" src="@/assets/images/mine/income-bg.png" alt="">
         <div>
@@ -38,8 +40,28 @@
             </div>
         </div>
     </div>
-    <div class="share"></div>
-    <div class="settings"></div>
+    <!-- 链接分享 -->
+    <div class="share">
+        <div class="share-detail">
+            <div>
+                <p>Share SweetFans</p>
+                <p>Invite fans to chat with you</p>
+            </div>
+            <img src="@/assets/images/mine/app.png" alt="">
+        </div>
+        <div class="share-link">
+            <img src="@/assets/images/mine/link.png" alt="">
+            <span>Copy the link and Share it</span>
+        </div>
+    </div>
+    <!-- 设置 -->
+    <div class="settings">
+        <div v-for="(item,index) in settingList" :key="index">
+            <img :src="item.icon" alt="">
+            <span>{{item.title}}</span>
+            <img class="right" src="@/assets/images/mine/right.png" alt="">
+        </div>
+    </div>
   </div>
 </template>
 
@@ -47,7 +69,28 @@
 export default {
   data() {
     return {
-
+        settingList:[
+            {
+                icon:require("@/assets/images/mine/income.png"),
+                title:"My income"
+            },
+            {
+                icon:require("@/assets/images/mine/account.png"),
+                title:"Account authorization"
+            },
+            {
+                icon:require("@/assets/images/mine/wallet.png"),
+                title:"My wallet"
+            },
+            {
+                icon:require("@/assets/images/mine/issue.png"),
+                title:"Issue feedback"
+            },
+            {
+                icon:require("@/assets/images/mine/setting.png"),
+                title:"Other settings"
+            },
+        ]
     }
   },
   components: {
@@ -59,66 +102,65 @@ export default {
 <style scoped lang="scss">
 .container-mine{
     object-fit: over;
-    padding: 0 12px;
+    padding: 1.6rem .64rem 0 .64rem;
     .info{
         display: flex;
         align-items: center;
-        margin-top: 30px;
         .avatar{
-            width: 68px;
-            height: 68px;
+            width: 3.6267rem;
+            height: 3.6267rem;
             border-radius: 50%;
         }
         .info-detail{
             flex: 1;
-            margin-left: 12px;
+            margin-left: .64rem;
             .name {
-                font-size: 17px;                
+                font-size: .9067rem;                
                 color: #111118;
-                height: 24px;
-                line-height: 24px;
+                height: 1.28rem;
+                line-height: 1.28rem;
             }
             .gender{
-                margin: 4px 0;
-                width: 36px;
-                height: 16px;
+                margin: .2133rem 0;
+                width: 1.92rem;
+                height: .8533rem;
                 background: #FF77B5;
-                border-radius: 10px;
-                font-size: 10px;
+                border-radius: .5333rem;
+                font-size: .5333rem;
                 color: #fff;
                 display: flex;
                 align-items: center;
                 justify-content:center;
                 img{
-                    width: 12px;
-                    height: 12px;
+                    width: .64rem;
+                    height: .64rem;
                 }
                 span{
-                    width: 12px;
-                    height: 14px;
-                    line-height: 14px;
+                    width: .64rem;
+                    height: .7467rem;
+                    line-height: .7467rem;
                 }
             }
             span{
                 font-family: PingFangSC-Regular, PingFang SC;
                 color: #9A9A9A;
-                font-size: 12px;
-                height: 17px;
-                line-height: 17px;
+                font-size: .64rem;
+                height: .9067rem;
+                line-height: .9067rem;
             }            
         }
         .right{
-            width: 24px;
-            height: 24px;
+            width: 1.28rem;
+            height: 1.28rem;
         }
     }
     .income{
         position: relative;
-        margin-top: 20px;        
-        height: 143px;
+        margin-top: 1.0667rem;        
+        height: 7.6267rem;
         .icon{
-            width: 20px;
-            height: 20px;
+            width: 1.0667rem;
+            height: 1.0667rem;
         }
         .income-bg{
             width: 100%;
@@ -129,37 +171,37 @@ export default {
             z-index: -1;
         }
         >div{            
-            padding: 16px 0 12px 0;
+            padding: .8533rem 0 .64rem 0;
             color: #fff;           
-            font-size: 14px;   
+            font-size: .7467rem;   
             .one,.two,.three{
                 display: flex;
                 align-items: center;
                 justify-content:space-between; 
                 >div{
-                    padding: 0 16px;
+                    padding: 0 .8533rem;
                     display: flex;
                     align-items: center;
-                    height: 20px;
-                    line-height: 20px;
+                    height: 1.0667rem;
+                    line-height: 1.0667rem;
                 }
             }
             .one{            
                 font-family: PingFangSC-Regular, PingFang SC;
                 img{
-                    margin-left: 4px;
+                    margin-left: .2133rem;
                 }
                 
             }
             .two{
-                font-size: 20px;
-                margin-top: 8px;
+                font-size: 1.0667rem;
+                margin-top: .4267rem;
                 >div{
-                    height: 40px;
-                    line-height: 40px;
+                    height: 2.1333rem;
+                    line-height: 2.1333rem;
                 }
                 img{
-                    margin-left: 8px;
+                    margin-left: .4267rem;
                 }
             }
             .three{
@@ -169,19 +211,94 @@ export default {
                     }
                 }
                 img {
-                    width: 12px;
-                    height: 12px;
-                    margin-left: 6px;
+                    width: .64rem;
+                    height: .64rem;
+                    margin-left: .32rem;
                 }
             }
         }
         .divider{
-            margin: 14px 0 12px 0;
+            margin: .7467rem 0 .64rem 0;
         }
     }
-}
-.font1{
-    font-family: PingFangSC-Regular, PingFang SC;
-}
-       
+    .share{
+        margin: .64rem 0;
+        // height: 7.4133rem;
+        background: #FEFEFE;
+        border-radius: .8533rem;
+        padding:.8533rem;
+        .share-detail{
+            display: flex;
+            align-items: center;
+            justify-content:space-between;
+            p{
+                margin: 0;
+                &:first-of-type{
+                    font-size: .8533rem;
+                    color: #8032FF;
+                    height: 1.1733rem;
+                    line-height: 1.1733rem;
+                }
+                &:last-of-type{
+                    font-size: .7467rem;
+                    font-family: PingFangSC-Regular, PingFang SC;
+                    color: #7F7F7F;
+                    height: 1.0667rem;
+                    line-height: 1.0667rem;
+                }
+            }
+            img{
+                width: 4.16rem;
+                height: 1.6rem;
+            }
+        }
+        .share-link{
+            margin-top: .9067rem;
+            width: 14.24rem;
+            height: 2.4533rem;
+            font-size: .7467rem;
+            background: #FFEFD1;
+            border-radius: 1.2267rem;
+            color: #F6892C;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            img{
+                width: 1.0667rem;
+                height: 1.0667rem;
+                margin-right: .4267rem;
+            }
+        }
+    }
+    .settings{
+        // padding-bottom: 16px;
+        >div{
+            padding: 0 .8533rem 0 .64rem;
+            background-color: #fff;
+            height: 2.9867rem;
+            display: flex;
+            align-items: center;
+            img{
+                width: 1.28rem;
+                height: 1.28rem;
+            }
+            span{
+                font-size: .8533rem;
+                font-family: PingFangSC-Regular, PingFang SC;
+                flex: 1;
+                margin-left: .64rem;
+            }
+            .right{
+                width: 1.0667rem;
+                height: 1.0667rem;
+            }
+            &:first-of-type{
+                border-radius: .8533rem .8533rem 0rem 0rem;
+            }
+            &:last-of-type{
+                border-radius: 0rem 0rem .8533rem .8533rem;
+            }
+        }
+    }
+}  
 </style>
