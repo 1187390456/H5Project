@@ -40,6 +40,7 @@
               class="input"
               v-model="phoneCodebox[index]"
               type="text"
+              inputmode="numeric"
               oninput="value = value.replace(/[^\d]/g,'')"
               @focus="onFocusCode"
               @input="onInputCode(index, $event)"
