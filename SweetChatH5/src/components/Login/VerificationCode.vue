@@ -15,6 +15,9 @@
             v-model="phoneNumber"
             oninput="value = value.replace(/[^\d]/g,'')"
             placeholder="Please enter phone number"
+            type="number"
+            pattern="[0-9]*"
+            inputmode="numeric"
           />
         </div>
         <div class="separation-line"></div>
@@ -39,7 +42,8 @@
               :ref="`ref_${index}`"
               class="input"
               v-model="phoneCodebox[index]"
-              type="text"
+              type="number"
+              pattern="[0-9]*"
               inputmode="numeric"
               oninput="value = value.replace(/[^\d]/g,'')"
               @focus="onFocusCode"
@@ -262,6 +266,7 @@ export default {
     }
 
     .phone-code {
+      width: 100vw;
       margin-top: 0.693333rem /* 13/18.75 */;
 
       p {
@@ -292,12 +297,14 @@ export default {
         flex-direction: row;
         justify-content: space-between;
         margin: 0.906667rem /* 17/18.75 */ 0;
+        box-sizing: border-box;
 
         input {
-          display: flex;
-          width: 2.4rem /* 45/18.75 */;
+          // display: flex;
+          // width: 2.4rem /* 45/18.75 */;
+          width: 10vw;
           height: 2.933333rem /* 55/18.75 */;
-          font-size: 1.6rem /* 30/18.75 */;
+          // font-size: 1.6rem /* 30/18.75 */;
           color: #333333;
           background-color: #f2f2f2;
           text-align: center;

@@ -13,8 +13,21 @@
       alt=""
       @click="showMyPage"
     />
-    <van-popup v-model="showMine" position="left" :overlay="false">
+
+    <!-- 我的页面 -->
+    <van-popup v-model="showMine" position="left">
       <mine />
+    </van-popup>
+
+    <!-- 我的页面点击具体内容 -->
+    <van-popup
+      v-model="showNextPopup"
+      style="height: 100%; width: 100%; background: #f8f9fc"
+    >
+      <my-income v-if="nextType == 1"></my-income>
+      <account-authorizatio v-if="nextType == 2"></account-authorizatio>
+      <my-wallet v-if="nextType == 3"></my-wallet>
+      <potential-income v-if="nextType == 6"></potential-income>
     </van-popup>
   </div>
 </template>
@@ -23,6 +36,10 @@
 import { mapGetters, mapState } from "vuex";
 import { chromeDownUrl } from "@/config";
 import Mine from "@/components/Mine";
+import MyIncome from "../../components/Mine/MyIncome.vue";
+import PotentialIncome from "../../components/Mine/PotentialIncome.vue";
+import MyWallet from "../../components/Mine/MyWallet.vue";
+import AccountAuthorizatio from "../../components/Mine/AccountAuthorizatio.vue";
 
 export default {
   data() {
@@ -30,10 +47,16 @@ export default {
       chromeDownUrl,
       activePath: this.$route.path,
       showMine: false,
+      showNextPopup: false,
+      nextType: 0,
     };
   },
   components: {
     Mine,
+    MyIncome,
+    PotentialIncome,
+    MyWallet,
+    AccountAuthorizatio,
   },
   computed: {
     ...mapGetters(["loginInfo"]),
@@ -53,20 +76,33 @@ export default {
     OnClickSearch() {
       // console.log('vue', this.$store); //this.$store.state.user.showSearch
     },
-  },
-  methods: {
+
     showMyPage() {
       this.showMine = true;
     },
+
+    toShowMine() {
+      this.showNextPopup = false;
+      this.showMine = true;
+    },
+
+    changeNextType(type) {
+      console.log("跳转===", type);
+      this.showNextPopup = true;
+      this.nextType = type;
+    },
   },
-  mounted() {},
+  mounted() {
+    this.$root.$on("toShowMine", this.toShowMine);
+    this.$root.$on("changeNextType", this.changeNextType);
+  },
 };
 </script>
 
 <style lang="scss" scoped>
-::-webkit-scrollbar{
-    display: none;
-} 
+::-webkit-scrollbar {
+  display: none;
+}
 .navbar {
   padding: 0 0.8533rem;
   display: flex;
@@ -87,13 +123,15 @@ export default {
     border-radius: 50%;
   }
 }
+::v-deep .van-overlay {
+  background: rgba(0, 0, 0, 0.4);
+}
 ::v-deep .van-popup--left {
   height: 100%;
   width: 17.2267rem;
   // position: relative;
   // z-index: -2;
-  background: #F8F9FC;
-
+  background: #f8f9fc;
 }
 .search {
   width: 100%;
