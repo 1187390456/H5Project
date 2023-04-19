@@ -5,78 +5,81 @@
       <img src="@/assets/return.png" @click="$emit('exitDetails')" />
       <span>Posts</span>
     </div>
-    <div class="content">
-      <div class="con-info">
-        <img :src="detailData.authorInfo.avatar" alt="" />
-        <div class="info">
-          <div :class="detailData.authorInfo.identity ? 'name1' : 'name'">
-            {{ detailData.authorInfo.nickname }}
+    <div class="main">
+      <div class="content">
+        <div class="con-info">
+          <img :src="detailData.authorInfo.avatar" alt="" />
+          <div class="info">
+            <div :class="detailData.authorInfo.identity ? 'name1' : 'name'">
+              {{ detailData.authorInfo.nickname }}
+            </div>
+            <div class="mark" v-if="detailData.identity">
+              <img src="@/assets/images/discover/attestation.png" alt="" />
+              <span>Miss World 2019 No.3</span>
+              <img src="@/assets/images/discover/terrace.png" alt="" />
+              <span>154.3K Fans</span>
+            </div>
           </div>
-          <div class="mark" v-if="detailData.identity">
-            <img src="@/assets/images/discover/attestation.png" alt="" />
-            <span>Miss World 2019 No.3</span>
-            <img src="@/assets/images/discover/terrace.png" alt="" />
-            <span>154.3K Fans</span>
+        </div>
+        <div class="con-center">
+          {{ detailData.content }}
+        </div>
+        <div
+          class="con-img"
+          v-if="detailData.imageList"
+          :class="{
+            img2: detailData.imageList.length == 2,
+            'img-more': detailData.imageList.length >= 2,
+            img3: detailData.imageList.length >= 3,
+            img4: detailData.imageList.length == 4,
+          }"
+        >
+          <img
+            v-for="(imgItem, imgI) in detailData.imageList"
+            :key="imgI"
+            :src="imgItem"
+            alt=""
+          />
+        </div>
+        <div class="con-btm">
+          <div class="time">
+            {{ detailData.postTime | timeFilter }}｜{{ detailData.postAddress }}
+          </div>
+          <div class="bottom">
+            <div>
+              <img
+                v-if="detailData.isLike"
+                src="@/assets/images/posts/like.png"
+                @click="$emit('cancelLike', detailData)"
+                alt=""
+              />
+              <img
+                v-else
+                src="@/assets/images/posts/nolike.png"
+                @click="$emit('getLike', detailData)"
+                alt=""
+              />
+              <span>{{ detailData.likeCount }}</span>
+              <img src="@/assets/images/posts/comment.png" alt="" />
+              <span>{{ detailData.commentCount }}</span>
+            </div>
+            <img src="@/assets/images/posts/more.png" alt="" />
           </div>
         </div>
       </div>
-      <div class="con-center">
-        {{ detailData.content }}
+      <div class="addpost" @click="$refs.replyListRef.isShowInput = true">
+        <img src="@/assets/images/posts/white-com.png" alt="" />
+        <span>comment</span>
       </div>
-      <div
-        class="con-img"
-        v-if="detailData.imageList"
-        :class="{
-          img2: detailData.imageList.length == 2,
-          'img-more': detailData.imageList.length >= 2,
-          img3: detailData.imageList.length >= 3,
-          img4: detailData.imageList.length == 4,
-        }"
-      >
-        <img
-          v-for="(imgItem, imgI) in detailData.imageList"
-          :key="imgI"
-          :src="imgItem"
-          alt=""
-        />
-      </div>
-      <div class="con-btm">
-        <div class="time">
-          {{ detailData.postTime | timeFilter }}｜{{ detailData.postAddress }}
-        </div>
-        <div class="bottom">
-          <div>
-            <img
-              v-if="detailData.isLike"
-              src="@/assets/images/posts/like.png"
-              @click="$emit('cancelLike', detailData)"
-              alt=""
-            />
-            <img
-              v-else
-              src="@/assets/images/posts/nolike.png"
-              @click="$emit('getLike', detailData)"
-              alt=""
-            />
-            <span>{{ detailData.likeCount }}</span>
-            <img src="@/assets/images/posts/comment.png" alt="" />
-            <span>{{ detailData.commentCount }}</span>
-          </div>
-          <img src="@/assets/images/posts/more.png" alt="" />
-        </div>
-      </div>
-    </div>
-    <div class="addpost">
-      <img src="@/assets/images/posts/white-com.png" alt="" />
-      <span>comment</span>
-    </div>
 
-    <!-- 查看评论 -->
-    <div class="check-comment">
-      <reply-list
-        :commentCount="detailData.commentCount"
-        :dynamicID="detailData.id"
-      ></reply-list>
+      <!-- 查看评论 -->
+      <div class="check-comment">
+        <reply-list
+          ref="replyListRef"
+          :commentCount="detailData.commentCount"
+          :dynamicID="detailData.id"
+        ></reply-list>
+      </div>
     </div>
   </div>
 </template>
@@ -112,6 +115,16 @@ export default {
 
 <style scoped lang="scss">
 .containner-posts {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 0 !important;
+
+  .main {
+    flex: 1;
+    overflow: auto;
+  }
+
   img {
     object-fit: cover;
   }
@@ -127,18 +140,19 @@ export default {
   color: #161616;
   background-color: #fff;
   z-index: 5;
+
   img {
     height: 24px;
     width: 24px;
     position: absolute;
-    left: 0;
+    left: 16px;
     top: 50%;
     transform: translateY(-50%);
   }
 }
 .content {
   position: relative;
-  padding: 12px 0;
+  padding: 12px 16px;
   border-bottom: 1px solid rgba(238, 238, 238, 0.7);
   .con-info {
     display: flex;

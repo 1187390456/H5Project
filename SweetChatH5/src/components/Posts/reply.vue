@@ -89,20 +89,23 @@
     </div>
 
     <!-- 输入框 -->
-    <!-- style="background: transparent; position: fixed; height: 100vh" -->
-    <van-overlay :show="isShowInput" z-index="9" @click="isShowInput = false">
-      <div class="overlay-reply">
-        <div class="reply-input" @click.stop>
-          <input
-            ref="replyInput"
-            v-model="replyTextarea"
-            type="text"
-            :placeholder="placeholder"
-          />
-          <!-- <img src="../../assets/images/trends/emoji.svg" alt="" /> -->
-          <span>笑</span>
-          <button @click="sendReplyBtn">Send</button>
-        </div>
+
+    <van-overlay
+      :show="isShowInput"
+      :z-index="99"
+      @click="isShowInput = false"
+      style="background: transparent"
+    >
+      <div class="reply-input" @click.stop>
+        <input
+          ref="replyInput"
+          v-model="replyTextarea"
+          type="text"
+          :placeholder="placeholder"
+        />
+        <!-- <img src="../../assets/images/trends/emoji.svg" alt="" /> -->
+        <span>笑</span>
+        <button @click="sendReplyBtn">Send</button>
       </div>
     </van-overlay>
   </div>
@@ -132,6 +135,7 @@ export default {
   },
   data() {
     return {
+      pageNum: 0,
       replyList: [],
       isEnd: false,
       isShowInput: false,
@@ -148,16 +152,17 @@ export default {
     this.getPostsReplyList();
   },
   methods: {
-    getPostsReplyList(pageNum = 0) {
+    getPostsReplyList(pageNum = 0, isAfterSend = false) {
       this.$api
-        .postsReply({
-          dynamicID: 225,
+        .postsReplyList({
+          dynamicID: this.dynamicID,
           pageNum,
         })
         .then((res) => {
-          console.log(res);
           if (res.result) {
-            this.replyList = res.data.replyList;
+            !isAfterSend
+              ? (this.replyList = res.data.replyList)
+              : (this.replyList = [...this.replyList, ...res.data.replyList]);
             this.isEnd = res.data.isEnd;
           }
         });
@@ -166,11 +171,11 @@ export default {
     toShowInput(info) {
       console.log(info);
       this.isShowInput = true;
-      this.replyObj = info;
-      this.level1Or2 = 2;
       this.$nextTick(() => {
         this.$refs.replyInput.focus();
       });
+      this.replyObj = info;
+      this.level1Or2 = 2;
     },
 
     // 点击发送按钮
@@ -188,11 +193,10 @@ export default {
       var res = await this.postSendReply();
 
       if (res.result) {
-        return;
         // 添加二级/楼中楼评论，前端更新数据
         if (this.level1Or2 == 1) {
           this.pageNum = 0;
-          this.getInitReply();
+          this.getPostsReplyList();
         } else {
           var tempId = 0;
           if (this.replyObj.replyID) {
@@ -208,7 +212,7 @@ export default {
             }
           });
 
-          var tempRes = await this.$api.dynamicReplyList({
+          var tempRes = await this.$api.postsReplyList({
             dynamicID: this.dynamicID,
             pageNum: tempPageNum,
             isBackendVisit: true,
@@ -229,17 +233,13 @@ export default {
         }
 
         this.replyTextarea = "";
-        this.placeholder = "发布评论";
+        this.placeholder = "Say something...";
         this.level1Or2 = 1;
         this.isShowInput = false;
         this.replyObj = null;
-        this.$message.success("发送评论成功");
-        this.$root.$emit("changeTrendsCommentNum", this.dynamicID);
-        this.$parent.commentCount++;
       } else {
-        this.$message.error(res.errorMsg);
+        // this.$message.error(res.errorMsg);
       }
-      this.isSending = false;
     },
 
     // 请求发布评论接口
@@ -260,7 +260,7 @@ export default {
         var res = await this.$api.postsReplyToReply(tempParms);
       } else {
         // 发送 动态评论
-        var res = await this.$api.postsToReply({
+        var res = await this.$api.postsReply({
           dynamicID: this.dynamicID,
           contentText: this.replyTextarea.trim(),
         });
@@ -370,44 +370,38 @@ export default {
   }
 }
 
-.overlay-reply {
-  height: 100%;
+.reply-input {
+  width: 100%;
+  height: max-content;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
+  position: fixed;
+  bottom: 0;
+  z-index: 10;
+  background-color: #fff;
+  padding: 0.533333rem /* 10/18.75 */;
+  box-sizing: border-box;
 
-  .reply-input {
-    width: 100%;
-    height: max-content;
-    display: flex;
-    align-items: center;
-    // position: absolute;
-    // bottom: 0;
-    // z-index: 9;
-    background-color: #fff;
-    padding: 0.533333rem /* 10/18.75 */;
-    box-sizing: border-box;
+  input[type="text"] {
+    flex: 1;
+    border: none;
+    border-radius: 18px;
+    background: #f1efef;
+    padding: 5px 10px;
+  }
 
-    input[type="text"] {
-      flex: 1;
-      border: none;
-      border-radius: 18px;
-      background: #f1efef;
-      padding: 5px 10px;
-    }
+  span {
+    margin: 0 0.533333rem /* 10/18.75 */;
+  }
 
-    span {
-      margin: 0 0.533333rem /* 10/18.75 */;
-    }
-
-    button {
-      width: 3.413333rem /* 64/18.75 */;
-      height: 1.92rem /* 36/18.75 */;
-      border: none;
-      font-size: 0.746667rem /* 14/18.75 */;
-      color: #fff;
-      background: #8032ff;
-      border-radius: 1.706667rem /* 32/18.75 */;
-    }
+  button {
+    width: 3.413333rem /* 64/18.75 */;
+    height: 1.92rem /* 36/18.75 */;
+    border: none;
+    font-size: 0.746667rem /* 14/18.75 */;
+    color: #fff;
+    background: #8032ff;
+    border-radius: 1.706667rem /* 32/18.75 */;
   }
 }
 </style>

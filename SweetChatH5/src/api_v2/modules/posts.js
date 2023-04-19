@@ -35,7 +35,7 @@ export const postDynamic = (data) => {
 };
 
 // 动态评论列表
-export const postsReply = (data) => {
+export const postsReplyList = (data) => {
   return fetch({
     url: "/api/dynamic/dynamic-reply-list",
     method: "post",
@@ -43,14 +43,23 @@ export const postsReply = (data) => {
   });
 };
 
-// 评论回复列表 -- 楼中楼
-export const postsToReply = (data) => {
+// 动态回复
+export const postsReply = (data) => {
   return fetch({
-    url: "/api/dynamic/to-reply-list",
+    url: "/api/dynamic/reply",
     method: "post",
     data,
   });
 };
+
+// 评论回复列表 -- 楼中楼
+// export const postsToReply = (data) => {
+//   return fetch({
+//     url: "/api/dynamic/to-reply-list",
+//     method: "post",
+//     data,
+//   });
+// };
 
 // 对一级评论或楼中楼的回复
 export const postsReplyToReply = (data) => {
