@@ -64,6 +64,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+::-webkit-scrollbar{
+    display: none;
+} 
 .navbar {
   padding: 0 0.8533rem;
   display: flex;
@@ -87,12 +90,15 @@ export default {
 ::v-deep .van-popup--left {
   height: 100%;
   width: 17.2267rem;
+  // position: relative;
+  // z-index: -2;
+  background: #F8F9FC;
 
-  .search {
-    width: 100%;
-    display: flex;
-    justify-content: flex-end;
-    margin-right: 0.64rem /* 12/18.75 */;
-  }
+}
+.search {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 0.64rem /* 12/18.75 */;
 }
 </style>
