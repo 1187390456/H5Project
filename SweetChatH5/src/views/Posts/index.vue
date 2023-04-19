@@ -45,9 +45,9 @@
             </div>
             <div class="con-center">
                 {{item.content}}
-            </div>
+            </div>       
             <div class="con-img" v-if="item.imageList" :class="{img2:item.imageList.length == 2,'img-more':item.imageList.length >= 2,img3:item.imageList.length >= 3,img4:item.imageList.length == 4}" >
-                <img v-for="(imgItem,imgI) in item.imageList" :key="imgI" :src="imgItem" alt="">
+                <img @click.stop="checkBigImg(item.imageList)" v-for="(imgItem,imgI) in item.imageList" :key="imgI" :src="imgItem" :preview-src-list="item.imageList" alt="">
             </div>
             <div class="con-btm">
                 <div class="time">{{item.postTime | timeFilter}}｜{{item.postAddress}}</div>
@@ -70,18 +70,23 @@
         <img src="@/assets/images/posts/addpost.png" alt="">
         <span>New Post</span>
     </div>
+    <!-- 动态详情 -->
     <van-popup
     v-model="showDetail"
     position="right"
     :style="{ width: '100%', height: '100%' }">
         <detail @exitDetails="exitDetails" @cancelLike="cancelLike" @getLike="getLike" :detailData="detailData" /> 
     </van-popup>
+    <!-- 添加动态 -->
      <van-popup
         v-model="newPost"
         position="right"
         :style="{ width: '100%', height: '100%' }">
         <post-add @exitAddPost="exitAddPost"  /> 
     </van-popup>
+    <!-- 查看大图 -->
+    <van-image-preview v-model="showBigImg" :images="bigImageList">   
+    </van-image-preview> 
   </div>
 </template>
 
@@ -100,12 +105,15 @@ export default {
         showDetail:false, // 动态详情
         newPost:false,// 新动态
         detailData:null,// 动态详情内容
+        previewUrl:"",
+        showBigImg:false,
+        bigImageList:[],
         
     }
   },
   components: {
     Detail,
-    PostAdd
+    PostAdd,
   },
     filters: {
         timeFilter(val) {
@@ -182,7 +190,12 @@ export default {
         console.log("下拉刷新");
         this.isLoading = true
     },
-    
+    checkBigImg(url){
+        this.showBigImg = true
+        this.bigImageList = url
+        console.log(this.bigImageList , url);
+      
+    }
     
   }
 }

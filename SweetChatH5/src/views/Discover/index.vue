@@ -9,13 +9,15 @@
                 <div class="btm-info">
                     <div class="name">{{item.nickname}}</div>  
                     <div class="mark" v-if="item.identity">
-                        <img src="@/assets/images/discover/attestation.png" alt="">
-                        <span>World Cosplay Sum #2</span>
+                        <div v-for="(markItem,markI) in item.identity" :key="markI" :class="markItem.fansCount?'fans':'id-mark'">
+                            <img :src="markItem.icon" alt="">
+                            <span>{{markItem.desc}}</span>
+                        </div>
                     </div>
-                    <div class="fans" v-if="item.identity">
+                    <!-- <div class="fans" v-if="item.identity">
                         <img src="@/assets/images/discover/terrace.png" alt="">
                         <span>154.3K Fans</span>
-                    </div>
+                    </div> -->
                 </div>
             </div>
             <div class="con-top" v-show="item.isFriend">Chatted</div>
@@ -97,8 +99,8 @@ export default {
             }
             .btm-info{
                 position: absolute;
-                z-index: 2;
-                padding-top: 2.3467rem;
+                bottom: 8px;
+                // z-index: 2;
                 font-size: .5867rem;
                 .name{
                     font-size: .8533rem;
@@ -106,30 +108,33 @@ export default {
                     height: 1.1733rem;
                     line-height: 1.1733rem;
                 }
-                .mark{                   
-                    margin-left: .48rem;
-                    margin-top: .2133rem;
-                    img{
-                        width: .64rem;
-                        height: .64rem;
-                        margin-right: .1067rem;
+                .mark {
+                    >div{
+                        font-family: PingFangSC-Regular, PingFang SC;
+                        display: flex;
+                        align-items: center;
+                        height: .8533rem;
+                        line-height: .8533rem;
+                        &:first-of-type{
+                            margin: .2133rem 0  .1067rem .48rem;
+                        }
                     }
-                }
-                .fans{
-                    margin-top: .1067rem;
-                    margin-left: .4267rem;
-                    img{
-                        width: .7467rem;
-                        height: .7467rem;
-                        margin-right: .0533rem;
+                    .id-mark{                        
+                        img{
+                            width: .64rem;
+                            height: .64rem;
+                            margin-right: .1067rem;
+                        }
                     }
-                }
-                .mark,.fans{
-                    font-family: PingFangSC-Regular, PingFang SC;
-                    display: flex;
-                    align-items: center;
-                    height: .8533rem;
-                    line-height: .8533rem;
+                    .fans{
+                        margin-left: .4267rem;
+                        img{
+                            width: .7467rem;
+                            height: .7467rem;
+                            margin-right: .0533rem;
+                        }
+                    }
+
                 }
             }            
         }
