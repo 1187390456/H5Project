@@ -41,3 +41,8 @@ export default {
   },
 };
 </script>
+<style>
+*,#app{
+    outline: none;
+}
+</style>

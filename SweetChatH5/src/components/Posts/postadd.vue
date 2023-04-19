@@ -12,7 +12,7 @@
             <span>{{postInputLen}}</span>
         </div>
         <div class="con-upload">
-            <van-uploader class="file" v-model="fileList" :max-count="maxCount" :before-read ="beforeRead" :after-read="afterRead" @delete="deletePreview">
+            <van-uploader class="file" :accept="uploadAccept" v-model="fileList"  multiple :max-count="maxCount" :before-read ="beforeRead" :after-read="afterRead" @delete="deletePreview">
                 <img src="@/assets/images/posts/upload.png" alt="">
             </van-uploader>
         </div>
@@ -31,6 +31,7 @@ export default {
         fileList:[],
         maxCount:6, // 最大上上传数量
         fileType:1, // 文件类型
+        uploadAccept:"video/*,image/*",
     }
   },
   watch:{
@@ -42,25 +43,26 @@ export default {
 
   },
   mounted(){
-    console.log(111);
     initOss();
   },
   methods: {
     // 文件读取完成回调
     afterRead(file,detail){
-        console.log(file,detail,this.fileList,"----------");
+        console.log(this.fileType,this.maxCount,this.fileList,"----------");
     },
     // 文件读取前回调
     beforeRead(file,detail){
         console.log(file,detail,"========");
         var that = this;
-        const isFile = /\.jpg|png|jpeg$/i.test(file.name);
-        if (isFile) {
+        const isImage = /\.jpg|png|jpeg|bmp|gif|webp|psd|svg|tiff$/i.test(file.name);
+        if (isImage) {
             this.fileType = 1
             this.maxCount = 6
+            this.uploadAccept = "image/*"
         } else {
              this.fileType = 3
              this.maxCount = 1
+             this.uploadAccept = "video/*"
         }
         ossUpload(file,{ fileType: that.fileType,fileSort: "dynamic",}).then((res)=>{
             if(res.result){
@@ -75,6 +77,7 @@ export default {
     // 删除某个图片是时调用
     deletePreview(file,detail){
         console.log(file,detail,"删除");
+        if(!this.fileList.length)this.uploadAccept = "video/*,image/*"
     },
     // 发表动态
     submit(){
@@ -178,6 +181,20 @@ export default {
         }
     } 
    
+}
+::v-deep .van-uploader__preview-delete{
+    border-radius:0 0 0 .2133rem;
+    background-color: rgba(0,0,0,.4);
+    width: 1.0667rem;
+    height: 1.0667rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .van-icon {
+        font-size: 1.3333rem;
+        font-weight: 600;
+        position: static;
+    }
 }
 ::-webkit-scrollbar{
     display: none;
