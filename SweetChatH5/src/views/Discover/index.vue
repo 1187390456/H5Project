@@ -14,10 +14,6 @@
                             <span>{{markItem.desc}}</span>
                         </div>
                     </div>
-                    <!-- <div class="fans" v-if="item.identity">
-                        <img src="@/assets/images/discover/terrace.png" alt="">
-                        <span>154.3K Fans</span>
-                    </div> -->
                 </div>
             </div>
             <div class="con-top" v-show="item.isFriend">Chatted</div>

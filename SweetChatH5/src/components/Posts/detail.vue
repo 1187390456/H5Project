@@ -10,14 +10,12 @@
         <div class="con-info">
           <img :src="detailData.authorInfo.avatar" alt="" />
           <div class="info">
-            <div :class="detailData.authorInfo.identity ? 'name1' : 'name'">
-              {{ detailData.authorInfo.nickname }}
-            </div>
-            <div class="mark" v-if="detailData.identity">
-              <img src="@/assets/images/discover/attestation.png" alt="" />
-              <span>Miss World 2019 No.3</span>
-              <img src="@/assets/images/discover/terrace.png" alt="" />
-              <span>154.3K Fans</span>
+            <div :class="detailData.authorInfo.identity ? 'name1' : 'name'">{{ detailData.authorInfo.nickname }}</div>
+            <div v-if="detailData.authorInfo.identity" class="mark">
+                <div  v-for="(markItem,markI) in detailData.authorInfo.identity" :key="markI">
+                    <img :src="markItem.icon" alt="">
+                    <span>{{markItem.desc}}</span>
+                </div>
             </div>
           </div>
         </div>
@@ -180,19 +178,26 @@ export default {
       .mark {
         display: flex;
         align-items: center;
-        height: 17px;
-        line-height: 17px;
-        img {
-          width: 15px;
-          height: 15px;
-          &:last-of-type {
-            margin-left: 6px;
-          }
-        }
-        span {
-          font-size: 12px;
-          color: #808080;
-        }
+        font-size: .64rem;
+        color: #808080;
+        >div{
+            height: .9067rem;
+            line-height: .9067rem;
+            display: flex;
+            align-items: center;
+            img{
+                width: .8rem;
+                height: .8rem;
+                &:last-of-type{
+                    margin-left: .32rem;
+                }
+            }
+            &:first-of-type{
+                img{
+                    margin-left: 0;
+                }
+            }
+        }    
       }
     }
   }
