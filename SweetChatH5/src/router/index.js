@@ -68,6 +68,13 @@ export const constantRoutes = [
     meta: { title: "个人信息主页", keepAlive: false },
   },
   {
+    path: "/chatInfo",
+    component: () => import("@/views/Chats/Other/chatInfo.vue"),
+    hidden: true,
+    breadcrumb: true,
+    meta: { title: "聊天详细页面", keepAlive: false },
+  },
+  {
     path: "/",
     component: Layout,
     redirect: "/Chats",

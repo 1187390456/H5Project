@@ -1,15 +1,29 @@
 import Vue from "../main";
+import store from "../store";
+import { api } from "./../api_v2";
+import router from "../router";
+
 const isTestServer = true;
-const tag = isTestServer ? "b_test_" : "b_";
+const tag = isTestServer ? "b_test_" : "b_"; // 云信标识头
+
+// 需要挂载的
+export var nim = null;
+export var nimInfo = {
+  chatList: [],
+  chatListGetDone: false,
+  sessionInfo: {}, // 会话对象
+  chatViewList: [],
+};
 
 // nim 云信实例
-export const ReSetIM = async function (vue) {
+export const InitIM = async function (vue) {
   var that = vue;
 
+  var userIdList = []; //  转化的云信id列表 tag + id
+  var tempUidList = []; // 临时id列表 id
+
   // 解析参数
-  var userInfo = vue.$store.state.user.loginInfo.userInfo;
-  console.log("我的信息", userInfo);
-  that.myUserInfo = userInfo;
+  var userInfo = GetMyUserInfo();
 
   // 获取云信参数
   var token = userInfo.wyToken;
@@ -17,7 +31,7 @@ export const ReSetIM = async function (vue) {
   var appKey = "590d2352a5d8778b6d1f427b5ecc8c62";
 
   // 实例初始化
-  that.nim = NIM.getInstance({
+  nim = NIM.getInstance({
     debug: true,
     appKey,
     account,
@@ -42,104 +56,64 @@ export const ReSetIM = async function (vue) {
   function onSessions(sessions) {
     console.log("====== 收到会话列表 ======", sessions);
 
-    var chatList = []; // 整合后的消息列表
-    var tempUidList = []; // 未转换的临时id列表
-
     // 遍历会话 添加到id列表
     sessions.map((item) => {
-      // 全部会话添加到列表
-      chatList.push(item);
       // 单独抽离id去请求每个会话的用户信息
       if (item.id.indexOf("b_") > 0) {
         let tempUid = item.id.slice(item.id.lastIndexOf("_") + 1);
         tempUidList.push(tempUid);
-        that.userIdList.push(tag + tempUid); // 云信id转换
+        userIdList.push(tag + tempUid); // 云信id转换
       }
     });
-    console.log("====== 会话云信id列表 ======", that.userIdList);
+    console.log("====== 会话云信id列表 ======", userIdList);
 
-    that.nim.getUsers({
-      accounts: that.userIdList,
+    nim.getUsers({
+      accounts: userIdList,
       sync: false,
       done: getUsersDone,
     });
 
-    async function getUsersDone(error, data) {
+    function getUsersDone(error, data) {
       data.reverse();
       console.log("====== 获取云信id列表的用户信息 ======", data);
       // 添加相关的用户信息
-      for (var i = chatList.length - 1; i >= 0; i--) {
+      for (var i = sessions.length - 1; i >= 0; i--) {
         for (var j = data.length - 1; j >= 0; j--) {
-          if (chatList[i].id == "p2p-" + data[j].account) {
-            chatList[i].targetUserInfo = data[j];
+          if (sessions[i].id == "p2p-" + data[j].account) {
+            sessions[i].targetUserInfo = data[j];
           }
         }
       }
-
-      // 添加在线 整合用户信息
-      // var res = await that.$api.onlineInfo({
-      //   userIDList: tempUidList.join(","),
-      // });
-      // if (!res.result) return that.$message.error("获取在线信息失败");
-      // console.log("获取到了云信id列表的在线信息", res);
-
-      // for (var i = 0; i < chatList.length; i++) {
-      //   for (var j = 0; j < res.data.onlineStatusList.length; j++) {
-      //     if (
-      //       chatList[i].id.slice(chatList[i].id.lastIndexOf("_") + 1) ==
-      //       res.data.onlineStatusList[j].userID
-      //     ) {
-      //       chatList[i].targetUserInfo.onlineInfo =
-      //         res.data.onlineStatusList[j];
-      //     }
-      //   }
-      // }
-
-      that.chatList = chatList;
-      that.chatListGetDone = true;
-      console.log("整合完毕左侧列表信息", that.chatList);
+      nimInfo.chatListGetDone = true;
+      nimInfo.chatList = sessions;
+      that.$forceUpdate();
     }
   }
 
   // 收到会话更新
   function onUpdateSession(session) {
-    // console.log("====== 会话更新了 ======", session);
-
     if (session.lastMsg.status == "success") {
       console.log("====== 会话更新了 ======", session);
-
-      console.log("当前左侧列表信息", that.chatList);
-
       // 更新当前会话
-
-      that.GetHistory(session.id);
-      that.ResetLastMsg(session);
+      ResetLastMsg(session);
+      console.log("当前nim信息", nimInfo);
     }
   }
+
   // im收到消息
   function onMsg(msg) {
     console.log("====== im收到消息 ======", msg);
 
     // 添加未读
-    that.AddUnread(msg.sessionId);
+    AddUnread(msg.sessionId);
 
     // 自动设置该消息
-    that.SetCurrentSession(msg, msg.sessionId);
+    SetCurrentSession(msg, msg.sessionId);
 
     // 滚动到底部
-    that.$refs.chatView.ResetScroll();
-
-    // // 将当前会话与第一个会话进行交换
-    // var targetIndex = that.chatList.findIndex((x) => x.id == msg.sessionId);
-
-    // console.log("索引是" + targetIndex);
-
-    // var temp = that.chatList[0];
-    // that.chatList[0] = that.chatList[targetIndex];
-    // that.chatList[targetIndex] = temp;
-
-    // that.GetHistory(session.id); // 更新当前会话
+    // that.$refs.chatView.ResetScroll();
   }
+
   // 收到自定义消息
   function onCustomSysMsg(sysMsg) {
     const content = JSON.parse(sysMsg.content);
@@ -254,5 +228,261 @@ export function formatMsgTime(timespan) {
   }
   return timeSpanStr;
 }
+
+//#endregion
+
+//#region  通用方法
+
+// 获取个人信息
+function GetMyUserInfo() {
+  console.log("我的信息", store.state.user.loginInfo.userInfo);
+  return store.state.user.loginInfo.userInfo;
+}
+
+// 列表会话 查找当前会话是否存在
+function GetSessionBySessionId(id) {
+  for (var i = nimInfo.chatList.length - 1; i >= 0; i--) {
+    if (nimInfo.chatList[i].id == id) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// 获取列表会话的指定会话的人物信息
+function GetSessionInfo(id) {
+  for (var i = 0; i < nimInfo.chatList.length; i++) {
+    if (nimInfo.chatList[i].id == id) return nimInfo.chatList[i].targetUserInfo;
+  }
+  return null;
+}
+
+// 获取历史记录
+function GetHistoryAndPush(isPush) {
+  return GetRemoteHistoryAndPush(isPush);
+}
+
+// 修改左侧列表的上次消息
+function ResetLastMsg(session) {
+  nimInfo.chatList.map((item) => {
+    if (item.id == session.id) {
+      item.lastMsg = session.lastMsg;
+    }
+    return item;
+  });
+}
+
+// 添加未读 当前id的消息未读加1
+function AddUnread(id) {
+  this.chatList.map((item) => {
+    if (item.id == id) {
+      item.unread++;
+    }
+    return item;
+  });
+}
+
+// 置顶当前会话
+function SetCurrentSession(session, sessionId) {
+  console.log("置顶会话", session);
+  console.log("置顶之前的数组", nimInfo.chatList);
+  if (GetSessionBySessionId(sessionId)) {
+    console.log("当前会话存在", sessionId);
+    var targetIndex = nimInfo.chatList.findIndex((x) => x.id == sessionId);
+
+    nimInfo.chatList.map((item, i) => {
+      if (targetIndex == i) {
+        nimInfo.chatList.splice(i, 1);
+        nimInfo.chatList.unshift(item);
+      }
+      return item;
+    });
+  } else {
+    //TODO 待修复
+    console.log("新会话", sessionId);
+    // this.chatList.unshift(session);
+    // //TODO 索引加加
+    // this.$refs.chatlist.IndexAdd();
+  }
+
+  console.log("置顶之后的数组", nimInfo.chatList);
+}
+//#endregion
+
+//#region  可变方法
+
+// 添加在线信息
+async function AddOnlineInfo() {
+  var res = await api.onlineInfo({ userIDList: tempUidList.join(",") });
+  if (!res.result) return; // that.$message.error("获取在线信息失败")
+  console.log("获取到了云信id列表的在线信息", res);
+  for (var i = 0; i < chatList.length; i++) {
+    for (var j = 0; j < res.data.onlineStatusList.length; j++) {
+      if (
+        chatList[i].id.slice(chatList[i].id.lastIndexOf("_") + 1) ==
+        res.data.onlineStatusList[j].userID
+      ) {
+        chatList[i].targetUserInfo.onlineInfo = res.data.onlineStatusList[j];
+      }
+    }
+  }
+}
+// 获取本地历史记录
+function GetLocalHistoryAndPush(isPush) {
+  var sessionId = nimInfo.sessionInfo.id;
+  nim.getLocalMsgs({
+    sessionId,
+    limit: 100,
+    done: getLocalMsgsDone,
+  });
+  function getLocalMsgsDone(error, obj) {
+    console.log("获取本地消息" + (!error ? "成功" : "失败"), error, obj);
+    console.log("获取到了与id为" + sessionId + "的历史信息");
+    nimInfo.chatViewList = obj.msgs.reverse();
+    if (isPush) router.push({ path: "/chatInfo" });
+  }
+}
+// 获取远端历史记录并跳转
+function GetRemoteHistoryAndPush(isPush) {
+  var account = nimInfo.sessionInfo.account;
+  nim.getHistoryMsgs({
+    debug: true,
+    scene: "p2p",
+    to: account, // 这里和发的一样
+    done: getRemoteHistoryMsgsDone,
+  });
+  function getRemoteHistoryMsgsDone(error, obj) {
+    console.log("获取远端消息" + (!error ? "成功" : "失败"), error, obj);
+    console.log("获取到了与id为" + account + "的历史信息");
+    nimInfo.chatViewList = obj.msgs.reverse();
+    if (isPush) router.push({ path: "/chatInfo" });
+  }
+}
+//#endregion
+
+//#region  外部回调
+
+// 根据id信息跳转会话页面
+export const SelectCallBack = (vue, selectItem) => {
+  nim.resetSessionUnread(selectItem.id); //  清除未读
+  nimInfo.sessionInfo = GetSessionInfo(selectItem.id); // 获取会话对象信息
+  GetHistoryAndPush(true);
+};
+
+// 断开连接
+export const DisConnectNim = () => {
+  if (nim == null) return;
+  nim.disconnect();
+  nim.destroy();
+
+  nimInfo = {
+    chatList: [],
+    chatListGetDone: false,
+    sessionInfo: {},
+    chatViewList: [],
+  };
+};
+
+// 发送消息回调 (远端)
+export const SendText = (vue, msg) => {
+  // 效验
+  // if (msg == "" && that.imFile.imageFile.length == 0) {
+  //     that.$message.error("回复信息不能为空！");
+  //     return false;
+  // } else if (msg.length > 500) {
+  //     that.$message.error("回复信息不能超过500！");
+  //     return false;
+  // }
+
+  var lastMsg = null;
+  var id = "p2p-" + nimInfo.sessionInfo.account;
+  // 文本消息发送
+  if (msg != "") {
+    var msg = nim.sendText({
+      scene: "p2p",
+      to: nimInfo.sessionInfo.account,
+      // to: "b_test_182",
+      text: msg,
+      done: sendMsgDone,
+    });
+    function sendMsgDone(error, msg) {
+      if (error) {
+        console.log(error);
+      } else {
+        // 获取当前最后一条消息记录
+        for (var i = 0; i < nimInfo.chatList.length; i++) {
+          if (nimInfo.chatList[i].id == id) {
+            lastMsg = nimInfo.chatList[i].lastMsg;
+          }
+        }
+        // 发送消息已读回执
+        nim.sendMsgReceipt({
+          msg: lastMsg,
+          done: sendMsgReceiptDone,
+        });
+        function sendMsgReceiptDone(error, obj) {
+          console.log("发送Text给" + nimInfo.sessionInfo.nick);
+        }
+        // 添加到viewList
+        nimInfo.chatViewList.push(msg);
+        vue.$forceUpdate();
+      }
+    }
+  }
+
+  // 图片消息发送
+  // if (that.imFile.imageFile.length > 0) {
+  //     that.imFile.imageFile.map((item) => {
+  //         // that.isSendImg = true;
+  //         nim.previewFile({
+  //             type: "image",
+  //             blob: item.raw,
+  //             uploadprogress: function (obj) {
+  //                 console.log("文件总大小: " + obj.total + "bytes");
+  //                 console.log("已经上传的大小: " + obj.loaded + "bytes");
+  //                 console.log("上传进度: " + obj.percentage);
+  //                 console.log("上传进度文本: " + obj.percentageText);
+  //             },
+  //             done: function (error, file) {
+  //                 console.log("上传image" + (!error ? "成功" : "失败"));
+  //                 // show file to the user
+  //                 if (!error) {
+  //                     var msg = that.nim.sendFile({
+  //                         scene: "p2p",
+  //                         to: that.sessionInfo.account,
+  //                         file: file,
+  //                         done: sendMsgDone,
+  //                     });
+  //                     console.log("正在发送p2p image消息, id=" + msg.idClient);
+  //                     function sendMsgDone(error, msg) {
+  //                         that.isSendImg = false;
+  //                         if (error) {
+  //                             that.$message.error("图片发送失败");
+  //                             console.log(error);
+  //                         } else {
+  //                             that.imFile.imageFile = [];
+
+  //                             that.nim.sendMsgReceipt({
+  //                                 msg: that.GetByChatList("p2p-" + that.sessionInfo.account)
+  //                                     .lastMsg,
+  //                                 done: sendMsgReceiptDone,
+  //                             });
+  //                             function sendMsgReceiptDone(error, obj) {
+  //                                 console.log("发送Img给" + that.sessionInfo.nick);
+  //                             }
+  //                         }
+  //                     }
+  //                 }
+  //             },
+  //         });
+  //     });
+  // }
+
+  // 置顶当前会话
+  // this.SetCurrentSession(this.selectChatItem, this.selectChatItem.id);
+
+  // 清除未读
+  //this.ClearUnread(this.selectChatItem.id);
+};
 
 //#endregion

@@ -109,7 +109,9 @@ window.vm = new Vue({
 });
 
 // 自定义指令
-import { formatMsgTime } from "./utils/xcm";
+import { formatMsgTime, nimInfo, nim } from "./utils/xcm";
 Vue.prototype.$format = formatMsgTime;
+Vue.prototype.$nimInfo = nimInfo;
+Vue.prototype.$nim = nim;
 
 export default Vue;
