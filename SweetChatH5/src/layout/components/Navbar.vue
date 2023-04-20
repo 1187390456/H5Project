@@ -15,12 +15,12 @@
     />
 
     <!-- 我的页面 -->
-    <van-popup v-model="showMine" position="left">
+    <van-popup v-model="showMine"  position="left">
       <mine />
     </van-popup>
 
     <!-- 我的页面点击具体内容 -->
-    <van-popup
+    <!-- <van-popup
       v-model="showNextPopup"
       style="height: 100%; width: 100%; background: #f8f9fc"
     >
@@ -28,7 +28,7 @@
       <account-authorizatio v-if="nextType == 2"></account-authorizatio>
       <my-wallet v-if="nextType == 3"></my-wallet>
       <potential-income v-if="nextType == 6"></potential-income>
-    </van-popup>
+    </van-popup> -->
   </div>
 </template>
 
@@ -36,33 +36,32 @@
 import { mapGetters, mapState } from "vuex";
 import { chromeDownUrl } from "@/config";
 import Mine from "@/components/Mine";
-import MyIncome from "../../components/Mine/MyIncome.vue";
-import PotentialIncome from "../../components/Mine/PotentialIncome.vue";
-import MyWallet from "../../components/Mine/MyWallet.vue";
-import AccountAuthorizatio from "../../components/Mine/AccountAuthorizatio.vue";
 
 export default {
   data() {
     return {
       chromeDownUrl,
       activePath: this.$route.path,
-      showMine: false,
       showNextPopup: false,
       nextType: 0,
     };
   },
   components: {
     Mine,
-    MyIncome,
-    PotentialIncome,
-    MyWallet,
-    AccountAuthorizatio,
   },
   computed: {
     ...mapGetters(["loginInfo"]),
     ...mapState({
       user: (state) => state.user,
     }),
+    showMine:{
+      get(){
+         return this.user.showMine
+      },
+      set(val){
+        this.$store.commit("user/SET_CHANGE_MINE",val)
+      }
+    }
   },
   watch: {
     "$route.path": {
@@ -78,12 +77,12 @@ export default {
     },
 
     showMyPage() {
-      this.showMine = true;
+      this.showMine = true
     },
 
     toShowMine() {
       this.showNextPopup = false;
-      this.showMine = true;
+      // this.showMine = true;
     },
 
     changeNextType(type) {
@@ -91,6 +90,9 @@ export default {
       this.showNextPopup = true;
       this.nextType = type;
     },
+    closeMine(){
+      this.$store.commit('user/SET_CHANGE_MINE',false)
+    }
   },
   mounted() {
     this.$root.$on("toShowMine", this.toShowMine);
@@ -100,6 +102,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+img{
+  object-fit: cover;
+}
 ::-webkit-scrollbar {
   display: none;
 }

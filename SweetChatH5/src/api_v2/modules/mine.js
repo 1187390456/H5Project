@@ -26,3 +26,11 @@ export const mineInfo = (data) => {
     data,
   });
 };
+// 我的页面
+export const myPage = (data) => {
+  return fetch({
+    url: "api/user-info/mine",
+    method: "post",
+    data,
+  });
+};
