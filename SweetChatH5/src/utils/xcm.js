@@ -13,6 +13,7 @@ export var nimInfo = {
   chatListGetDone: false,
   sessionInfo: {}, // 会话对象
   chatViewList: [],
+  chatViewVM: null, // 聊天页面实例
 };
 
 // nim 云信实例
@@ -92,11 +93,20 @@ export const InitIM = async function (vue) {
 
   // 收到会话更新
   function onUpdateSession(session) {
+    // 无论是发送或者接收都在这里更新列表
     if (session.lastMsg.status == "success") {
       console.log("====== 会话更新了 ======", session);
       // 更新当前会话
       ResetLastMsg(session);
+
+      // 添加到viewList 强制刷新
+      nimInfo.chatViewList.push(session.lastMsg);
+      nimInfo.chatViewVM.$forceUpdate();
+
       console.log("当前nim信息", nimInfo);
+
+      // 滚动条置顶
+      nimInfo.chatViewVM.ResetScroll();
     }
   }
 
@@ -437,9 +447,6 @@ export const SendText = (vue, msg) => {
         function sendMsgReceiptDone(error, obj) {
           console.log("发送Text给" + nimInfo.sessionInfo.nick);
         }
-        // 添加到viewList
-        nimInfo.chatViewList.push(msg);
-        vue.$forceUpdate();
       }
     }
   }
@@ -498,6 +505,10 @@ export const SendText = (vue, msg) => {
 
   // 清除未读
   ClearUnread(nimInfo.sessionInfo.id);
+};
+// 记录聊天页面实例
+export const RecordVm = (vue) => {
+  nimInfo.chatViewVM = vue;
 };
 
 //#endregion

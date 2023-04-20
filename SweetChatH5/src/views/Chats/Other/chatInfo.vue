@@ -42,7 +42,7 @@
 import ImgMsg from "../../../components/Chats/MsgType/ImgMsg.vue";
 import TextMsg from "../../../components/Chats/MsgType/TextMsg.vue";
 import TimeLine from "../../../components/Chats/MsgType/TimeLine.vue";
-import { SendText } from '../../../utils/xcm'
+import { SendText, RecordVm } from '../../../utils/xcm'
 
 export default {
     components: { ImgMsg, TextMsg, TimeLine },
@@ -54,6 +54,9 @@ export default {
     },
     mounted() {
         this.ResetScroll();
+    },
+    created() {
+        RecordVm(this);
     },
     methods: {
         // 监听Enter

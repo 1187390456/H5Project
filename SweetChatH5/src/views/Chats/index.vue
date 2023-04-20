@@ -1,12 +1,9 @@
 <template>
     <div class="chatContainer">
-        <chat-list :chatList="$nimInfo.chatList" v-if="$nimInfo.chatListGetDone && viewType == 'list'"
+        <chat-list :chatList="$nimInfo.chatList"
+            v-if="$store.state.user.loginInfo.userInfo.isBlogger && $nimInfo.chatListGetDone"
             @SelectChatCallback="SelectChatCallback" ref="chatlist"></chat-list>
-        <!-- <chat-view :chatViewList="chatViewList" :sessionInfo="sessionInfo" :fileImageWidth="fileImageWidth"
-            :isSendImg="isSendImg" v-if="chatViewList.length > 0 && viewType == 'view'" @SendText="SendText"
-            @handleImageChange="handleImageChange" @handleImageRemove="handleImageRemove" @ReturnList="ReturnList"
-            ref="chatView"></chat-view> -->
-        <user-search v-if="viewType == 'search'"></user-search>
+        <user-search v-if="!$store.state.user.loginInfo.userInfo.isBlogger"></user-search>
     </div>
 </template>
   
@@ -17,11 +14,6 @@ import { InitIM, GoToChatView } from "../../utils/xcm";
 
 export default {
     components: { ChatList, UserSearch },
-    data() {
-        return {
-            viewType: 'search',
-        };
-    },
     created() {
         InitIM(this);
     },
