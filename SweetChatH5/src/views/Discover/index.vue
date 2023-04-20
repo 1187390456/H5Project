@@ -2,7 +2,7 @@
 <template>
   <div class="containner-discover">
     <div class="content">
-        <div v-for="(item,index) in recommendList" :key="index" class="con-card">
+        <div v-for="(item,index) in recommendList" :key="index" class="con-card" @click="OnClickBlogger(item)">
             <img class="bg" :src="item.avatar" alt="">
             <div class="con-bottom">
                 <img class="shade" src="@/assets/images/discover/shade.png" alt="">
@@ -45,6 +45,11 @@ export default {
             this.$message.error(res.errorMsg)
         }
        })
+    },
+    // 跳转个人主页
+    OnClickBlogger(info) {
+        info.userID = info.id
+        this.$router.push({ path: '/bloggerInfo', query: { info } });
     }
   }
 }
