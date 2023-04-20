@@ -35,11 +35,11 @@
                 <img :src="item.authorInfo.avatar" alt="">
                 <div class="info">
                     <div :class="item.authorInfo.identity?'name1':'name'">{{item.authorInfo.nickname}}</div>
-                    <div class="mark" v-if="item.authorInfo.identity">
-                        <img src="@/assets/images/discover/attestation.png" alt="">
-                        <span>Miss World 2019 No.3</span>
-                        <img src="@/assets/images/discover/terrace.png" alt="">
-                        <span>154.3K Fans</span>
+                    <div v-if="item.authorInfo.identity" class="mark">
+                        <div  v-for="(markItem,markI) in item.authorInfo.identity" :key="markI">
+                            <img :src="markItem.icon" alt="">
+                            <span>{{markItem.desc}}</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -285,19 +285,26 @@ export default {
             .mark{
                 display: flex;
                 align-items: center;
-                height: .9067rem;
-                line-height: .9067rem;
-                img{
-                    width: .8rem;
-                    height: .8rem;
-                    &:last-of-type{
-                        margin-left: .32rem;
+                font-size: .64rem;
+                color: #808080;
+                >div{
+                    height: .9067rem;
+                    line-height: .9067rem;
+                    display: flex;
+                    align-items: center;
+                    img{
+                        width: .8rem;
+                        height: .8rem;
+                        &:last-of-type{
+                            margin-left: .32rem;
+                        }
                     }
-                }
-                span{
-                    font-size: .64rem;
-                    color: #808080;
-                }
+                    &:first-of-type{
+                        img{
+                            margin-left: 0;
+                        }
+                    }
+                }                
             }
            
         }
