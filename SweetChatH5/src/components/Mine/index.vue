@@ -19,7 +19,7 @@
       <img class="right" src="@/assets/images/mine/right.png" alt="" />
     </div>
     <!-- 收入 -->
-    <div class="income">
+    <div class="income" v-if="loginInfo.userInfo.isBlogger">
       <img class="income-bg" src="@/assets/images/mine/income-bg.png" alt="" />
       <div>
         <div class="one">
@@ -56,7 +56,7 @@
       </div>
     </div>
     <!-- 链接分享 -->
-    <div class="share">
+    <div class="share" v-if="loginInfo.userInfo.isBlogger">
       <div class="share-detail">
         <div>
           <p>Share SweetFans</p>
@@ -64,22 +64,24 @@
         </div>
         <img src="@/assets/images/mine/app.png" alt="" />
       </div>
-      <div class="share-link">
+      <div class="share-link" @click="copyLink">
         <img src="@/assets/images/mine/link.png" alt="" />
         <span>Copy the link and Share it</span>
       </div>
     </div>
     <!-- 设置 -->
     <div class="settings">
-      <div
-        v-for="(item, index) in settingList"
-        :key="index"
-        @click="changePage(item.path)"
-      >
-        <img :src="item.icon" alt="" />
-        <span>{{ item.title }}</span>
-        <img class="right" src="@/assets/images/mine/right.png" alt="" />
-      </div>
+      <template v-for="(item, index) in settingList" >
+        <div
+          v-if="!item.isBlogger || (loginInfo.userInfo.isBlogger == item.isBlogger)"
+          :key="index"
+          @click="changePage(item.path)"
+        >
+            <img :src="item.icon" alt="" />
+            <span>{{ item.title }}</span>
+            <img class="right" src="@/assets/images/mine/right.png" alt="" />
+        </div>
+      </template>
     </div>
     <!-- <keep-alive>
       <router-view v-if="$route.meta.keepAlive" :key="key"></router-view>
@@ -99,11 +101,13 @@ export default {
           icon: require("@/assets/images/mine/income.png"),
           title: "My income",
           path: "/myIncome",
+          isBlogger:true
         },
         {
           icon: require("@/assets/images/mine/account.png"),
           title: "Account authorization",
           path: "/myAccount",
+          isBlogger:true
         },
         {
           icon: require("@/assets/images/mine/wallet.png"),
@@ -123,12 +127,17 @@ export default {
       ],
       userInfo: null,
       mineData: null,
+      copyUrl:"",
     };
   },
-  computed: {},
+  computed: {
+    ...mapGetters(["loginInfo"])
+  },
   mounted() {
-    console.log(11111111111111, this.userInfo, this.mineData);
+    this.$root.$on("getCopyUrl", this.getCopyUrl);
+    this.$root.$on("copyLink", this.copyLink);
     this.getInitData();
+    this.loginInfo.userInfo.isBlogger && this.getCopyUrl();
   },
   methods: {
     // 页面信息
@@ -145,10 +154,34 @@ export default {
     },
     // 跳转个人主页
     OnClickBlogger() {
-      var info = this.userInfo;
-      info.userID = this.userInfo.id;
-      this.$router.push({ path: "/bloggerInfo", query: { info } });
+      this.$router.push({
+        path: "/bloggerInfo",
+      });
+      this.$route.params.info = this.userInfo;
     },
+    // 获取链接地址
+    getCopyUrl(){
+       this.$api.inviteUrl().then((res)=>{
+        if(res.result){
+          this.copyUrl = res.data.inviteUrl
+        } else{
+          this.$message.error(res.errorMsg);
+        }
+      })
+    },
+    // 复制链接
+    copyLink(){
+      // execCommand 在safari浏览器中不支持异步  无法实现复制
+      console.log(this.copyUrl,"需要复制的地址");
+       let oInput = document.createElement("input");
+        oInput.readOnly = 'readonly'          
+        oInput.value = this.copyUrl;
+        document.body.appendChild(oInput);
+        oInput.focus()
+        oInput.select();
+        document.execCommand("Copy");
+        oInput.remove();  
+    },    
     changePage(path) {
       this.$router.push(path);
     },
@@ -301,8 +334,8 @@ img {
       }
     }
   }
-  .share {
-    margin: 0.64rem 0;
+  .share {   
+    margin-top:  0.64rem;
     // height: 7.4133rem;
     background: #fefefe;
     border-radius: 0.8533rem;
@@ -351,7 +384,7 @@ img {
     }
   }
   .settings {
-    // padding-bottom: 16px;
+     margin-top: 0.64rem ;
     > div {
       padding: 0 0.8533rem 0 0.64rem;
       background-color: #fff;
