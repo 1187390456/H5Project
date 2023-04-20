@@ -30,9 +30,10 @@
           </p>
         </dd>
         <dt>Self-introduction</dt>
-        <dd class="self-intro">
+        <dd class="self-intro" @click="toEdit">
           <div>
-            <p>Who are you expecting for?</p>
+            <p v-if="selfIntro">{{ selfIntro }}</p>
+            <p v-else>Who are you expecting for?</p>
           </div>
           <img src="../../assets/images/mine/right.png" alt="" />
         </dd>
@@ -47,6 +48,18 @@
         @change="onChangeAvatar"
       />
     </div>
+
+    <van-popup v-model="showPopup" round position="bottom">
+      <birth-popup
+        v-if="showWhichPopup == 'birthday'"
+        ref="birthPopupRef"
+        from="mine"
+      ></birth-popup>
+      <height-popup
+        v-if="showWhichPopup == 'height'"
+        ref="heightPopupRef"
+      ></height-popup>
+    </van-popup>
 
     <van-popup
       v-model="showCropper"
@@ -69,17 +82,29 @@
         </div>
       </div>
     </van-popup>
+
+    <van-popup
+      v-model="showEditPopup"
+      style="height: 100%; width: 100%; background: #f8f9fc"
+    >
+      <input-edit :editType="editType" :editContent="editContent"></input-edit>
+    </van-popup>
   </div>
 </template>
 
 <script>
 import CommonHeader from "./CommonHeader.vue";
 import { regFormatDate } from "../../utils/date";
+import birthPopup from "../Login/birthPopup.vue";
+import HeightPopup from "./HeightPopup.vue";
+import inputEdit from "./inputEdit.vue";
+import CropPicture from "../Login/CropPicture.vue";
+import { initOss, ossUpload } from "@/utils/aliyunoss.js";
 
 export default {
   name: "",
   mixins: [],
-  components: { CommonHeader },
+  components: { CommonHeader, CropPicture, birthPopup, HeightPopup, inputEdit },
   props: {},
   data() {
     return {
@@ -122,8 +147,14 @@ export default {
           content: "",
         },
       ],
+      showPopup: false,
       showCropper: false,
       imgData: "",
+      showWhichPopup: "",
+      showEditPopup: false,
+      selfIntro: "",
+      editContent: "",
+      editType: "",
     };
   },
   computed: {},
@@ -143,12 +174,15 @@ export default {
   created() {},
   mounted() {
     this.getMineInfo();
+    this.$root.$on("mineConfirm", this.mineConfirm);
+    this.$root.$on("cancleShowPopup", this.cancleShowPopup);
   },
   methods: {
     // 获取基础信息
     async getMineInfo() {
       let res = await this.$api.mineInfo();
       if (res.result) {
+        this.selfIntro = res.data.userInfo.declaration;
         this.basicInfoArr.map((item) => {
           switch (item.type) {
             case "avatar":
@@ -175,10 +209,50 @@ export default {
       console.log(info, "info===");
       switch (info.type) {
         case "avatar":
+          initOss();
+          this.toUploadAvatar();
+          break;
+        case "birthday":
+          this.showWhichPopup = "birthday";
+          this.showPopup = true;
+          this.$nextTick(() => {
+            this.$refs.birthPopupRef.handleBirthClick(info.content);
+          });
+          break;
+        case "height":
+          this.showWhichPopup = "height";
+          this.showPopup = true;
+          this.$nextTick(() => {
+            this.$refs.heightPopupRef.handleHeightClick(info.content);
+          });
+          break;
+        case "nickname":
+          this.editType = "nickname";
+          this.editContent = info.content;
+          this.showEditPopup = true;
           break;
         default:
+          this.editType = "makeFriendDeclare";
+          this.editContent = this.selfIntro;
+          this.showEditPopup = true;
           break;
       }
+    },
+
+    async mineConfirm(obj) {
+      this.showPopup = false;
+      this.showEditPopup = false;
+      const res = await this.$api.changeUserinfo(obj);
+      res.result && this.getMineInfo();
+    },
+
+    cancleShowPopup() {
+      this.showPopup = false;
+      this.showEditPopup = false;
+    },
+
+    changeUploadAvatar(imgData) {
+      this.uploadAvatar = imgData;
     },
 
     onChangeAvatar() {
@@ -206,21 +280,25 @@ export default {
       };
     },
 
-    submitCropper() {
+    async submitCropper() {
       let canvas = this.$refs.cropComp.cropper.getCroppedCanvas();
       let base64 = canvas.toDataURL("image/jpeg");
       const nfile = this.base64ToFile(base64, "avatar.png");
       this.changeUploadAvatar(base64);
       this.showCropper = false;
-      ossUpload(nfile, {
+      const ossRes = await ossUpload(nfile, {
         fileType: 1,
         fileSort: "avatar",
-      }).then((res) => {
-        if (res.result) {
-          this.accountForm.avatar = res.data.fileID;
-        } else {
-        }
       });
+
+      if (ossRes.result) {
+        const res = await this.$api.changeAvatar({
+          avatarID: ossRes.data.fileID,
+        });
+        res.result && this.getMineInfo();
+      } else {
+        //
+      }
     },
 
     cancleCropper() {
@@ -297,6 +375,7 @@ export default {
           font-weight: 400;
           color: #9896a0;
           margin: 0;
+          word-break: break-all;
 
           img {
             width: 1.92rem /* 36/18.75 */;
@@ -318,6 +397,18 @@ export default {
 
         > div {
           height: 100%;
+          line-height: 100%;
+
+          p {
+            //超出4行省略号
+            text-overflow: -o-ellipsis-lastline;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            -webkit-box-orient: vertical;
+          }
         }
 
         img {

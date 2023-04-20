@@ -6,8 +6,9 @@
     <div class="title">
       <slot name="title"></slot>
     </div>
-    <div class="right" @click="$root.$emit('changeNextType', 6)">
-      <slot name="right"></slot>
+    <!-- @click="$root.$emit('changeNextType', 6)" -->
+    <div class="right">
+      <slot name="right" @click="$emit('click')"></slot>
     </div>
   </div>
 </template>

@@ -108,7 +108,7 @@
             />
           </div>
         </li>
-        <li class="birth-box" @click="hancleBirthClick">
+        <li class="birth-box" @click="handleBirth">
           <p :class="{ 'fill-in-content': accountForm.birth }">Date of birth</p>
           <div>
             <p
@@ -129,19 +129,11 @@
         <p :class="{ 'sign-up': isSignUp }" @click="signUp">Sign Up</p>
       </div>
     </div>
-    <van-popup v-model="showBirthPopup" round position="bottom">
-      <van-picker
-        ref="birthPicker"
-        show-toolbar
-        title="Select Date"
-        :columns="birthColumns"
-        confirm-button-text="Confirm"
-        cancel-button-text="Cancel"
-        @change="onChangeBirth"
-        @cancel="showBirthPopup = false"
-        @confirm="onConfirmBirth"
-      />
+
+    <van-popup v-model="showPopup" round position="bottom">
+      <birth-popup ref="birthPopupRef" from="login"></birth-popup>
     </van-popup>
+
     <van-popup
       v-model="showCropper"
       position="bottom"
@@ -169,8 +161,8 @@
 <script>
 import CommonHeader from "./CommonHeader.vue";
 import CropPicture from "./CropPicture.vue";
+import birthPopup from "./birthPopup.vue";
 import { initOss, ossUpload } from "@/utils/aliyunoss.js";
-import { regFormatDate, daysInMonth } from "../../utils/date";
 import { getImageFileFromUrl } from "../../utils/ymt";
 import { mapGetters } from "vuex";
 
@@ -180,6 +172,7 @@ export default {
   components: {
     CommonHeader,
     CropPicture,
+    birthPopup,
   },
   props: {
     thirdAccountInfo: {
@@ -202,79 +195,11 @@ export default {
       isSignUp: false,
       showCropper: false,
       imgData: "",
-      showBirthPopup: false,
+      showPopup: false,
     };
   },
   computed: {
     ...mapGetters(["loginInfo"]),
-    todayArr() {
-      let formatStr = regFormatDate(new Date(), "YYYY-MM-DD");
-      let todayArr = formatStr.split("-");
-      todayArr = todayArr.map((item) =>
-        item.charAt(0) == "0" ? Number(item.slice(1)) : Number(item)
-      );
-      return todayArr;
-    },
-
-    yearArr() {
-      let yearArr = [];
-      for (let i = 1923; i <= this.todayArr[0]; i++) {
-        yearArr.push({ value: i, label: i, children: [] });
-      }
-      return yearArr;
-    },
-
-    monthArr() {
-      return (year) => {
-        let monthArr = [];
-        let month = year == this.todayArr[0] ? this.todayArr[1] : 12;
-        for (let j = 1; j <= month; j++) {
-          monthArr.push({ value: j, label: j, children: [] });
-        }
-        return monthArr;
-      };
-    },
-
-    dayArr() {
-      return ([year, month]) => {
-        let dayArr = [];
-        let days = daysInMonth(year, month);
-        days =
-          year == this.todayArr[0] && month == this.todayArr[1]
-            ? this.todayArr[2]
-            : days;
-        for (let k = 1; k <= days; k++) {
-          dayArr.push({ value: k, label: k, leaf: true });
-        }
-        return dayArr;
-      };
-    },
-
-    birthColumns() {
-      let yearArr = [];
-      for (let i = 1923; i <= this.todayArr[0]; i++) {
-        let monthArr = [];
-        let month = i == this.todayArr[0] ? this.todayArr[1] : 12;
-        for (let j = 1; j <= month; j++) {
-          let dayArr = [];
-          let days = daysInMonth(i, j);
-          days =
-            i == this.todayArr[0] && j == this.todayArr[1]
-              ? this.todayArr[2]
-              : days;
-          for (let k = 1; k <= days; k++) {
-            dayArr.push({ id: k, text: k > 9 ? "" + k : "0" + k, leaf: true });
-          }
-          monthArr.push({
-            id: j,
-            text: j > 9 ? "" + j : "0" + j,
-            children: dayArr,
-          });
-        }
-        yearArr.push({ id: i, text: i, children: monthArr });
-      }
-      return yearArr;
-    },
 
     // computed end
   },
@@ -327,6 +252,9 @@ export default {
       this.accountForm.nickname = this.thirdAccountInfo.nickname;
       this.showAavatarUrl = this.thirdAccountInfo.avatar;
     }
+
+    this.$root.$on("loginConfirmBirth", this.loginConfirmBirth);
+    this.$root.$on("cancleShowBirth", this.cancleShowBirth);
   },
   methods: {
     signUp() {
@@ -360,22 +288,20 @@ export default {
       }
     },
 
-    hancleBirthClick() {
-      this.showBirthPopup = true;
-      setTimeout(() => {
-        this.$refs.birthPicker.setIndexes([77, 0, 0]);
-      }, 0);
-    },
-
-    onChangeBirth(picker, values, index) {
-      // console.log(picker, values, index);
-      // let month = values[1].charAt(0) == 0 ? values[1].substring(1) : values[1];
-      // let day = values[2].charAt(0) == 0 ? values[2].substring(1) : values[1];
-    },
-
-    onConfirmBirth(value, index) {
+    loginConfirmBirth(value) {
       this.accountForm.birth = value.join("/");
-      this.showBirthPopup = false;
+      this.showPopup = false;
+    },
+
+    cancleShowBirth() {
+      this.showPopup = false;
+    },
+
+    handleBirth() {
+      this.showPopup = true;
+      this.$nextTick(() => {
+        this.$refs.birthPopupRef.handleBirthClick();
+      });
     },
 
     changeShowCropper(flag) {

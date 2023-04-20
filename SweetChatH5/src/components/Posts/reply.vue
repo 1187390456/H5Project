@@ -1,7 +1,7 @@
 <template>
   <div class="reply-container">
     <div class="reply-box">
-      <div class="reply-level1-item00">
+      <div>
         <template v-if="commentCount > 0">
           <template v-if="replyList.length">
             <div
@@ -60,21 +60,13 @@
               </div>
             </div>
             <!-- 加载更多 -->
-            <!-- <div v-if="isEnd" class="no-more">— THE END —</div>
+            <div v-if="isEnd" class="no-more">— THE END —</div>
             <div v-else class="loading-more">
               <template v-if="flag">
                 <i class="el-icon-loading"></i>
                 <p>评论加载中</p>
               </template>
-              <el-button
-                v-else
-                size="mini"
-                round
-                style="margin-bottom: 24px"
-                @click="getMoreComment"
-                >点击加载更多评论</el-button
-              >
-            </div> -->
+            </div>
           </template>
           <div v-else class="comment-loading">
             <i class="el-icon-loading"></i>
@@ -82,8 +74,8 @@
           </div>
         </template>
         <div class="no-comment" v-else>
-          <i class="el-icon-chat-line-square"></i>
-          <p>暂无评论</p>
+          <img src="../../assets/images/posts/no_comments.png" alt="" />
+          <p>No comments</p>
         </div>
       </div>
     </div>
@@ -402,6 +394,28 @@ export default {
     color: #fff;
     background: #8032ff;
     border-radius: 1.706667rem /* 32/18.75 */;
+  }
+}
+
+.no-more {
+  text-align: center;
+  font-size: 0.64rem /* 12/18.75 */;
+  color: #aaa;
+  padding-bottom: 0.533333rem /* 10/18.75 */;
+}
+
+.no-comment {
+  text-align: center;
+  width: 100%;
+
+  img {
+    width: 5.12rem /* 96/18.75 */;
+    height: 5.12rem /* 96/18.75 */;
+  }
+
+  p {
+    text-align: center;
+    margin: 0.533333rem /* 10/18.75 */;
   }
 }
 </style>
