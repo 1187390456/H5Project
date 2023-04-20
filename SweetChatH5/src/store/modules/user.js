@@ -1,7 +1,8 @@
 import router, { resetRouter } from "@/router";
 import { baseURL } from "@/config";
-import { login, cancenAccount } from "@/api_v2/modules/login";
+import { commonLogin, phoneLogin } from "@/api_v2/modules/login";
 import { Message } from "element-ui";
+
 const state = {
   name: "",
   userId: JSON.parse(sessionStorage.getItem("User"))
@@ -41,54 +42,66 @@ const mutations = {
 };
 
 const actions = {
-  login({ commit, dispatch }, userInfo) {
-    const { username, password } = userInfo;
+  login({ commit, dispatch }, loginObj) {
+    const { loginMethod, loginParms } = loginObj;
     return new Promise((resolve, reject) => {
-      login({
-        username,
-        password,
-      })
-        .then((res) => {
-          const { result, data } = res;
-          if (result) {
-            var { bgUserID: id, nickname: name, bgUserToken: token } = data;
-            commit("SET_NAME", name);
-            commit("SET_USERID", id);
-            // commit("SET_AVATAR", body.avatar);
-            // 不能写这里  你写这里的话
-            sessionStorage.setItem("User", JSON.stringify({ name, id }));
-            sessionStorage.setItem("token", token);
-          } else {
-            Message.error(res.errorMsg);
-          }
-          resolve(res);
-        })
-        .catch((error) => {
-          reject(error);
-        });
+      switch (loginMethod) {
+        case "phone":
+          phoneLogin(loginParms)
+            .then((res) => {
+              if (res.result) {
+                loginSuccess(res, commit, dispatch);
+              } else {
+                Message.error(res.errorMsg);
+              }
+              resolve(res);
+            })
+            .catch((error) => {
+              reject(error);
+            });
+          break;
+        case "common":
+          commonLogin(loginParms)
+            .then((res) => {
+              if (res.result) {
+                loginSuccess(res, commit, dispatch);
+              } else {
+                Message.error(res.errorMsg);
+              }
+              resolve(res);
+            })
+            .catch((error) => {
+              reject(error);
+            });
+          break;
+        default:
+          break;
+      }
     });
   },
   // user logout
   logout({ commit, state }) {
-    console.log(state);
-    var bloggerUserID = 0;
-    cancenAccount({ bloggerUserID })
-      .then((res) => {
-        commit("SET_NAME", "");
-        commit("SET_USERID", "");
-        commit("SET_AVATAR", "");
-        commit("SET_ROLES", []);
-        commit("SET_INFO", {});
-        localStorage.clear();
-        sessionStorage.clear();
-        router.replace({ path: "/login" });
-        resetRouter();
-      })
-      .catch((error) => {
-        reject(error);
-      });
+    commit("SET_NAME", "");
+    commit("SET_USERID", "");
+    commit("SET_AVATAR", "");
+    commit("SET_ROLES", []);
+    commit("SET_LOGIN_INFO", {});
+    commit("SET_SEARCHINFO", false);
+    commit("SET_CHANGE_MINE", false);
+    localStorage.clear();
+    sessionStorage.clear();
+    router.replace({ path: "/login" });
+    resetRouter();
   },
 };
+
+function loginSuccess(res, commit, dispatch) {
+  commit("SET_LOGIN_INFO", res.data);
+  const id = res.data.userInfo.id;
+  const name = res.data.userInfo.nickname;
+  sessionStorage.setItem("User", JSON.stringify({ name, id }));
+  sessionStorage.setItem("userToken", res.data.userInfo.token);
+}
 
 export default {
   namespaced: true,

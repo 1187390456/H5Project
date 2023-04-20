@@ -64,6 +64,11 @@ export default {
 
 <style scoped lang="scss">
 .potential-income {
+  background: #f8f9fc;
+  height: 100vh;
+  overflow: hidden;
+  box-sizing: border-box;
+
   .main {
     padding: 0.64rem /* 12/18.75 */;
 

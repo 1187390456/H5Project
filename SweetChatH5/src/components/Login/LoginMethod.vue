@@ -116,33 +116,25 @@ export default {
     },
 
     commonLogin(type) {
-      this.$api
-        .commonLogin({
-          type,
-          openID: this.openId,
-          accessToken: this.accessToken,
+      this.$store
+        .dispatch("user/login", {
+          loginMethod: "common",
+          loginParms: {
+            type,
+            openID: this.openId,
+            accessToken: this.accessToken,
+          },
         })
         .then((res) => {
-          console.log(res);
-          if (res.result) {
-            this.$store.commit("user/SET_LOGIN_INFO", res.data);
-            if (res.data.isEdit) {
-              // 直接进入
-              console.log("直接进入===");
-              const id = res.data.userInfo.id;
-              const name = res.data.userInfo.nickname;
-              sessionStorage.setItem("User", JSON.stringify({ name, id }));
-              sessionStorage.setItem("userToken", res.data.userInfo.token);
-              this.$router.push({ path: "/Chats" });
-              this.$store.dispatch("permission/generateRoutes", []);
-            } else {
-              // 去编辑资料
-              const id = res.data.userInfo.id;
-              const name = res.data.userInfo.nickname;
-              sessionStorage.setItem("User", JSON.stringify({ name, id }));
-              sessionStorage.setItem("userToken", res.data.userInfo.token);
-              this.$root.$emit("changeLoginMethod", 2);
-            }
+          if (res.result && res.data.isEdit) {
+            // 直接进入
+            console.log("直接进入===");
+            this.$router.push({ path: "/Chats" });
+            this.$store.dispatch("permission/generateRoutes", []);
+          } else {
+            // 去编辑资料
+            console.log("编辑资料===");
+            this.$root.$emit("changeLoginMethod", 2);
           }
         });
     },

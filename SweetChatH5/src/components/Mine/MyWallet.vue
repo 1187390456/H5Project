@@ -53,7 +53,7 @@
               alt=""
             />
           </div>
-          <span>Read and agree to <i>《User Recharge Agreement》</i></span>
+          <span>Read and agree to <i>User Recharge Agreement</i></span>
         </dt>
         <dd>
           1.Coins can be used to purchase coin gifts and messages within the
@@ -88,7 +88,7 @@ export default {
   props: {},
   data() {
     return {
-      isChecked: false,
+      isChecked: true,
     };
   },
   computed: {},
@@ -109,9 +109,6 @@ export default {
 
 <style scoped lang="scss">
 .my-wallet {
-  height: 100%;
-  background: #fff;
-
   .main {
     padding: 0.64rem /* 12/18.75 */ 0.853333rem /* 16/18.75 */;
 

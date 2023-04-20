@@ -15,20 +15,9 @@
     />
 
     <!-- 我的页面 -->
-    <van-popup v-model="showMine"  position="left">
+    <van-popup v-model="showMine" position="left">
       <mine />
     </van-popup>
-
-    <!-- 我的页面点击具体内容 -->
-    <!-- <van-popup
-      v-model="showNextPopup"
-      style="height: 100%; width: 100%; background: #f8f9fc"
-    >
-      <my-income v-if="nextType == 1"></my-income>
-      <account-authorizatio v-if="nextType == 2"></account-authorizatio>
-      <my-wallet v-if="nextType == 3"></my-wallet>
-      <potential-income v-if="nextType == 6"></potential-income>
-    </van-popup> -->
   </div>
 </template>
 
@@ -54,14 +43,14 @@ export default {
     ...mapState({
       user: (state) => state.user,
     }),
-    showMine:{
-      get(){
-         return this.user.showMine
+    showMine: {
+      get() {
+        return this.user.showMine;
       },
-      set(val){
-        this.$store.commit("user/SET_CHANGE_MINE",val)
-      }
-    }
+      set(val) {
+        this.$store.commit("user/SET_CHANGE_MINE", val);
+      },
+    },
   },
   watch: {
     "$route.path": {
@@ -77,7 +66,7 @@ export default {
     },
 
     showMyPage() {
-      this.showMine = true
+      this.showMine = true;
     },
 
     toShowMine() {
@@ -90,9 +79,9 @@ export default {
       this.showNextPopup = true;
       this.nextType = type;
     },
-    closeMine(){
-      this.$store.commit('user/SET_CHANGE_MINE',false)
-    }
+    closeMine() {
+      this.$store.commit("user/SET_CHANGE_MINE", false);
+    },
   },
   mounted() {
     this.$root.$on("toShowMine", this.toShowMine);
@@ -102,7 +91,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-img{
+img {
   object-fit: cover;
 }
 ::-webkit-scrollbar {

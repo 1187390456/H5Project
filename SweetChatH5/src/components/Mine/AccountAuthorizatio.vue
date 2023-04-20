@@ -73,6 +73,11 @@ export default {
 
 <style scoped lang="scss">
 .account-authorizatio {
+  background: #f8f9fc;
+  height: 100vh;
+  overflow: hidden;
+  box-sizing: border-box;
+
   .main {
     padding: 1.066667rem /* 20/18.75 */ 0.64rem /* 12/18.75 */;
     .authorization {

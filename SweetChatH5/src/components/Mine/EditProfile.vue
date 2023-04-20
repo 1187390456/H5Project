@@ -85,9 +85,15 @@
 
     <van-popup
       v-model="showEditPopup"
+      position="right"
       style="height: 100%; width: 100%; background: #f8f9fc"
     >
-      <input-edit :editType="editType" :editContent="editContent"></input-edit>
+      <input-edit
+        v-if="showEditPopup"
+        :editType="editType"
+        :editContent="editContent"
+        @hideEditPopup="showEditPopup = false"
+      ></input-edit>
     </van-popup>
   </div>
 </template>
@@ -329,6 +335,11 @@ export default {
 
 <style scoped lang="scss">
 .edit-profile {
+  background: #f8f9fc;
+  height: 100vh;
+  overflow: hidden;
+  box-sizing: border-box;
+
   .main {
     padding: 0 0.64rem /* 12/18.75 */;
 

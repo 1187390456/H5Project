@@ -1,6 +1,6 @@
 <template>
   <div class="mine-header">
-    <div class="left" @click="$router.back()">
+    <div class="left" @click="handleBack">
       <img src="../../assets/images/mine/left@3x.png" alt="" />
     </div>
     <div class="title">
@@ -13,6 +13,8 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   name: "",
   mixins: [],
@@ -21,11 +23,20 @@ export default {
   data() {
     return {};
   },
-  computed: {},
+  computed: {
+    ...mapState({
+      userInfo: (state) => state.user.loginInfo.userInfo,
+    }),
+  },
   watch: {},
   created() {},
   mounted() {},
-  methods: {},
+  methods: {
+    handleBack() {
+      this.$router.back();
+      this.$route.params.info = this.userInfo;
+    },
+  },
 };
 </script>
 

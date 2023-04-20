@@ -166,6 +166,13 @@ export const constantRoutes = [
     breadcrumb: true,
     meta: { title: "My Wallet", keepAlive: true },
   },
+  {
+    path: "/editProfile",
+    component: () => import("@/components/Mine/EditProfile.vue"),
+    hidden: true,
+    breadcrumb: true,
+    meta: { title: "Edit Profile", keepAlive: true },
+  },
 ];
 
 export const asyncRoutes = [];

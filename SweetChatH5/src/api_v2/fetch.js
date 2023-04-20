@@ -162,18 +162,6 @@ export default function fetch(options) {
       .then((res) => {
         const responseCode = res.data.errorCode;
         switch (responseCode) {
-          case "1000":
-            store.dispatch("user/logout");
-            break;
-          case "1001":
-            store.dispatch("user/logout");
-            break;
-          case "1002":
-            store.dispatch("user/logout");
-            break;
-          case "1003":
-            store.dispatch("user/logout");
-            break;
           case 106:
             store.dispatch("user/logout");
             break;
