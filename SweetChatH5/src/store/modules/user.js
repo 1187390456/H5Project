@@ -12,6 +12,7 @@ const state = {
   baseURL: baseURL,
   loginInfo: {},
   showSearch: false,
+  showMine: false,
 };
 
 const mutations = {
@@ -33,6 +34,9 @@ const mutations = {
   },
   SET_SEARCHINFO: (state, newState) => {
     state.showSearch = newState;
+  },
+  SET_CHANGE_MINE: (state, newState) => {
+    state.showMine = newState;
   },
 };
 

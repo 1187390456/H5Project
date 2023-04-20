@@ -110,6 +110,48 @@ export const constantRoutes = [
       },
     ],
   },
+  {
+    path: "/Mine",
+    component: () => import("@/components/Mine"),
+    hidden: true,
+    breadcrumb: true,
+    meta: { title: "Mine", keepAlive: false },
+  },
+  {
+    path: "/myIncome",
+    component: () => import("@/components/Mine/MyIncome.vue"),
+    hidden: true,
+    breadcrumb: true,
+    meta: { title: "My income", keepAlive: false },
+  },
+  {
+    path: "/myAccount",
+    component: () => import("@/components/Mine/AccountAuthorizatio.vue"),
+    hidden: true,
+    breadcrumb: true,
+    meta: { title: "Account Authorizatio", keepAlive: false },
+  },
+  {
+    path: "/myWallet",
+    component: () => import("@/components/Mine/MyWallet.vue"),
+    hidden: true,
+    breadcrumb: true,
+    meta: { title: "My Wallet", keepAlive: false },
+  },
+  {
+    path: "/myIssue",
+    component: () => import("@/components/Mine/IssueFeedback.vue"),
+    hidden: true,
+    breadcrumb: true,
+    meta: { title: "Issue Feedback", keepAlive: false },
+  },
+  {
+    path: "/mySetting",
+    component: () => import("@/components/Mine/OtherSettings.vue"),
+    hidden: true,
+    breadcrumb: true,
+    meta: { title: "My Wallet", keepAlive: true },
+  },
 ];
 
 export const asyncRoutes = [];

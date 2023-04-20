@@ -1,18 +1,20 @@
 <template>
-  <div class="container-mine">
+  <div class="container-mine" v-if="mineData">
     <!-- 个人信息 -->
     <div class="info" @click="OnClickBlogger">
       <img
         class="avatar"
-        src="https://img0.baidu.com/it/u=1993557595,4075530522&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1681923600&t=9b6dddbe05c446e1ace6f480f70ef88c"
+        :src="userInfo.avatar"
         alt=""
       />
       <div class="info-detail">
-        <div class="name">Taylor Swift</div>
+        <div class="name">{{userInfo.nickname}}</div>
         <div class="gender">
-          <img src="@/assets/images/mine/male.png" alt="" /><span>23</span>
+          <img v-if="userInfo.gender == 2" src="@/assets/images/mine/male.png" alt="" />
+          <img v-else src="@/assets/images/mine/female.png" alt="" />
+          <span>{{userInfo.age}}</span>
         </div>
-        <span>ID： 485904843</span>
+        <span>ID: {{userInfo.uuid}}</span>
       </div>
       <img class="right" src="@/assets/images/mine/right.png" alt="" />
     </div>
@@ -25,24 +27,27 @@
             <span>Current Income</span>
             <img class="icon" src="@/assets/images/mine/money.png" alt="" />
           </div>
-          <div>Yesterday</div>
+          <div v-if="mineData.revenueData">Yesterday</div>
         </div>
-        <div class="two">
+        <div v-if="mineData.revenueData" class="two">
           <div>
-            <span>40000</span>
+            <span>{{mineData.revenueData.allIncome}}</span>
             <img
               class="icon"
               src="@/assets/images/mine/income-right.png"
               alt=""
             />
           </div>
-          <div>+5000</div>
+          <div>+{{mineData.revenueData.yesterdayIncome}}</div>
+        </div>
+        <div v-else class="two-noincome">
+          <div>No income yet</div>
         </div>
         <van-divider class="divider" />
         <div class="three">
           <div>Potential Income</div>
           <div>
-            <span>30000</span>
+            <span>{{mineData.revenueData?mineData.revenueData.potentialIncome : 0}}</span>
             <img src="@/assets/images/mine/income-right.png" alt="" />
           </div>
         </div>
@@ -67,13 +72,16 @@
       <div
         v-for="(item, index) in settingList"
         :key="index"
-        @click="$root.$emit('changeNextType', index + 1)"
+        @click="changePage(item.path)"
       >
         <img :src="item.icon" alt="" />
         <span>{{ item.title }}</span>
         <img class="right" src="@/assets/images/mine/right.png" alt="" />
       </div>
     </div>
+    <!-- <keep-alive>
+      <router-view v-if="$route.meta.keepAlive" :key="key"></router-view>
+    </keep-alive> -->
   </div>
 </template>
 
@@ -88,41 +96,68 @@ export default {
         {
           icon: require("@/assets/images/mine/income.png"),
           title: "My income",
+          path:"/myIncome"
         },
         {
           icon: require("@/assets/images/mine/account.png"),
           title: "Account authorization",
+          path:"/myAccount"
         },
         {
           icon: require("@/assets/images/mine/wallet.png"),
           title: "My wallet",
+          path:"/myWallet"
         },
         {
           icon: require("@/assets/images/mine/issue.png"),
           title: "Issue feedback",
+          path:"/myIssue"
         },
         {
           icon: require("@/assets/images/mine/setting.png"),
           title: "Other settings",
+          path:"/mySetting"
         },
       ],
+      userInfo:null,
+      mineData:null
     };
   },
   computed:{
-    ...mapGetters(["loginInfo"])
+  },
+  mounted(){
+    console.log(11111111111111,this.userInfo,this.mineData);
+    this.getInitData()
   },
   methods:{
+    // 页面信息
+    getInitData(){
+      this.$api.mineInfo().then((res)=>{
+        if(res.result){
+          console.log(res);
+          this.userInfo = res.data.userInfo
+          this.mineData = res.data
+        } else{
+          this.$message.error(res.errorMsg)
+        }
+      })
+    },
     // 跳转个人主页
     OnClickBlogger() {
-      var info = this.loginInfo.userInfo
       info.userID = this.loginInfo.userInfo.id
       this.$router.push({ path: '/bloggerInfo', query: { info } });
-    }
+    },
+    changePage(path){
+      this.$router.push(path)
+    },
   },
 };
 </script>
 
 <style scoped lang="scss">
+img{
+  object-fit: cover;
+}
 .container-mine {
   object-fit: over;
   padding: 1.6rem 0.64rem 0 0.64rem;
@@ -182,6 +217,8 @@ export default {
     position: relative;
     margin-top: 1.0667rem;
     height: 7.6267rem;
+    padding: 0.8533rem 0 0.64rem 0;
+    box-sizing: border-box;
     .icon {
       width: 1.0667rem;
       height: 1.0667rem;
@@ -195,12 +232,14 @@ export default {
       z-index: -1;
     }
     > div {
-      padding: 0.8533rem 0 0.64rem 0;
       color: #fff;
       font-size: 0.7467rem;
+      position: relative;
+      height: 100%;
       .one,
       .two,
-      .three {
+      .three,
+      .two-noincome {
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -229,7 +268,15 @@ export default {
           margin-left: 0.4267rem;
         }
       }
+      .two-noincome{
+        font-family: PingFangSC-Regular, PingFang SC;
+        font-size: 1.0667rem;
+        margin-top: .64rem;
+      }
       .three {
+        width: 100%;
+        position: absolute;
+        bottom: .2667rem;
         > div {
           &:first-of-type {
             font-family: PingFangSC-Regular, PingFang SC;
@@ -243,7 +290,13 @@ export default {
       }
     }
     .divider {
+      position: absolute;
+      bottom: 1.7067rem;
+      width: 100%;
       margin: 0.7467rem 0 0.64rem 0;
+      &::before{
+        border-color:rgba(255,255,255,.3)
+      }
     }
   }
   .share {
