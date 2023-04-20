@@ -266,7 +266,7 @@ export default {
     }
 
     .phone-code {
-      width: 100vw;
+      width: 100%;
       margin-top: 0.693333rem /* 13/18.75 */;
 
       p {
@@ -293,6 +293,7 @@ export default {
       }
 
       > div {
+        width: 100%;
         display: flex;
         flex-direction: row;
         justify-content: space-between;
