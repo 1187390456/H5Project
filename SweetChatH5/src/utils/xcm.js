@@ -249,12 +249,17 @@ function GetSessionBySessionId(id) {
   return false;
 }
 
-// 获取列表会话的指定会话的人物信息
-function GetSessionInfo(id) {
-  for (var i = 0; i < nimInfo.chatList.length; i++) {
-    if (nimInfo.chatList[i].id == id) return nimInfo.chatList[i].targetUserInfo;
+// 云端查询人物信息 是否跳转
+function GetSessionInfo(id, isPush) {
+  nim.getUser({
+    account: id,
+    sync: false,
+    done: getUsersDone,
+  });
+  function getUsersDone(error, data) {
+    nimInfo.sessionInfo = data;
+    GetHistoryAndPush(isPush);
   }
-  return null;
 }
 
 // 获取历史记录
@@ -274,9 +279,18 @@ function ResetLastMsg(session) {
 
 // 添加未读 当前id的消息未读加1
 function AddUnread(id) {
-  this.chatList.map((item) => {
+  nimInfo.chatList.map((item) => {
     if (item.id == id) {
       item.unread++;
+    }
+    return item;
+  });
+}
+// 清空当前id的消息未读
+function ClearUnread(id) {
+  nimInfo.chatList.map((item) => {
+    if (item.id == id) {
+      item.unread = 0;
     }
     return item;
   });
@@ -345,6 +359,7 @@ function GetLocalHistoryAndPush(isPush) {
 // 获取远端历史记录并跳转
 function GetRemoteHistoryAndPush(isPush) {
   var account = nimInfo.sessionInfo.account;
+  console.log("远端历史记录to", account);
   nim.getHistoryMsgs({
     debug: true,
     scene: "p2p",
@@ -363,10 +378,9 @@ function GetRemoteHistoryAndPush(isPush) {
 //#region  外部回调
 
 // 根据id信息跳转会话页面
-export const SelectCallBack = (vue, selectItem) => {
-  nim.resetSessionUnread(selectItem.id); //  清除未读
-  nimInfo.sessionInfo = GetSessionInfo(selectItem.id); // 获取会话对象信息
-  GetHistoryAndPush(true);
+export const GoToChatView = (id) => {
+  nim.resetSessionUnread(id); //  清除未读
+  GetSessionInfo(id, true); // 获取会话对象信息并跳转
 };
 
 // 断开连接
@@ -479,10 +493,11 @@ export const SendText = (vue, msg) => {
   // }
 
   // 置顶当前会话
-  // this.SetCurrentSession(this.selectChatItem, this.selectChatItem.id);
+
+  SetCurrentSession(nimInfo.sessionInfo, nimInfo.sessionInfo.id);
 
   // 清除未读
-  //this.ClearUnread(this.selectChatItem.id);
+  ClearUnread(nimInfo.sessionInfo.id);
 };
 
 //#endregion

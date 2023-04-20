@@ -7,70 +7,30 @@
             @handleImageChange="handleImageChange" @handleImageRemove="handleImageRemove" @ReturnList="ReturnList"
             ref="chatView"></chat-view> -->
         <user-search v-if="viewType == 'search'"></user-search>
-        <!-- <button @click="SendText('123')">123</button> -->
     </div>
 </template>
   
 <script>
 import ChatList from "../../components/Chats/ChatList.vue";
 import UserSearch from '../../components/Chats/UserSearch.vue'
-import { InitIM, SelectCallBack, DisConnectNim } from "../../utils/xcm";
+import { InitIM, GoToChatView } from "../../utils/xcm";
 
 export default {
     components: { ChatList, UserSearch },
     data() {
         return {
-            imFile: { imageFile: [] }, // 添加的临时图片
-            isSendImg: false, // 是否正在上传图片
-            fileImageWidth: 400, //图片上传提示框宽度
-
-            viewType: 'list',
+            viewType: 'search',
         };
     },
     created() {
         InitIM(this);
     },
-    destroyed() {
-        //  DisConnectNim();
-    },
-
     methods: {
         // 选中会话回调
         SelectChatCallback(selectItem) {
-            SelectCallBack(this, selectItem);
+            GoToChatView(selectItem.targetUserInfo.account); // b_test_174
         },
 
-        // 清空当前id的消息未读
-        ClearUnread(id) {
-            this.chatList.map((item) => {
-                if (item.id == id) {
-                    console.log("找到了", item);
-                    item.unread = 0;
-                }
-                return item;
-            });
-        },
-        // 从左侧列表 查找指定用户
-        GetByChatList(id) {
-            for (var i = 0; i < this.chatList.length; i++) {
-                if (this.chatList[i].id == id) return this.chatList[i];
-            }
-            return null;
-        },
-
-        //添加图片文件
-        handleImageChange(file, fileList) {
-            this.imFile.imageFile = fileList;
-            this.fileImageWidth = fileList.length * 160 + 300;
-        },
-        //删除图片文件
-        handleImageRemove(file, fileList) {
-            this.imFile.imageFile = fileList; //删除文件时要移除缓存区文件
-        },
-        // 返回列表视图
-        ReturnList() {
-            this.viewType = 'list'
-        }
     },
 };
 </script>

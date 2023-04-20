@@ -18,7 +18,6 @@
                     : 'flex-col-end-center',
             ]" v-for="(item, i) in $nimInfo.chatViewList" :key="i">
                 <img-msg v-if="item.file != null" :info="item"></img-msg>
-
                 <text-msg v-else :info="item" :isleft="item.from == $nimInfo.sessionInfo.account"></text-msg>
             </div>
         </div>
@@ -35,37 +34,6 @@
                 <img src="../../../assets/images/chats/礼物.png" alt="">
             </div>
         </div>
-        <!-- 表情 -->
-        <!-- <el-popover placement="top" :width="fileImageWidth" trigger="click" style="margin-right: 20px; position: fixed">
-          <p>最多可上传1张图片</p>
-          <el-upload action="#" ref="imageUpload" list-type="picture-card"
-            :on-change="(file, fileList) => handleImageChange(file, fileList)"
-            :on-remove="(file, fileList) => handleImageRemove(file, fileList)" :auto-upload="false" accept="image/*"
-            :limit="1" :on-exceed="handleImageExceed">
-            <i class="el-icon-plus"></i>
-          </el-upload>
-          <el-dialog :visible.sync="dialogVisible">
-            <img width="100%" :src="dialogImageUrl" alt />
-          </el-dialog>
-          <el-button style="bottom: 150px" class="emj_img_btn" slot="reference" @click="$refs.imageUpload.clearFiles()"><img
-              src="../../assets/images/xcm/t.png" alt="" /></el-button>
-        </el-popover> -->
-        <!-- 图片 -->
-        <!-- <el-popover placement="top" :width="fileImageWidth" trigger="click" style="margin-right: 20px; position: fixed">
-          <p>最多可上传1张图片</p>
-          <el-upload action="#" ref="imageUpload" list-type="picture-card" :on-change="
-            (file, fileList) => $emit('handleImageChange', file, fileList)
-          " :on-remove="
-    (file, fileList) => $emit('handleImageRemove', file, fileList)
-  " :auto-upload="false" accept="image/*" :limit="1" :on-exceed="handleImageExceed">
-            <i class="el-icon-plus"></i>
-          </el-upload>
-          <el-dialog :visible.sync="dialogVisible">
-            <img width="100%" :src="dialogImageUrl" alt />
-          </el-dialog>
-          <el-button style="bottom: 18px;" class="emj_img_btn" slot="reference" @click="$refs.imageUpload.clearFiles()"><img
-              src="../../assets/images/xcm/c.png" alt="" /></el-button>
-        </el-popover> -->
     </div>
 </template>
   
@@ -80,10 +48,7 @@ export default {
     data() {
         return {
             textarea: "",
-            dialogVisible: false,
-            dialogImageUrl: "",
-            lastpos: 0,
-            serverTag: "h_", // TODO
+            isSendImg: false,
         };
     },
     mounted() {
@@ -94,6 +59,7 @@ export default {
         OnClickReturn() {
             this.$router.push({ path: '/Chats' });
         },
+        // 监听Enter
         listen(event) {
             if (event.keyCode == 13 && event.ctrlKey) {
                 this.textarea += "\n"; //换行
@@ -109,25 +75,18 @@ export default {
             this.ResetScroll();
             this.textarea = "";
         },
-        Reset() {
-            this.ResetScroll();
-        },
+        // 重置滚动条
         ResetScroll() {
             var that = this;
             // 滚动条自适应
             this.$nextTick(() => {
                 var root = that.$refs["chatViewRef"];
                 var time = this.isSendImg ? 1000 : 200;
-
                 console.log("时间" + time); // 这里发图片就延时1秒 发文本延时200毫秒
                 setTimeout(() => {
                     root.scrollTop = root.scrollHeight;
                 }, time);
             });
-        },
-        //图片上传限制钩子
-        handleImageExceed() {
-            this.$message.warning("最多可上传1张图片");
         },
     },
 };

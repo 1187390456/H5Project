@@ -99,6 +99,7 @@
     
 <script>
 import { mapState } from "vuex";
+import { GoToChatView } from '../../utils/xcm'
 
 export default {
     data() {
@@ -108,6 +109,7 @@ export default {
             dynamicList: [], // 动态信息
 
             activeName: 'Album',
+            serverTag: 'b_test_',
         };
     },
     created() {
@@ -122,7 +124,9 @@ export default {
     methods: {
         // 聊天
         OnclickChat() {
-
+            var id = this.serverTag + this.bloggerInfo.id
+            console.log('123', id);
+            GoToChatView(id);
         },
         // 返回
         Return() {
