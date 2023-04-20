@@ -11,7 +11,7 @@
         <div class="content">
           <div class="left">
             <img src="../../assets/images/mine/money.png" alt="" />
-            <span>5934</span>
+            <span>{{ incomeMoney }}</span>
           </div>
           <div class="right">提现</div>
         </div>
@@ -21,20 +21,20 @@
       <div class="income-details">
         <div class="title">收支明细</div>
         <ul>
-          <li>
+          <li v-for="item in incomeList">
             <div class="top">
-              <div class="date">12月12日 16:24</div>
-              <!-- <div class="money-income">
+              <div class="date">{{ item.postTime | timeFilter }}</div>
+              <div class="money-income" v-if="item.type == 1">
                 <img src="../../assets/images/mine/money.png" alt="" />
                 <span>+300</span>
-              </div> -->
-              <div class="money-withdrawal">-$23.0</div>
+              </div>
+              <div class="money-withdrawal" v-if="item.type == 2">-$23.0</div>
             </div>
             <div class="bottom">
-              <!-- <div class="reply-msg">
+              <div class="reply-msg" v-if="item.type == 1">
                 回复了Region Micheal的消息，你获得300金币奖励
-              </div> -->
-              <div class="withdrawal-msg">
+              </div>
+              <div class="withdrawal-msg" v-if="item.type == 2">
                 <p>提现$23.0至Payoneer(3464)</p>
                 <p>提现成功<van-icon name="arrow" /></p>
               </div>
@@ -48,6 +48,7 @@
 
 <script>
 import CommonHeader from "./CommonHeader.vue";
+import { regFormatDate } from "../../utils/date";
 
 export default {
   name: "",
@@ -55,9 +56,19 @@ export default {
   components: { CommonHeader },
   props: {},
   data() {
-    return {};
+    return {
+      incomeMoney: 0,
+      minAmount: 0,
+      incomeList: [],
+    };
   },
   computed: {},
+  filters: {
+    timeFilter(val) {
+      const tempVal = regFormatDate(new Date(val), "YYYY/MM月DD日 hh:mm");
+      return tempVal.split("/")[1];
+    },
+  },
   watch: {},
   created() {},
   mounted() {
@@ -66,7 +77,13 @@ export default {
   methods: {
     getIncomeList() {
       this.$api.incomeRecordList({ pageNum: 1 }).then((res) => {
-        console.log(res);
+        if (res.result) {
+          this.incomeMoney = res.data.incomeMoney;
+          this.minAmount = res.data.minAmount;
+          this.incomeList = res.data.incomeList;
+        } else {
+          //
+        }
       });
     },
   },

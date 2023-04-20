@@ -52,15 +52,6 @@ export const postsReply = (data) => {
   });
 };
 
-// 评论回复列表 -- 楼中楼
-// export const postsToReply = (data) => {
-//   return fetch({
-//     url: "/api/dynamic/to-reply-list",
-//     method: "post",
-//     data,
-//   });
-// };
-
 // 对一级评论或楼中楼的回复
 export const postsReplyToReply = (data) => {
   return fetch({

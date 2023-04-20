@@ -94,8 +94,16 @@ export default {
   computed: {},
   watch: {},
   created() {},
-  mounted() {},
-  methods: {},
+  mounted() {
+    this.getWalletList();
+  },
+  methods: {
+    getWalletList() {
+      this.$api.walletRecordList({ pageNum: 1 }).then((res) => {
+        console.log(res);
+      });
+    },
+  },
 };
 </script>
 

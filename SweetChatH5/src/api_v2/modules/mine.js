@@ -9,10 +9,10 @@ export const incomeRecordList = (data) => {
   });
 };
 
-// 搜索博主
-export const bloggerSearch = (data) => {
+// 钱包收支明细
+export const walletRecordList = (data) => {
   return fetch({
-    url: "/api/user/blogger-search",
+    url: "/api/wallet/consume-record-list",
     method: "post",
     data,
   });
