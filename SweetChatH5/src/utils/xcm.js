@@ -13,6 +13,8 @@ export var nimInfo = {
   chatListGetDone: false,
   sessionInfo: {}, // 会话对象
   chatViewList: [],
+  chatViewVM: null, // 聊天页面实例
+  chatListVM: null, // Chat页面实例
 };
 
 // nim 云信实例
@@ -96,7 +98,6 @@ export const InitIM = async function (vue) {
       console.log("====== 会话更新了 ======", session);
       // 更新当前会话
       ResetLastMsg(session);
-      console.log("当前nim信息", nimInfo);
     }
   }
 
@@ -110,8 +111,13 @@ export const InitIM = async function (vue) {
     // 自动设置该消息
     SetCurrentSession(msg, msg.sessionId);
 
+    // 添加到viewList 强制刷新
+    nimInfo.chatViewList.push(msg);
+    if (nimInfo.chatViewVM != null) nimInfo.chatViewVM.$forceUpdate();
+    console.log("当前nim信息", nimInfo);
+
     // 滚动到底部
-    // that.$refs.chatView.ResetScroll();
+    if (nimInfo.chatViewVM != null) nimInfo.chatViewVM.ResetScroll();
   }
 
   // 收到自定义消息
@@ -312,13 +318,11 @@ function SetCurrentSession(session, sessionId) {
       return item;
     });
   } else {
-    //TODO 待修复
+    //TODO这里要获取目标信息
     console.log("新会话", sessionId);
-    // this.chatList.unshift(session);
-    // //TODO 索引加加
-    // this.$refs.chatlist.IndexAdd();
+    // nimInfo.chatList.unshift(session);
   }
-
+  nimInfo.chatListVM.$forceUpdate();
   console.log("置顶之后的数组", nimInfo.chatList);
 }
 //#endregion
@@ -498,6 +502,14 @@ export const SendText = (vue, msg) => {
 
   // 清除未读
   ClearUnread(nimInfo.sessionInfo.id);
+};
+// 记录聊天页面实例
+export const RecordVm = (vue) => {
+  nimInfo.chatViewVM = vue;
+};
+// 记录列表页面实例
+export const RecordListVm = (vue) => {
+  nimInfo.chatListVM = vue;
 };
 
 //#endregion
