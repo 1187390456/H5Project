@@ -10,11 +10,12 @@
 <script>
 import ChatList from "../../components/Chats/ChatList.vue";
 import UserSearch from '../../components/Chats/UserSearch.vue'
-import { InitIM, GoToChatView } from "../../utils/xcm";
+import { InitIM, GoToChatView, RecordListVm } from "../../utils/xcm";
 
 export default {
     components: { ChatList, UserSearch },
     created() {
+        RecordListVm(this);
         InitIM(this);
     },
     methods: {
