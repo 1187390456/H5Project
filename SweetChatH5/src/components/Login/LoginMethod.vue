@@ -137,6 +137,10 @@ export default {
               this.$store.dispatch("permission/generateRoutes", []);
             } else {
               // 去编辑资料
+              const id = res.data.userInfo.id;
+              const name = res.data.userInfo.nickname;
+              sessionStorage.setItem("User", JSON.stringify({ name, id }));
+              sessionStorage.setItem("userToken", res.data.userInfo.token);
               this.$root.$emit("changeLoginMethod", 2);
             }
           }
