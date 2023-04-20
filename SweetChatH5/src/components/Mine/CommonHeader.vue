@@ -1,12 +1,11 @@
 <template>
   <div class="mine-header">
-    <div class="left" @click="$root.$emit('toShowMine')">
+    <div class="left" @click="$router.back()">
       <img src="../../assets/images/mine/left@3x.png" alt="" />
     </div>
     <div class="title">
       <slot name="title"></slot>
     </div>
-    <!-- @click="$root.$emit('changeNextType', 6)" -->
     <div class="right">
       <slot name="right" @click="$emit('click')"></slot>
     </div>

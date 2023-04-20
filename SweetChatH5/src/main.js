@@ -46,6 +46,7 @@ import {
   Tab,
   Tabs,
   ImagePreview,
+  Field,
 } from "vant";
 Vue.use(Icon);
 Vue.use(Picker);
@@ -57,6 +58,7 @@ Vue.use(Divider);
 Vue.use(Tab);
 Vue.use(Tabs);
 Vue.use(ImagePreview);
+Vue.use(Field);
 
 // ant
 // import "ant-design-vue/dist/antd.css";

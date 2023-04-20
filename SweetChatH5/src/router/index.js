@@ -132,6 +132,13 @@ export const constantRoutes = [
     meta: { title: "My income", keepAlive: false },
   },
   {
+    path: "/potentialIncome",
+    component: () => import("@/components/Mine/PotentialIncome.vue"),
+    hidden: true,
+    breadcrumb: true,
+    meta: { title: "Potential Income", keepAlive: false },
+  },
+  {
     path: "/myAccount",
     component: () => import("@/components/Mine/AccountAuthorizatio.vue"),
     hidden: true,

@@ -18,7 +18,7 @@ export const walletRecordList = (data) => {
   });
 };
 
-// 钱包收支明细
+// 我的页面
 export const mineInfo = (data) => {
   return fetch({
     url: "/api/user-info/mine",
@@ -26,10 +26,20 @@ export const mineInfo = (data) => {
     data,
   });
 };
-// 我的页面
-export const myPage = (data) => {
+
+// 修改头像
+export const changeAvatar = (data) => {
   return fetch({
-    url: "api/user-info/mine",
+    url: "/api/user-info/change-avatar",
+    method: "post",
+    data,
+  });
+};
+
+// 修改用户资料
+export const changeUserinfo = (data) => {
+  return fetch({
+    url: "/api/user-info/modify-user-info",
     method: "post",
     data,
   });

@@ -2,7 +2,9 @@
   <div class="my-income">
     <common-header>
       <template #title>My income</template>
-      <template #right>Potential</template>
+      <div slot="right" @click="$router.push('/potentialIncome')">
+        Potential
+      </div>
     </common-header>
     <div class="main">
       <!-- 当前收益 -->

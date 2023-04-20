@@ -2,19 +2,19 @@
   <div class="container-mine" v-if="mineData">
     <!-- 个人信息 -->
     <div class="info" @click="OnClickBlogger">
-      <img
-        class="avatar"
-        :src="userInfo.avatar"
-        alt=""
-      />
+      <img class="avatar" :src="userInfo.avatar" alt="" />
       <div class="info-detail">
-        <div class="name">{{userInfo.nickname}}</div>
+        <div class="name">{{ userInfo.nickname }}</div>
         <div class="gender">
-          <img v-if="userInfo.gender == 2" src="@/assets/images/mine/male.png" alt="" />
+          <img
+            v-if="userInfo.gender == 2"
+            src="@/assets/images/mine/male.png"
+            alt=""
+          />
           <img v-else src="@/assets/images/mine/female.png" alt="" />
-          <span>{{userInfo.age}}</span>
+          <span>{{ userInfo.age }}</span>
         </div>
-        <span>ID: {{userInfo.uuid}}</span>
+        <span>ID: {{ userInfo.uuid }}</span>
       </div>
       <img class="right" src="@/assets/images/mine/right.png" alt="" />
     </div>
@@ -31,23 +31,25 @@
         </div>
         <div v-if="mineData.revenueData" class="two">
           <div>
-            <span>{{mineData.revenueData.allIncome}}</span>
+            <span>{{ mineData.revenueData.allIncome }}</span>
             <img
               class="icon"
               src="@/assets/images/mine/income-right.png"
               alt=""
             />
           </div>
-          <div>+{{mineData.revenueData.yesterdayIncome}}</div>
+          <div>+{{ mineData.revenueData.yesterdayIncome }}</div>
         </div>
         <div v-else class="two-noincome">
           <div>No income yet</div>
         </div>
         <van-divider class="divider" />
-        <div class="three">
+        <div class="three" @click="$router.push('/potentialIncome')">
           <div>Potential Income</div>
           <div>
-            <span>{{mineData.revenueData?mineData.revenueData.potentialIncome : 0}}</span>
+            <span>{{
+              mineData.revenueData ? mineData.revenueData.potentialIncome : 0
+            }}</span>
             <img src="@/assets/images/mine/income-right.png" alt="" />
           </div>
         </div>
@@ -86,7 +88,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters } from "vuex";
 
 export default {
   components: {},
@@ -96,66 +98,66 @@ export default {
         {
           icon: require("@/assets/images/mine/income.png"),
           title: "My income",
-          path:"/myIncome"
+          path: "/myIncome",
         },
         {
           icon: require("@/assets/images/mine/account.png"),
           title: "Account authorization",
-          path:"/myAccount"
+          path: "/myAccount",
         },
         {
           icon: require("@/assets/images/mine/wallet.png"),
           title: "My wallet",
-          path:"/myWallet"
+          path: "/myWallet",
         },
         {
           icon: require("@/assets/images/mine/issue.png"),
           title: "Issue feedback",
-          path:"/myIssue"
+          path: "/myIssue",
         },
         {
           icon: require("@/assets/images/mine/setting.png"),
           title: "Other settings",
-          path:"/mySetting"
+          path: "/mySetting",
         },
       ],
-      userInfo:null,
-      mineData:null
+      userInfo: null,
+      mineData: null,
     };
   },
-  computed:{
+  computed: {},
+  mounted() {
+    console.log(11111111111111, this.userInfo, this.mineData);
+    this.getInitData();
   },
-  mounted(){
-    console.log(11111111111111,this.userInfo,this.mineData);
-    this.getInitData()
-  },
-  methods:{
+  methods: {
     // 页面信息
-    getInitData(){
-      this.$api.mineInfo().then((res)=>{
-        if(res.result){
+    getInitData() {
+      this.$api.mineInfo().then((res) => {
+        if (res.result) {
           console.log(res);
-          this.userInfo = res.data.userInfo
-          this.mineData = res.data
-        } else{
-          this.$message.error(res.errorMsg)
+          this.userInfo = res.data.userInfo;
+          this.mineData = res.data;
+        } else {
+          this.$message.error(res.errorMsg);
         }
-      })
+      });
     },
     // 跳转个人主页
     OnClickBlogger() {
-      info.userID = this.loginInfo.userInfo.id
-      this.$router.push({ path: '/bloggerInfo', query: { info } });
+      var info = this.userInfo;
+      info.userID = this.userInfo.id;
+      this.$router.push({ path: "/bloggerInfo", query: { info } });
     },
-    changePage(path){
-      this.$router.push(path)
+    changePage(path) {
+      this.$router.push(path);
     },
   },
 };
 </script>
 
 <style scoped lang="scss">
-img{
+img {
   object-fit: cover;
 }
 .container-mine {
@@ -268,15 +270,15 @@ img{
           margin-left: 0.4267rem;
         }
       }
-      .two-noincome{
+      .two-noincome {
         font-family: PingFangSC-Regular, PingFang SC;
         font-size: 1.0667rem;
-        margin-top: .64rem;
+        margin-top: 0.64rem;
       }
       .three {
         width: 100%;
         position: absolute;
-        bottom: .2667rem;
+        bottom: 0.2667rem;
         > div {
           &:first-of-type {
             font-family: PingFangSC-Regular, PingFang SC;
@@ -294,8 +296,8 @@ img{
       bottom: 1.7067rem;
       width: 100%;
       margin: 0.7467rem 0 0.64rem 0;
-      &::before{
-        border-color:rgba(255,255,255,.3)
+      &::before {
+        border-color: rgba(255, 255, 255, 0.3);
       }
     }
   }
