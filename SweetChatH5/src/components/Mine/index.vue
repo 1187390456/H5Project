@@ -1,7 +1,7 @@
 <template>
   <div class="container-mine">
     <!-- 个人信息 -->
-    <div class="info">
+    <div class="info" @click="OnClickBlogger">
       <img
         class="avatar"
         src="https://img0.baidu.com/it/u=1993557595,4075530522&fm=253&app=138&size=w931&n=0&f=JPEG&fmt=auto?sec=1681923600&t=9b6dddbe05c446e1ace6f480f70ef88c"
@@ -78,6 +78,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   components: {},
   data() {
@@ -105,6 +107,17 @@ export default {
         },
       ],
     };
+  },
+  computed:{
+    ...mapGetters(["loginInfo"])
+  },
+  methods:{
+    // 跳转个人主页
+    OnClickBlogger() {
+      var info = this.loginInfo.userInfo
+      info.userID = this.loginInfo.userInfo.id
+      this.$router.push({ path: '/bloggerInfo', query: { info } });
+    }
   },
 };
 </script>
