@@ -133,7 +133,7 @@ export default {
               const name = res.data.userInfo.nickname;
               sessionStorage.setItem("User", JSON.stringify({ name, id }));
               sessionStorage.setItem("userToken", res.data.userInfo.token);
-              this.$router.push({ path: "/Discover" });
+              this.$router.push({ path: "/Chats" });
               this.$store.dispatch("permission/generateRoutes", []);
             } else {
               // 去编辑资料

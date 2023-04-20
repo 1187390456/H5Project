@@ -353,7 +353,7 @@ export default {
               const id = res.data.userInfo.id;
               const name = res.data.userInfo.nickname;
               sessionStorage.setItem("User", JSON.stringify({ name, id }));
-              this.$router.push({ path: "/Discover" });
+              this.$router.push({ path: "/Chats" });
               this.$store.dispatch("permission/generateRoutes", []);
             }
           });
