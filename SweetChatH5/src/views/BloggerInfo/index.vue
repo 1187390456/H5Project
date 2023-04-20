@@ -124,7 +124,7 @@ export default {
         },
         // 返回
         Return() {
-            this.$router.push({ path: '/Chats' });
+            this.$router.back();
         },
         // 切换tab
         onTabChange(key, type) {
@@ -137,6 +137,7 @@ export default {
         },
         // 初始化数据
         InitData() {
+            console.log(this.$route.query.info,"======================");
             this.GetUserInfo();
             this.Getphotolist();
             this.GetDynamicInfo();
