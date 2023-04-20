@@ -33,8 +33,12 @@ export default {
   mounted() {},
   methods: {
     handleBack() {
-      this.$router.back();
-      this.$route.params.info = this.userInfo;
+      console.log(this.userInfo, "==");
+      this.$router.back({
+        query: {
+          info: this.userInfo.id,
+        },
+      });
     },
   },
 };

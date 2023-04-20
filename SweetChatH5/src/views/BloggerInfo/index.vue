@@ -2,6 +2,7 @@
   <div class="container">
     <!-- 背景区域-->
     <div class="backGroundArea">
+      <div class="shadow"></div>
       <div class="topArea">
         <img
           @click="Return"
@@ -124,20 +125,8 @@
 <script>
 import { mapState } from "vuex";
 import { GoToChatView } from "../../utils/xcm";
-var paramsUserInfo;
 
 export default {
-  beforeRouteEnter(to, from, next) {
-    console.log(from, "==");
-    if (
-      from.path === "/editProfile" ||
-      from.path === "/Chats" ||
-      from.path === "/Discover"
-    ) {
-      paramsUserInfo = from.params.info;
-    }
-    next();
-  },
   data() {
     return {
       bloggerInfo: "", // 当前用户信息
@@ -149,7 +138,7 @@ export default {
     };
   },
   created() {
-    console.log("当前个人主页的传参", paramsUserInfo);
+    console.log("当前个人主页的传参", this.$route.query.id);
     this.InitData();
   },
   computed: {
@@ -170,7 +159,7 @@ export default {
     },
     // 初始化数据
     InitData() {
-      console.log(paramsUserInfo, "======================");
+      console.log(this.$route.query.id, "======================");
       this.GetUserInfo();
       this.Getphotolist();
       this.GetDynamicInfo();
@@ -180,7 +169,7 @@ export default {
       var res = await this.$api.homepage({
         userID: this.user.id,
         userKey: this.user.token,
-        targetUserID: paramsUserInfo.id,
+        targetUserID: this.$route.query.id,
       });
       if (!res.result) return;
       console.log("个人信息", res);
@@ -190,7 +179,7 @@ export default {
     async Getphotolist() {
       var res = await this.$api.photolist({
         userID: this.user.id,
-        targetUserID: paramsUserInfo.id,
+        targetUserID: this.$route.query.id,
         pageNum: 1,
         userToken: this.user.token,
       });
@@ -201,7 +190,7 @@ export default {
     // 个人动态
     async GetDynamicInfo() {
       var res = await this.$api.recommendDynamic({
-        targetUserID: paramsUserInfo.id,
+        targetUserID: this.$route.query.id,
         pageNum: 1,
       });
       if (!res.result) return;
@@ -231,8 +220,19 @@ export default {
     width: 100%;
     height: 18.75rem;
     position: relative;
-
     overflow: hidden;
+
+    .shadow {
+      width: 100%;
+      height: 88px;
+      position: absolute;
+      top: 0;
+      background: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0.3) 0%,
+        rgba(0, 0, 0, 0) 100%
+      );
+    }
 
     .topArea {
       width: 100%;

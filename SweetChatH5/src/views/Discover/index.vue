@@ -57,8 +57,10 @@ export default {
     OnClickBlogger(info) {
       this.$router.push({
         path: "/bloggerInfo",
+        query: {
+          id: info.id,
+        },
       });
-      this.$route.params.info = info;
     },
   },
 };
