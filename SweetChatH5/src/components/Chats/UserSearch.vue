@@ -50,8 +50,7 @@ export default {
         },
         // 博主列表请求
         async SendRequest(val) {
-            const userInfo = this.$store.state.user.loginInfo.userInfo;
-            var res = await this.$api.bloggerSearch({ officialId: toString(userInfo.id), nickname: val, pageNum: 0 });
+            var res = await this.$api.bloggerSearch({ officialId: '0', nickname: val, pageNum: 0 });
             console.log('博主搜索列表', res.data.list);
             this.bloggerList = res.data.list;
         },
