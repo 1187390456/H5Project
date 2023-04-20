@@ -17,3 +17,12 @@ export const walletRecordList = (data) => {
     data,
   });
 };
+
+// 钱包收支明细
+export const mineInfo = (data) => {
+  return fetch({
+    url: "/api/user-info/mine",
+    method: "post",
+    data,
+  });
+};

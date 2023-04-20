@@ -23,11 +23,10 @@ export default function fetch(options) {
   if (options.createForm) {
     headers = {};
   } else if (options.createLogin) {
-
   } else {
     headers = {
       "Content-Type": "application/json;charset = UTF-8",
-      "regionCode": "US",
+      regionCode: "US",
       "Accept-Language": "en-US",
     };
   }
@@ -76,17 +75,20 @@ export default function fetch(options) {
 
   instance.interceptors.request.use(
     (config) => {
-     
       let cusConfig = configs.api.set_config(config);
       const tempArr = config.url.split("/");
-      if (tempArr[tempArr.length - 1] == "login-by-username") return { ...config, ...cusConfig };
-      config.headers.userID = 174;
-      config.headers.userToken = "MBE7izgQevlCrIx0WqxufW133KoXjUzb";
-      console.log(config,config.headers);
+      if (
+        tempArr[tempArr.length - 1] == "login-by-phone" ||
+        tempArr[tempArr.length - 1] == "common-account-login"
+      )
+        return { ...config, ...cusConfig };
+      config.headers.userID = JSON.parse(sessionStorage.getItem("User")).id;
+      config.headers.userToken = sessionStorage.getItem("userToken");
+      console.log(config, config.headers);
       if (config.headerType && config.headerType == 1) {
         // config.headers.regionCode = "US";
         // config.headers["Accept-Language"] = "en-US";
-      } 
+      }
 
       return { ...config, ...cusConfig };
     },
