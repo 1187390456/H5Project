@@ -44,3 +44,11 @@ export const changeUserinfo = (data) => {
     data,
   });
 };
+// 复制链接
+export const inviteUrl = (data) => {
+  return fetch({
+    url: "/api/user-info/invite-url",
+    method: "post",
+    data,
+  });
+};
