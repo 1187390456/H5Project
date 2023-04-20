@@ -9,13 +9,13 @@
     <div class="main">
       <!-- 当前收益 -->
       <div class="current-yield">
-        <div class="title">当前收益</div>
+        <div class="title">Income balance</div>
         <div class="content">
           <div class="left">
             <img src="../../assets/images/mine/money.png" alt="" />
             <span>{{ incomeMoney }}</span>
           </div>
-          <div class="right">提现</div>
+          <div class="right">Withdraw</div>
         </div>
       </div>
 
@@ -23,14 +23,14 @@
       <div class="income-details">
         <div class="title">收支明细</div>
         <ul>
-          <li v-for="item in incomeList">
+          <li v-for="(item,index) in incomeList" :key="index">
             <div class="top">
               <div class="date">{{ item.postTime | timeFilter }}</div>
               <div class="money-income" v-if="item.type == 1">
                 <img src="../../assets/images/mine/money.png" alt="" />
-                <span>+300</span>
+                <span>+{{item.money}}</span>
               </div>
-              <div class="money-withdrawal" v-if="item.type == 2">-$23.0</div>
+              <div class="money-withdrawal" v-if="item.type == 2">-${{item.money}}</div>
             </div>
             <div class="bottom">
               <div class="reply-msg" v-if="item.type == 1">
@@ -147,10 +147,12 @@ export default {
           color: #fff;
           width: 4.266667rem /* 80/18.75 */;
           height: 1.6rem /* 30/18.75 */;
+          // padding: .2133rem 1.28rem;
           line-height: 1.6rem /* 30/18.75 */;
           background: #8f4afe;
           border-radius: 0.8rem /* 15/18.75 */;
           text-align: center;
+          font-size: .64rem
         }
       }
     }

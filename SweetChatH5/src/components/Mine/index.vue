@@ -27,9 +27,9 @@
             <span>Current Income</span>
             <img class="icon" src="@/assets/images/mine/money.png" alt="" />
           </div>
-          <div v-if="mineData.revenueData">Yesterday</div>
+          <div v-if="mineData.hasAccount">Yesterday</div>
         </div>
-        <div v-if="mineData.revenueData" class="two">
+        <div v-if="mineData.hasAccount" class="two">
           <div>
             <span>{{ mineData.revenueData.allIncome }}</span>
             <img
@@ -48,7 +48,7 @@
           <div>Potential Income</div>
           <div>
             <span>{{
-              mineData.revenueData ? mineData.revenueData.potentialIncome : 0
+              mineData.hasAccount ? mineData.hasAccount.potentialIncome : 0
             }}</span>
             <img src="@/assets/images/mine/income-right.png" alt="" />
           </div>
@@ -154,10 +154,12 @@ export default {
     },
     // 跳转个人主页
     OnClickBlogger() {
-      this.$router.push({
+     this.$router.push({
         path: "/bloggerInfo",
+        query: {
+          id: this.userInfo.id,
+        },
       });
-      this.$route.params.info = this.userInfo;
     },
     // 获取链接地址
     getCopyUrl(){
