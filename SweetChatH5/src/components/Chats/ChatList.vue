@@ -50,11 +50,12 @@ export default {
   methods: {
     // 设置item项
     OnClickChatItem(i, item) {
-      this.chatActive = i;
-      this.moveTrigger = true;
-      setInterval(() => {
-        this.$emit("SelectChatCallback", item);
-      }, 300);
+      // this.chatActive = i;
+      // this.moveTrigger = true;
+      this.$emit("SelectChatCallback", item);
+      // setInterval(() => {
+      //   this.$emit("SelectChatCallback", item);
+      // }, 300);
     },
   },
 };

@@ -33,8 +33,7 @@
             </ul>
         </div>
         <!-- 卡片区域 -->
-        <van-tabs :line-width="9.4 + 'rem'" color="#8032FF" title-active-color="#8032FF" class="cardArea"
-            :active="activeName">
+        <van-tabs :line-width="50 + '%'" color="#8032FF" title-active-color="#8032FF" class="cardArea" :active="activeName">
             <van-tab title="Album" name="Album">
                 <ul class="c1">
                     <!-- 空相册 -->
@@ -84,10 +83,12 @@
         </van-tabs>
         <!-- 底部固定按钮 -->
         <div class="bottomBtn">
-            <!-- <a-button @click="DownLoad($event)" class="c1">
-                    <img src="../../assets/img/chatbig.png" alt="">
-                    <span style="margin-left: 8px;">{{ $t('pp6') }}</span>
-                </a-button> -->
+            <el-button class="c1" @click="OnclickChat">
+                <span>
+                    <img src="../../assets/images/bloggerInfo/chatbig.png" alt="">
+                    <span>DM</span>
+                </span>
+            </el-button>
             <!-- <a-button @click="DownLoad($event)" class="c2">
             <img src="../../assets/img/addFridendBig.png" alt="">
             <span style="margin-left: 8px;">{{ $t('pp7') }}</span>
@@ -98,6 +99,7 @@
     
 <script>
 import { mapState } from "vuex";
+import { GoToChatView } from '../../utils/xcm'
 
 export default {
     data() {
@@ -107,6 +109,7 @@ export default {
             dynamicList: [], // 动态信息
 
             activeName: 'Album',
+            serverTag: 'b_test_',
         };
     },
     created() {
@@ -119,21 +122,15 @@ export default {
         }),
     },
     methods: {
-        handleClick(tab, event) {
-            console.log(tab, event);
+        // 聊天
+        OnclickChat() {
+            var id = this.serverTag + this.bloggerInfo.id
+            console.log('123', id);
+            GoToChatView(id);
         },
         // 返回
         Return() {
             this.$router.back();
-        },
-        // 切换tab
-        onTabChange(key, type) {
-            this[type] = key;
-            if (key == "photoAlbum") {
-                this.Getphotolist();
-            } else if (key == "dynamic") {
-                this.GetDynamicInfo();
-            }
         },
         // 初始化数据
         InitData() {
@@ -182,6 +179,10 @@ export default {
 <style lang="less" scoped>
 ::-webkit-scrollbar {
     width: 0px;
+}
+
+/deep/ .van-tabs--line .van-tabs__wrap {
+    min-height: 2.55rem;
 }
 
 // --------------------------------  Common ------------------------
@@ -362,14 +363,13 @@ export default {
     .cardArea {
         width: 100%;
         background: #ffffff;
-
         overflow: hidden; // 解决溢出
 
         .noYet {
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translateX(-50%);
 
             font-size: 0.8rem;
             font-family: PingFangSC-Regular, PingFang SC;
@@ -378,7 +378,7 @@ export default {
         }
 
         .c1 {
-            margin-left: 0.4rem;
+            padding-left: 0.4rem;
             position: relative;
             min-height: 200px;
 
@@ -496,7 +496,7 @@ export default {
     }
 
     .bottomBtn {
-        width: 375px;
+        width: 100%;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -505,45 +505,29 @@ export default {
         margin-bottom: 2rem;
 
         .c1 {
-            display: flex;
-            align-items: center;
-            justify-content: center;
             width: 15.25rem;
             height: 2.1rem;
             background: #ffefd1;
             border-radius: 1.05rem;
             border: none;
             font-size: 0.7rem;
-            font-family: PingFangSC-Regular, PingFang SC;
+            font-family: PingFangSC-Regular,
+                PingFang SC;
             font-weight: 400;
             color: #f6892c;
 
-
             img {
-                width: 20px;
-                height: 21px;
+                width: 1rem;
+                height: 1.05rem;
+                margin-right: 0.35rem;
+            }
+
+            span {
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
         }
-
-        // .c2 {
-        //   display: flex;
-        //   align-items: center;
-        //   justify-content: center;
-        //   width: 9.6rem;
-        //   height: 2.1rem;
-        //   background: #8032ff;
-        //   border-radius: 1.05rem;
-        //   border: none;
-        //   font-size: 0.7rem;
-        //   font-family: PingFangSC-Regular, PingFang SC;
-        //   font-weight: 400;
-        //   color: #ffffff;
-
-        //   img {
-        //     width: 20px;
-        //     height: 21px;
-        //   }
-        // }
     }
 }
 </style>
