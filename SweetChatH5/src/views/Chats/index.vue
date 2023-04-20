@@ -30,7 +30,6 @@ export default {
         SelectChatCallback(selectItem) {
             GoToChatView(selectItem.targetUserInfo.account); // b_test_174
         },
-
     },
 };
 </script>

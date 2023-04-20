@@ -2,7 +2,8 @@
     <div class="chatView">
         <div class="top ">
             <div class="l">
-                <img @click="OnClickReturn" class="return" src="../../../assets/images/chats/返回.png" alt="">
+                <img @click="$router.push({ path: '/Chats' })" class="return" src="../../../assets/images/chats/返回.png"
+                    alt="">
                 <img class="avatar" :src="$nimInfo.sessionInfo.avatar" alt="" />
                 <span class="name">{{ $nimInfo.sessionInfo.nick }}</span>
             </div>
@@ -55,10 +56,6 @@ export default {
         this.ResetScroll();
     },
     methods: {
-        //  点击返回
-        OnClickReturn() {
-            this.$router.push({ path: '/Chats' });
-        },
         // 监听Enter
         listen(event) {
             if (event.keyCode == 13 && event.ctrlKey) {
